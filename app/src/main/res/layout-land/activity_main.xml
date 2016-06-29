@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center"
     android:gravity="center"
     android:measureWithLargestChild="true"
     android:orientation="vertical">
@@ -10,34 +10,27 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:baselineAligned="true"
-        android:gravity="center_horizontal">
-
+        android:gravity="center">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
             android:text="그룹 리스트"
             android:textSize="20dp"
             android:textStyle="bold" />
-
         <Button
             android:id="@+id/add_group_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="top"
             android:text="추가" />
     </LinearLayout>
-
-    <ScrollView
+    <HorizontalScrollView
         android:layout_width="wrap_content"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:measureWithLargestChild="true">
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/group1_button"
@@ -77,14 +70,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="그룹9" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹10" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹11" />
         </LinearLayout>
-    </ScrollView>
+    </HorizontalScrollView>
 </LinearLayout>

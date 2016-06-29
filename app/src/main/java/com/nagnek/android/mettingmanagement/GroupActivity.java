@@ -27,28 +27,29 @@ public class GroupActivity extends Activity {
 
         pickContactIntent.setType(ContactsContract.CommonDataKinds.Phone.CONTENT_TYPE);
         // PICK_CONTACT_REQUEST, requestCode가 결과를 얻는데 사용된다
-        startActivityForResult( pickContactIntent, PICK_CONTACT_REQUEST);
+        startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
     }
 
     // 전화걸기
     private void call() {
-        if(number != null) {
-            startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:"+number)));
+        if (number != null) {
+            startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + number)));
         }
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Log.e("GroupActivity", "onCreate()");
-        Button addMemberButton = (Button)findViewById(R.id.add_member_button);
+        Button addMemberButton = (Button) findViewById(R.id.add_member_button);
         addMemberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 pickContact();
             }
         });
-
+        memberNameView = (TextView) findViewById(R.id.member_name);
         Button callButton = (Button) findViewById(R.id.call_button);
         callButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,20 +62,21 @@ public class GroupActivity extends Activity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // startActivityForResult에서 넘긴 requestCode를 체크한다
-        if(requestCode == PICK_CONTACT_REQUEST) {
-            if( resultCode == RESULT_OK) {
+        if (requestCode == PICK_CONTACT_REQUEST) {
+            if (resultCode == RESULT_OK) {
                 // 선택한 결과는 Uri 리턴되며 해당 Uri를 쿼리하여 얻어오게 된다
                 Uri contactUri = data.getData();
                 String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER, //연락처
                         ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}; // 연락처 이
 
                 // 주의 : UI의 블락킹 때문에라도(화면 버벅거림 쿼리 실행은 별도의 스레드에서 처리하는게 좋다
-                Cursor cursor = getContentResolver().query( contactUri, projection, null, null, null);
+                Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
                 cursor.moveToFirst();
 
                 // getColumnIndex로 꼭 가져와야하나 바로 가져올수없나 특히 아래 이름의 경우 getString 같은걸로
                 int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 number = cursor.getString(column);
+
                 int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                 String name = cursor.getString(nameIndex);
 
@@ -141,12 +143,12 @@ public class GroupActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         Log.e("GroupActivity", "onSaveInstanceState()");
         // 이름과 전화번호를 onSavedInstanceState 매개 변수인 번들에 저장한다.
-        if(memberNameView != null) {
+        if (memberNameView != null) {
             String backupName = memberNameView.getText().toString();
             outState.putString("BACKUP_NAME", backupName);
             Log.e("GroupActivity", "backupName");
         }
-        if(number != null) {
+        if (number != null) {
             outState.putString("BACKUP_NUMBER", number);
             Log.e("GroupActivity", "backupNumber");
         }
