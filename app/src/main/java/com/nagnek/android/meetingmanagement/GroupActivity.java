@@ -8,12 +8,14 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 public class GroupActivity extends Activity {
 
@@ -28,6 +30,8 @@ public class GroupActivity extends Activity {
     String imagePath = null;
     ImageView imageView;
     Bitmap bitmap;
+    Uri imageUri;
+    private String strPhotoName = null;
 
     // 연락처 선택
     private void pickContact() {
@@ -78,30 +82,18 @@ public class GroupActivity extends Activity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                intent.setDataAndType(imageUri, "image/*");
-                //crop기능
-                intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", 1);
-                intent.putExtra("aspectY", 1);
-                intent.putExtra("outputX", 200);
-                intent.putExtra("outputY", 200);
-                intent.putExtra("return-data", true);
-                intent.putExtra("scale", true);
-                intent.putExtra(KEY_CROPPED_RECT, true);
 
                 try {
-
-                    startActivityForResult(Intent.createChooser(intent,
-                            "Complete action using"), REQ_CODE_SELECT_IMAGE);
+                    startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
                 } catch (ActivityNotFoundException e) {
                     // Do nothing for now
                 }
             }
         });
-
     }
 
     @Override
@@ -133,20 +125,18 @@ public class GroupActivity extends Activity {
             if (resultCode == RESULT_OK) {
                 // result
 
-                Bundle extras2 = data.getExtras();
-                if (extras2 != null) {
-                    Bitmap photo = extras2.getParcelable("data");
-                    bitmap = photo;
-                    imageView.setImageBitmap(photo);
-                    Dlog.e("");
-//                    if(imageUri!=null) {
-//                        Dlog.e("오오오;");
-//                    }
 
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-
+                Bitmap image_bitmap = null;
+                try {
+                    imageUri = data.getData();
+                    image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
+                    image_bitmap = NagneRoundedImage.getCircleBitmap(image_bitmap);
+                    imageView.setImageBitmap(image_bitmap);
+                    //image_bitmap = null;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
+                //배치해놓은 ImageView에 set
 
 
             }
@@ -172,12 +162,23 @@ public class GroupActivity extends Activity {
             memberNameView.setText(savedInstanceState.getString("BACKUP_NAME"));
             number = savedInstanceState.getString("BACKUP_NUMBER");
             groupName = savedInstanceState.getString(groupNameKey);
+            imageUri = savedInstanceState.getParcelable("BACKUP_IMAGE");
 
-            Bitmap photo = savedInstanceState.getParcelable("data");
-            if(photo != null) {
-                imageView.setImageBitmap(photo);
-            }
+           if(imageUri != null) {
+               Bitmap bitmap = null;
+               try {
+                   bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                   bitmap = NagneRoundedImage.getCircleBitmap(bitmap);
+                   imageView.setImageBitmap(bitmap);
+                   bitmap = null;
+               } catch (IOException e) {
+                   e.printStackTrace();
+               }
+
+           }
+
         }
+
         super.onRestoreInstanceState(savedInstanceState);
     }
 
@@ -213,6 +214,10 @@ public class GroupActivity extends Activity {
         /*if(bitmap != null) {
             bitmap.recycle();
         }*/
+        imageUri = null;
+        imageView = null;
+        number = null;
+        groupName = null;
     }
 
     // 액티비티 데이터를 백업할 수 있는 함수
@@ -230,9 +235,11 @@ public class GroupActivity extends Activity {
             outState.putString("BACKUP_NUMBER", number);
             Dlog.i("backupNumber");
         }
-        if(bitmap!=null) {
-            outState.putParcelable("data", bitmap);
+        if(imageUri!=null) {
+            outState.putParcelable("BACKUP_IMAGE", imageUri);
+            Dlog.i("저장");
         }
+
         super.onSaveInstanceState(outState);
     }
 }

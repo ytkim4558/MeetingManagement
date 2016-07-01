@@ -56,8 +56,6 @@ public class Dlog {
         sb.append(ste.getMethodName());
         sb.append("]");
         sb.append(message);
-
         return sb.toString();
-
     }
 }

@@ -37,6 +37,7 @@ public class NewGroupPopupActivity extends Activity {
                 Intent intent = new Intent();
                 intent.putExtra("RESULT_NEW_GROUP_NAME", newGroupName.getText().toString());
                 setResult(RESULT_OK, intent);
+                Dlog.i("finish");
                 finish();
             }
         });
@@ -44,6 +45,7 @@ public class NewGroupPopupActivity extends Activity {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);
+                Dlog.i("finish");
                 finish();
             }
         });
