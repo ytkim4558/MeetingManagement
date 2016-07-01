@@ -19,8 +19,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.nagnek.android.meetingmanagement.GroupActivity"
-            android:configChanges="orientation|screenSize" />
+            android:name="com.nagnek.android.meetingmanagement.GroupActivity"/>
         <activity
             android:name="com.nagnek.android.meetingmanagement.NewGroupPopupActivity"
             android:theme="@android:style/Theme.Dialog" />

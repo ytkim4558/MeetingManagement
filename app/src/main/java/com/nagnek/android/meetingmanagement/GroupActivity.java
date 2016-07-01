@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -11,6 +12,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import java.io.ByteArrayOutputStream;
 
 public class GroupActivity extends Activity {
 
@@ -21,7 +24,10 @@ public class GroupActivity extends Activity {
     private String groupNameKey = "GROUP1_NAME";
     private TextView groupNameText = null;
     private int REQ_CODE_SELECT_IMAGE = 100;
+    private String KEY_CROPPED_RECT = "cropped-rect";
+    String imagePath = null;
     ImageView imageView;
+    Bitmap bitmap;
 
     // 연락처 선택
     private void pickContact() {
@@ -62,10 +68,10 @@ public class GroupActivity extends Activity {
             }
         });
         Intent intent = getIntent();
-        if(intent!=null) {
+        if (intent != null) {
             groupName = intent.getExtras().getString(groupNameKey);
         }
-        groupNameText = (TextView)findViewById(R.id.group_name_text_view);
+        groupNameText = (TextView) findViewById(R.id.group_name_text_view);
         groupNameText.setText(groupName);
 
         imageView = (ImageView) findViewById(R.id.groupImageView);
@@ -75,23 +81,24 @@ public class GroupActivity extends Activity {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
+//                intent.setDataAndType(imageUri, "image/*");
                 //crop기능
                 intent.putExtra("crop", "true");
-                intent.putExtra("aspectX", 0);
-                intent.putExtra("aspectY", 0);
+                intent.putExtra("aspectX", 1);
+                intent.putExtra("aspectY", 1);
                 intent.putExtra("outputX", 200);
                 intent.putExtra("outputY", 200);
+                intent.putExtra("return-data", true);
+                intent.putExtra("scale", true);
+                intent.putExtra(KEY_CROPPED_RECT, true);
 
                 try {
-                    intent.putExtra("return-data", true);
+
                     startActivityForResult(Intent.createChooser(intent,
                             "Complete action using"), REQ_CODE_SELECT_IMAGE);
                 } catch (ActivityNotFoundException e) {
                     // Do nothing for now
                 }
-
-
             }
         });
 
@@ -121,6 +128,28 @@ public class GroupActivity extends Activity {
                 // 선택한 연락처의 이름을 TextView에 보여준다.
                 memberNameView.setText(name);
             }
+
+        } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
+            if (resultCode == RESULT_OK) {
+                // result
+
+                Bundle extras2 = data.getExtras();
+                if (extras2 != null) {
+                    Bitmap photo = extras2.getParcelable("data");
+                    bitmap = photo;
+                    imageView.setImageBitmap(photo);
+                    Dlog.e("");
+//                    if(imageUri!=null) {
+//                        Dlog.e("오오오;");
+//                    }
+
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    photo.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+
+                }
+
+
+            }
         }
     }
 
@@ -143,6 +172,11 @@ public class GroupActivity extends Activity {
             memberNameView.setText(savedInstanceState.getString("BACKUP_NAME"));
             number = savedInstanceState.getString("BACKUP_NUMBER");
             groupName = savedInstanceState.getString(groupNameKey);
+
+            Bitmap photo = savedInstanceState.getParcelable("data");
+            if(photo != null) {
+                imageView.setImageBitmap(photo);
+            }
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -157,6 +191,7 @@ public class GroupActivity extends Activity {
     protected void onRestart() {
         super.onRestart();
         Dlog.i("onRestart()");
+
     }
 
     @Override
@@ -175,6 +210,9 @@ public class GroupActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         Dlog.i("onDestroy()");
+        /*if(bitmap != null) {
+            bitmap.recycle();
+        }*/
     }
 
     // 액티비티 데이터를 백업할 수 있는 함수
@@ -191,6 +229,9 @@ public class GroupActivity extends Activity {
         if (number != null) {
             outState.putString("BACKUP_NUMBER", number);
             Dlog.i("backupNumber");
+        }
+        if(bitmap!=null) {
+            outState.putParcelable("data", bitmap);
         }
         super.onSaveInstanceState(outState);
     }

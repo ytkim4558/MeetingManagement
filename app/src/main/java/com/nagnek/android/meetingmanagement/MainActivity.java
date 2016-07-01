@@ -81,6 +81,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Dlog.i("onActivityResult()");
         if (requestCode == NEW_GROUP_REQUEST) {
             if(resultCode == RESULT_OK) {
                 String name = data.getStringExtra("RESULT_NEW_GROUP_NAME");
