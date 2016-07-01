@@ -1,4 +1,4 @@
-package com.nagnek.android.mettingmanagement;
+package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -6,7 +6,6 @@ import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.View;

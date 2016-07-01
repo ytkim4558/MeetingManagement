@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.nagnek.android.mettingmanagement">
+    package="com.nagnek.android.meetingmanagement">
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
 
@@ -10,7 +10,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.nagnek.android.meetingmanagement.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -18,10 +18,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".GroupActivity"
+            android:name="com.nagnek.android.meetingmanagement.GroupActivity"
             android:configChanges="orientation|screenSize" />
         <activity
-            android:name=".NewGroupPopupActivity"
+            android:name="com.nagnek.android.meetingmanagement.NewGroupPopupActivity"
             android:theme="@android:style/Theme.Dialog" />
     </application>
 

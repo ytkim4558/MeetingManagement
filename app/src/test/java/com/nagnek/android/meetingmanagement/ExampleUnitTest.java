@@ -1,4 +1,4 @@
-package com.nagnek.android.mettingmanagement;
+package com.nagnek.android.meetingmanagement;
 
 import org.junit.Test;
 
