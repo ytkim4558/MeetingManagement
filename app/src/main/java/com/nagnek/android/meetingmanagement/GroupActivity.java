@@ -1,15 +1,15 @@
 package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class GroupActivity extends Activity {
@@ -17,6 +17,11 @@ public class GroupActivity extends Activity {
     static final int PICK_CONTACT_REQUEST = 1;
     private TextView memberNameView = null;
     private String number = null;
+    private String groupName = null;
+    private String groupNameKey = "GROUP1_NAME";
+    private TextView groupNameText = null;
+    private int REQ_CODE_SELECT_IMAGE = 100;
+    ImageView imageView;
 
     // 연락처 선택
     private void pickContact() {
@@ -56,6 +61,40 @@ public class GroupActivity extends Activity {
                 call();
             }
         });
+        Intent intent = getIntent();
+        if(intent!=null) {
+            groupName = intent.getExtras().getString(groupNameKey);
+        }
+        groupNameText = (TextView)findViewById(R.id.group_name_text_view);
+        groupNameText.setText(groupName);
+
+        imageView = (ImageView) findViewById(R.id.groupImageView);
+        imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+                //crop기능
+                intent.putExtra("crop", "true");
+                intent.putExtra("aspectX", 0);
+                intent.putExtra("aspectY", 0);
+                intent.putExtra("outputX", 200);
+                intent.putExtra("outputY", 200);
+
+                try {
+                    intent.putExtra("return-data", true);
+                    startActivityForResult(Intent.createChooser(intent,
+                            "Complete action using"), REQ_CODE_SELECT_IMAGE);
+                } catch (ActivityNotFoundException e) {
+                    // Do nothing for now
+                }
+
+
+            }
+        });
+
     }
 
     @Override
@@ -103,6 +142,7 @@ public class GroupActivity extends Activity {
             Dlog.i(savedInstanceState.getString("BACKUP_NUMBER"));
             memberNameView.setText(savedInstanceState.getString("BACKUP_NAME"));
             number = savedInstanceState.getString("BACKUP_NUMBER");
+            groupName = savedInstanceState.getString(groupNameKey);
         }
         super.onRestoreInstanceState(savedInstanceState);
     }
@@ -145,6 +185,7 @@ public class GroupActivity extends Activity {
         if (memberNameView != null) {
             String backupName = memberNameView.getText().toString();
             outState.putString("BACKUP_NAME", backupName);
+            outState.putString(groupNameKey, groupName);
             Dlog.i("backupName");
         }
         if (number != null) {
@@ -152,11 +193,5 @@ public class GroupActivity extends Activity {
             Dlog.i("backupNumber");
         }
         super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Dlog.i("onConfigurationChanged()");
     }
 }

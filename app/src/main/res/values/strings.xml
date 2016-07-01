@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">MettingManagement</string>
+    <string name="app_name">MeetingManagement</string>
+    <string name="group_name_key">groupname</string>
 </resources>
