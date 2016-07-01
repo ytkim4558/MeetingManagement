@@ -40,7 +40,7 @@ public class GroupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
-        Log.e("GroupActivity", "onCreate()");
+        Dlog.i("onCreate()");
         Button addMemberButton = (Button) findViewById(R.id.add_member_button);
         addMemberButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,19 +88,19 @@ public class GroupActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.e("GroupActivity", "onStart()");
+        Dlog.i("onStart()");
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.e("GroupActivity", "onRestoreInstanceState()");
+        Dlog.i("onRestoreInstanceState()");
         // 만일 onRestoreInstanceState 함수의 번들 매개 변수가 널이 아니면
         // 해당 액티비티에서 백업된 데이터가 존재하는 것을 의미한다
         // 따라서 번들에 백업된 데이터를 불러서 사용자 이름 및 전화번호를 복원한다.
         if (savedInstanceState != null) {
-            Log.e("GroupActivity", "RestoreName");
-            Log.e("GroupActivity", savedInstanceState.getString("BACKUP_NAME"));
-            Log.e("GroupActivity", savedInstanceState.getString("BACKUP_NUMBER"));
+            Dlog.i("RestoreName");
+            Dlog.i(savedInstanceState.getString("BACKUP_NAME"));
+            Dlog.i(savedInstanceState.getString("BACKUP_NUMBER"));
             memberNameView.setText(savedInstanceState.getString("BACKUP_NAME"));
             number = savedInstanceState.getString("BACKUP_NUMBER");
         }
@@ -110,46 +110,46 @@ public class GroupActivity extends Activity {
     @Override
     protected void onResume() {
         super.onResume();
-        Log.e("GroupActivity", "onResume()");
+        Dlog.i("onResume()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.e("GroupActivity", "onRestart()");
+        Dlog.i("onRestart()");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.e("GroupActivity", "onPause()");
+        Dlog.i("onPause()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.e("GroupActivity", "onStop()");
+        Dlog.i("onStop()");
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.e("GroupActivity", "onDestroy()");
+        Dlog.i("onDestroy()");
     }
 
     // 액티비티 데이터를 백업할 수 있는 함수
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.e("GroupActivity", "onSaveInstanceState()");
+        Dlog.i("onSaveInstanceState()");
         // 이름과 전화번호를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (memberNameView != null) {
             String backupName = memberNameView.getText().toString();
             outState.putString("BACKUP_NAME", backupName);
-            Log.e("GroupActivity", "backupName");
+            Dlog.i("backupName");
         }
         if (number != null) {
             outState.putString("BACKUP_NUMBER", number);
-            Log.e("GroupActivity", "backupNumber");
+            Dlog.i("backupNumber");
         }
         super.onSaveInstanceState(outState);
     }
@@ -157,6 +157,6 @@ public class GroupActivity extends Activity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.e("GroupActivity", "onConfigurationChanged()");
+        Dlog.i("onConfigurationChanged()");
     }
 }

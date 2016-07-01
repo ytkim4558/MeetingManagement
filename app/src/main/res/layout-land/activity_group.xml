@@ -3,23 +3,15 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center">
-    <LinearLayout
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center">
-        <TextView android:id="@+id/group_name_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:text="그룹이름"/>
-
-        <Button android:id="@+id/add_member_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="추가"
-            android:singleLine="true" />
-
-    </LinearLayout>
+        android:text="hi"/>
+    <TextView android:id="@+id/group_name_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -33,7 +25,7 @@
             android:layout_height="wrap_content"
             android:text="이름:"/>
         <TextView android:id="@+id/member_name"
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="홍길동"/>
         <Button android:id="@+id/call_button"
@@ -61,7 +53,7 @@
             android:layout_height="wrap_content"
             android:text="이름:"/>
         <TextView
-            android:layout_width="50dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="김영희"/>
         <Button
@@ -77,6 +69,11 @@
             android:layout_height="wrap_content"
             android:text="삭제"/>
     </LinearLayout>
+    <Button android:id="@+id/add_member_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="추가"
+        android:singleLine="true" />
 
 
 </LinearLayout>

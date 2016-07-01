@@ -6,7 +6,7 @@ import android.util.Log;
  * Created by yongtakpc on 2016. 7. 1..
  */
 public class Dlog {
-    static final String TAG = "TedPark";
+    static final String TAG = "meetingmanagement";
 
     /**
      * Log Level Error

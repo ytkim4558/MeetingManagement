@@ -54,32 +54,26 @@ public class NewGroupPopupActivity extends Activity {
     // 액티비티 데이터를 백업할 수 있는 함수
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        Log.e("GroupActivity", "onSaveInstanceState()");
+        Dlog.i( "onSaveInstanceState()");
         // 이름과 전화번호를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (newGroupName != null) {
             String backupName = newGroupName.getText().toString();
             outState.putString("BACKUP_NEW_GROUP_NAME", backupName);
-            Log.e("NewGroupPopupActivity", "backupNewGroupName");
+            Dlog.i("backupNewGroupName");
         }
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        Log.e("GroupActivity", "onRestoreInstanceState()");
+        Dlog.i( "onRestoreInstanceState()");
         // 만일 onRestoreInstanceState 함수의 번들 매개 변수가 널이 아니면
         // 해당 액티비티에서 백업된 데이터가 존재하는 것을 의미한다
         // 따라서 번들에 백업된 데이터를 불러서 사용자 이름 및 전화번호를 복원한다.
         if (savedInstanceState != null) {
-            Log.e("GroupActivity", savedInstanceState.getString("newGroupName"));
+            Dlog.i( savedInstanceState.getString("newGroupName"));
             newGroupName.setText(savedInstanceState.getString("BACKUP_NEW_GROUP_NAME"));
         }
         super.onRestoreInstanceState(savedInstanceState);
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        Log.e("NewGroupPopupActivity", "onConfigurationChanged()");
     }
 }

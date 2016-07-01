@@ -17,7 +17,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Log.i("MainActivity", "onCreate()");
+        Dlog.i( "onCreate()");
         group1Button = (Button) findViewById(R.id.group1_button);
         Button addGroupButton = (Button) findViewById(R.id.add_group_button);
         addGroupButton.setOnClickListener(new Button.OnClickListener() {
@@ -53,31 +53,31 @@ public class MainActivity extends Activity {
     @Override
     protected void onStart() {
         super.onStart();
-        Log.i("MainActivity", "onStart()");
+        Dlog.i( "onStart()");
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        Log.i("MainActivity", "onResume()");
+        Dlog.i( "onResume()");
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
-        Log.i("MainActivity", "onRestart()");
+        Dlog.i( "onRestart()");
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        Log.i("MainActivity", "onPause()");
+        Dlog.i( "onPause()");
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        Log.i("MainActivity", "onStop()");
+        Dlog.i( "onStop()");
     }
 
     @Override
@@ -93,6 +93,6 @@ public class MainActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Log.i("MainActivity", "onDestroy()");
+        Dlog.i( "onDestroy()");
     }
 }
