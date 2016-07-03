@@ -8,6 +8,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 /**
  * Created by yongtakpc on 2016. 6. 28..
@@ -18,7 +19,7 @@ public class NewGroupPopupActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 타이틀 제거
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -55,6 +56,7 @@ public class NewGroupPopupActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         Dlog.i( "onSaveInstanceState()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 이름과 전화번호를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (newGroupName != null) {
             String backupName = newGroupName.getText().toString();
@@ -67,6 +69,7 @@ public class NewGroupPopupActivity extends Activity {
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         Dlog.i( "onRestoreInstanceState()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 만일 onRestoreInstanceState 함수의 번들 매개 변수가 널이 아니면
         // 해당 액티비티에서 백업된 데이터가 존재하는 것을 의미한다
         // 따라서 번들에 백업된 데이터를 불러서 사용자 이름 및 전화번호를 복원한다.

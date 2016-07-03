@@ -8,11 +8,13 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
         <TextView android:id="@+id/group_name_text_view"
-            android:layout_width="40dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:text="그룹이름"/>
 
         <ImageView android:id="@+id/groupImageView"
             android:layout_width="200dp"

@@ -10,11 +10,16 @@ import android.content.pm.PackageManager;
  */
 public class BaseApplication extends Application {
     public static boolean DEBUG = false;
+    public static Context context;
 
     @Override
     public void onCreate() {
         super.onCreate();
         this.DEBUG = isDebuggable(this);
+        this.context = getApplicationContext();
+    }
+    private void getContext() {
+        context = getApplicationContext();
     }
 
     /**

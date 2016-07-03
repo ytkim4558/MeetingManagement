@@ -32,7 +32,7 @@
             android:id="@+id/add_group_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="추가" />
+            android:text="그룹 추가" />
     </LinearLayout>
     <HorizontalScrollView
         android:layout_width="wrap_content"

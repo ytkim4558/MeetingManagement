@@ -13,6 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,6 +57,8 @@ public class GroupActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Dlog.i("onCreate()");
+
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         Button addMemberButton = (Button) findViewById(R.id.add_member_button);
         addMemberButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,11 +150,14 @@ public class GroupActivity extends Activity {
     protected void onStart() {
         super.onStart();
         Dlog.i("onStart()");
+
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         Dlog.i("onRestoreInstanceState()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 만일 onRestoreInstanceState 함수의 번들 매개 변수가 널이 아니면
         // 해당 액티비티에서 백업된 데이터가 존재하는 것을 의미한다
         // 따라서 번들에 백업된 데이터를 불러서 사용자 이름 및 전화번호를 복원한다.
@@ -186,12 +192,14 @@ public class GroupActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Dlog.i("onResume()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onRestart() {
         super.onRestart();
         Dlog.i("onRestart()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
 
     }
 
@@ -199,18 +207,21 @@ public class GroupActivity extends Activity {
     protected void onPause() {
         super.onPause();
         Dlog.i("onPause()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onStop() {
         super.onStop();
         Dlog.i("onStop()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         Dlog.i("onDestroy()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         /*if(bitmap != null) {
             bitmap.recycle();
         }*/
@@ -224,6 +235,7 @@ public class GroupActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         Dlog.i("onSaveInstanceState()");
+        if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 이름과 전화번호를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (memberNameView != null) {
             String backupName = memberNameView.getText().toString();

@@ -8,6 +8,8 @@ import android.util.Log;
 public class Dlog {
     static final String TAG = "meetingmanagement";
 
+    static final boolean showToast = false;
+
     /**
      * Log Level Error
      **/
@@ -41,6 +43,14 @@ public class Dlog {
      **/
     public static final void v(String message) {
         if (BaseApplication.DEBUG) Log.v(TAG, buildLogMsg(message));
+    }
+
+    public static String s(String input){
+        if (BaseApplication.DEBUG) {
+            String string = buildLogMsg(input);
+            return string;
+        }
+        return null;
     }
 
 
