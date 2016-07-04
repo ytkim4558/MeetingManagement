@@ -19,6 +19,7 @@ public class MemberListAdapter extends BaseAdapter {
     Context context = null;
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
+    public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
 
     public MemberListAdapter(Context context, ArrayList<Member> memberList) {
         this.context = context;

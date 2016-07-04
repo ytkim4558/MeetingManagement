@@ -1,5 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,6 +10,10 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ThumbnailUtils;
+import android.net.Uri;
+import android.provider.MediaStore;
+
+import java.io.IOException;
 
 /**
  * Created by yongtakpc on 2016. 7. 1..
@@ -48,4 +53,10 @@ public class NagneRoundedImage extends NagneImage{
         return output;
     }
 
+    public static Bitmap getRoundedBitmap(Context context, Uri imageUri) {
+        Bitmap bitmap = getBitmap(context, imageUri);
+        Bitmap circleBitmap = getCircleBitmap(bitmap);
+        bitmap = null;
+        return circleBitmap;
+    }
 }

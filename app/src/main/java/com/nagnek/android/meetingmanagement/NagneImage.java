@@ -24,6 +24,15 @@ public class NagneImage {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         return intent;
     }
+    public static Bitmap getBitmap(Context context, Uri imageUri) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(context.getContentResolver(), imageUri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return bitmap;
+    }
 
     protected static String getfilePath(Context context, Uri uri) {
         String[] filePathColumn = { MediaStore.Images.Media.DATA };

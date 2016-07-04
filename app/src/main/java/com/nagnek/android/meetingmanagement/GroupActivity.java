@@ -2,7 +2,6 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,11 +9,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.MediaStore;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -32,18 +28,20 @@ public class GroupActivity extends Activity {
     private String groupName = null;
     private String groupNameKey = "GROUP1_NAME";
     private TextView groupNameText = null;
-    private int REQ_CODE_SELECT_IMAGE = 100;
-    private String KEY_CROPPED_RECT = "cropped-rect";
+    public static final String MEMBER_LIST_POSITION_KEY = "MEMBER_LIST_POSITION";
+    public static final String SELECT_MEMBER_LIST_ITEM = "SELECT_MEMBER_LIST_ITEM";
+    public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
+    private final int REQ_CODE_SELECT_IMAGE = 100;
+    private final String KEY_CROPPED_RECT = "cropped-rect";
     String imagePath = null;
     ImageView imageView;
-    int delete_id;
-    Bitmap bitmap;
     Uri imageUri;
     ArrayList<Member> memberList = null;
     MemberListAdapter memberListAdapter = null;
     ListView memberListView = null;
     private String strPhotoName = null;
-    private String memberListKey = "memberListKey";
+    private final String MEMBER_LIST_KEY = "MEMBER_LIST_KEY";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +51,7 @@ public class GroupActivity extends Activity {
         if (savedInstanceState == null) {
             memberList = new ArrayList<Member>();
         } else {
-            memberList = savedInstanceState.getParcelableArrayList(memberListKey);
+            memberList = savedInstanceState.getParcelableArrayList(MEMBER_LIST_KEY);
         }
         // 어댑터를 생성하고 데이터 설정
         memberListAdapter = new MemberListAdapter(this, memberList);
@@ -65,7 +63,11 @@ public class GroupActivity extends Activity {
         memberListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                delete_id = position;
+                Dlog.i("item" + position + "번째 클릭");
+                Intent intent = new Intent(GroupActivity.this, MemberItemPopupMenuActivity.class);
+                intent.putExtra(GroupActivity.SELECT_MEMBER_LIST_ITEM, memberList.get(position));
+                intent.putExtra(MEMBER_LIST_POSITION_KEY, position);
+                startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
             }
         });
 
@@ -147,6 +149,29 @@ public class GroupActivity extends Activity {
 
 
             }
+        } else if(requestCode == REQ_CODE_SELECT_MEMBER_LIST_ITEM) {
+            if(resultCode == MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER) {
+                Dlog.d("RESULT_CODE_EDIT_MEMBER");
+
+                Member edited_member_info = data.getParcelableExtra(EditMemberActivity.MEMBER_KEY);
+                int position = data.getIntExtra(MEMBER_LIST_POSITION_KEY, 6);
+                Dlog.i("position"+position);
+                if(edited_member_info==null) {
+                    Dlog.i("null edit ");
+                }
+                Member original_member_info = memberList.get(position);
+                if(original_member_info==null) {
+                    Dlog.i("null original");
+                }
+                original_member_info.imageUri = edited_member_info.imageUri;
+                original_member_info.phone_number = edited_member_info.phone_number;
+                original_member_info.name = edited_member_info.name;
+                edited_member_info = null;
+            } else if(resultCode==MemberItemPopupMenuActivity.RESULT_CODE_DELETE_MEMBER) {
+                int position = data.getIntExtra(MEMBER_LIST_POSITION_KEY, 0);
+                Dlog.d("RESULT_CODE_DELETE_MEMBER"+position);
+                memberListAdapter.delete(position);
+            }
         }
     }
 
@@ -170,15 +195,10 @@ public class GroupActivity extends Activity {
             Dlog.i("RestoreImage");
             if (imageUri != null) {
                 Bitmap bitmap = null;
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
-                    bitmap = NagneRoundedImage.getCircleBitmap(bitmap);
-                    imageView.setImageBitmap(bitmap);
-                    bitmap = null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
+                bitmap = NagneRoundedImage.getRoundedBitmap(this, imageUri);
+                imageView.setImageBitmap(null);
+                imageView.setImageBitmap(bitmap);
+                bitmap = null;
             }
         }
 
@@ -219,9 +239,6 @@ public class GroupActivity extends Activity {
         super.onDestroy();
         Dlog.i("onDestroy()");
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        /*if(bitmap != null) {
-            bitmap.recycle();
-        }*/
         imageUri = null;
         imageView = null;
         number = null;
@@ -235,10 +252,10 @@ public class GroupActivity extends Activity {
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 멤버 리스트를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (memberList != null) {
-            outState.putParcelableArrayList(memberListKey, memberList);
+            outState.putParcelableArrayList(MEMBER_LIST_KEY, memberList);
         }
         // 이미지를 onSavedInstanceState 매개 변수인 번들에 저장한다.
-        if(imageUri!=null) {
+        if (imageUri != null) {
             outState.putParcelable("BACKUP_IMAGE", imageUri);
             Dlog.i("저장");
         }

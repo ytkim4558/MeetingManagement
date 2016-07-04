@@ -13,7 +13,7 @@ import android.widget.Toast;
 /**
  * Created by yongtakpc on 2016. 6. 28..
  */
-public class NewGroupPopupActivity extends Activity {
+public class NewGroupPopupActivity extends PopupActivity {
     EditText newGroupName = null;
 
     @Override
@@ -21,13 +21,6 @@ public class NewGroupPopupActivity extends Activity {
         super.onCreate(savedInstanceState);
         if(Dlog.showToast)Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 타이틀 제거
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-        // 레이아웃을 블러로 하기 위한 설정
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        layoutParams.dimAmount = 0.7f;
-        getWindow().setAttributes(layoutParams);
         setContentView(R.layout.activity_new_group);
         newGroupName = (EditText) findViewById(R.id.group_name);
         Button okButton = (Button) findViewById(R.id.ok_button);

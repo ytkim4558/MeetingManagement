@@ -26,7 +26,7 @@ public class Member implements Parcelable {
         phone_number = in.readString();
     }
 
-    private static final Creator<Member> CREATOR = new Creator<Member>() {
+    public static final Creator<Member> CREATOR = new Creator<Member>() {
         @Override
         public Member createFromParcel(Parcel in) {
             return new Member(in);
