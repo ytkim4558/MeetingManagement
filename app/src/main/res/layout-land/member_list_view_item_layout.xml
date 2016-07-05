@@ -1,63 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="wrap_content"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:descendantFocusability="blocksDescendants">
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical">
-        <TextView android:id="@+id/member_id"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="20dp"
-            android:layout_marginRight="20dp"
-            android:text="1"/>
-        <ImageView android:id="@+id/member_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/face"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:text="이름:"/>
-        <TextView android:id="@+id/member_name"
-            android:layout_width="80dp"
-            android:layout_height="wrap_content"
-            android:textSize="20dp"
-            android:text="홍길동"
-            android:lines="1"
-            />
-        <TextView android:id="@+id/phone_number"
-            android:layout_width="140dp"
-            android:layout_height="wrap_content"
-            android:text="010-3356-4558"
-            android:textSize="20dp"
-            />
-    </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="right">
-        <Button android:id="@+id/call_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="전화"/>
-        <Button android:id="@+id/message_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="문자"/>
-        <Button android:id="@+id/delete_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="삭제"/>
-    </LinearLayout>
 
-
-
-
-</LinearLayout>
+    <TextView android:id="@+id/member_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        android:paddingTop="10dp"
+        android:text="1"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"/>
+    <ImageView android:id="@+id/member_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_toRightOf="@id/member_id"
+        android:layout_alignTop="@id/member_id"
+        android:src="@drawable/face"/>
+    <TextView android:id="@+id/member_name"
+        android:paddingTop="10dp"
+        android:layout_width="80dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/member_image"
+        android:textSize="20dp"
+        android:text="홍길동"
+        android:lines="1"
+        android:layout_alignParentTop="true" />
+    <TextView android:id="@+id/phone_number"
+        android:layout_width="140dp"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/member_name"
+        android:layout_alignBaseline="@id/member_image"
+        android:text="010-3356-4558"
+        android:textSize="20dp"
+        />
+    <Button android:id="@+id/call_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/message_button"
+        android:layout_alignTop="@id/delete_button"
+        android:text="전화"/>
+    <Button android:id="@+id/message_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@id/delete_button"
+        android:layout_toLeftOf="@id/delete_button"
+        android:text="문자"/>
+    <Button android:id="@+id/delete_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignRight="@id/phone_number"
+        android:layout_below="@id/member_image"
+        android:text="삭제"/>
+</RelativeLayout>

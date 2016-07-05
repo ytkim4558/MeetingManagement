@@ -44,28 +44,53 @@ public class MemberListAdapter extends BaseAdapter {
         return position;
     }
 
+    class ViewHolder {
+        TextView memberNameTextView;
+        TextView memberIdTextView;
+        Button callButton;
+        Button messageButton;
+        Button deleteButton;
+        TextView phoneNumberTextView;
+        ImageView imageView;
+    }
+
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        final int pos = position;
+        final int pos = position;   //phone.call 할때 final 변수로 필요해서 position값을 final로 변형
         // 1. 리스트의 한 항목에 해당하는 레이아웃을 생성한다
+        // 어댑터뷰가 재사용할 뷰를 넘겨주지 않은 경우에만 새로운 뷰를 생성한다.
         // ====================================================================================
-        View itemLayout = layoutInflater.inflate(R.layout.member_list_view_item_layout, null);
-        // ====================================================================================
+        View itemLayout = convertView;
+        ViewHolder viewHolder = null;
+        if (itemLayout == null) {
+            itemLayout = layoutInflater.inflate(R.layout.member_list_view_item_layout, null);
+            // ====================================================================================
 
-        // 2. 현재 아이템의 내용을 변경할 뷰를 찾는다.
-        // ====================================================================================
-        TextView memberNameTextView = (TextView) itemLayout.findViewById(R.id.member_name);
-        TextView memberIdTextView = (TextView) itemLayout.findViewById(R.id.member_id);
-        final Button callButton = (Button) itemLayout.findViewById(R.id.call_button);
-        Button messageButton = (Button) itemLayout.findViewById(R.id.message_button);
-        Button deleteButton = (Button) itemLayout.findViewById(R.id.delete_button);
-        TextView phoneNumberTextView = (TextView) itemLayout.findViewById(R.id.phone_number);
-        ImageView imageView = (ImageView) itemLayout.findViewById(R.id.member_image);
-        // ====================================================================================
-
+            // 2. 현재 아이템의 내용을 변경할 뷰를 찾는다.
+            // ====================================================================================
+            // View Holder를 생성하고 사용할 자식 뷰를 찾아 View Holder에 참조시킨다.
+            // 생성된 View Holder는 아이템에 설정해 두고 다음에 아이템 재사용시 참조한다.
+            // ------------------------------------------------------------------------------------
+            viewHolder = new ViewHolder();
+            viewHolder.memberNameTextView = (TextView) itemLayout.findViewById(R.id.member_name);
+            viewHolder.memberIdTextView = (TextView) itemLayout.findViewById(R.id.member_id);
+            viewHolder.callButton = (Button) itemLayout.findViewById(R.id.call_button);
+            viewHolder.messageButton = (Button) itemLayout.findViewById(R.id.message_button);
+            viewHolder.deleteButton = (Button) itemLayout.findViewById(R.id.delete_button);
+            viewHolder.phoneNumberTextView = (TextView) itemLayout.findViewById(R.id.phone_number);
+            viewHolder.imageView = (ImageView) itemLayout.findViewById(R.id.member_image);
+            itemLayout.setTag(viewHolder);
+            // ------------------------------------------------------------------------------------
+            // ====================================================================================
+        } else {
+            // 재사용 아이템에는 이전에 View Holder 객체를 설정해 두었다.
+            // 그러므로 설정된 View Holder 객체를 이용해서 findViewById 함수를
+            // 사용하지 않고 원하는 뷰를 참조할 수 있다.
+            viewHolder = (ViewHolder)itemLayout.getTag();
+        }
         // 3. 리스너 등록한다
         // ====================================================================================
-        callButton.setOnClickListener(new View.OnClickListener() {
+        viewHolder.callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Phone phone = new Phone();
@@ -73,7 +98,7 @@ public class MemberListAdapter extends BaseAdapter {
             }
         });
 
-        deleteButton.setOnClickListener(new View.OnClickListener() {
+        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 delete(position);
@@ -85,15 +110,15 @@ public class MemberListAdapter extends BaseAdapter {
 
         // 4. 레이아웃 갱신한다.
         // ====================================================================================
-        memberIdTextView.setText(String.valueOf(position + 1));
-        memberNameTextView.setText(memberList.get(position).name);
-        if (phoneNumberTextView != null) {
-            phoneNumberTextView.setText(memberList.get(position).phone_number);
+        viewHolder.memberIdTextView.setText(String.valueOf(position + 1));
+        viewHolder.memberNameTextView.setText(memberList.get(position).name);
+        if (viewHolder.phoneNumberTextView != null) {
+            viewHolder.phoneNumberTextView.setText(memberList.get(position).phone_number);
         }
-        if (imageView != null) {
+        if (viewHolder.imageView != null) {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
-                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(context, imageUri));
+                viewHolder.imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(context, imageUri));
             }
         }
 
