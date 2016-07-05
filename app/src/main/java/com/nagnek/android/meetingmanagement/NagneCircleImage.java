@@ -20,7 +20,7 @@ import java.io.IOException;
  * http://stackoverflow.com/questions/11932805/cropping-circular-area-from-bitmap-in-android
  *
  */
-public class NagneRoundedImage extends NagneImage{
+public class NagneCircleImage extends NagneImage{
     // 서클 이미지로 잘라낸다
     public static Bitmap getCircleBitmap(Bitmap bm) {
 
@@ -53,7 +53,7 @@ public class NagneRoundedImage extends NagneImage{
         return output;
     }
 
-    public static Bitmap getRoundedBitmap(Context context, Uri imageUri) {
+    public static Bitmap getCircleBitmap(Context context, Uri imageUri) {
         Bitmap bitmap = getBitmap(context, imageUri);
         Bitmap circleBitmap = getCircleBitmap(bitmap);
         bitmap = null;

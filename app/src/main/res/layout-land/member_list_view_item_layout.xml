@@ -15,7 +15,7 @@
             android:textSize="20dp"
             android:layout_marginRight="20dp"
             android:text="1"/>
-        <ImageView android:id="@+id/memberPic"
+        <ImageView android:id="@+id/member_image"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/face"/>

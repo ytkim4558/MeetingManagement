@@ -35,7 +35,6 @@ public class MainActivity extends Activity {
                 String group1ButtonName = group1Button.getText().toString();
                 if (group1ButtonName != null) {
                     Intent groupActivityIntent = new Intent(MainActivity.this, GroupActivity.class);
-
                     groupActivityIntent.putExtra("GROUP1_NAME", group1ButtonName);
                     startActivity(groupActivityIntent);
                 }

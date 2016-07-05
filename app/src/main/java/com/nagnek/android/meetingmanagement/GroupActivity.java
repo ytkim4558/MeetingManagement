@@ -8,7 +8,6 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
-import android.provider.MediaStore;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -17,7 +16,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class GroupActivity extends Activity {
@@ -28,8 +26,10 @@ public class GroupActivity extends Activity {
     private String groupName = null;
     private String groupNameKey = "GROUP1_NAME";
     private TextView groupNameText = null;
-    public static final String MEMBER_LIST_POSITION_KEY = "MEMBER_LIST_POSITION";
-    public static final String SELECT_MEMBER_LIST_ITEM = "SELECT_MEMBER_LIST_ITEM";
+    public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
+    public static final String MEMBER_NAME = "com.nagnek.android.meetingmanagement.MEMBER_NAME";
+    public static final String MEMBER_PHONE = "com.nagnek.android.meetingmanagement.MEMBER_PHONE";
+    public static final String MEMBER_IMAGE_URI = "com.nagnek.android.meetingmanagement.MEMBER_IMAGE_URI";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
     private final int REQ_CODE_SELECT_IMAGE = 100;
     private final String KEY_CROPPED_RECT = "cropped-rect";
@@ -47,8 +47,9 @@ public class GroupActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+        Dlog.i("onCreate()");
 
-        if (savedInstanceState == null) {
+        if (memberList == null && savedInstanceState == null) {
             memberList = new ArrayList<Member>();
         } else {
             memberList = savedInstanceState.getParcelableArrayList(MEMBER_LIST_KEY);
@@ -63,15 +64,15 @@ public class GroupActivity extends Activity {
         memberListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Dlog.i("item" + position + "번째 클릭");
                 Intent intent = new Intent(GroupActivity.this, MemberItemPopupMenuActivity.class);
-                intent.putExtra(GroupActivity.SELECT_MEMBER_LIST_ITEM, memberList.get(position));
-                intent.putExtra(MEMBER_LIST_POSITION_KEY, position);
+                Member member = memberList.get(position);
+                intent.putExtra(MEMBER_NAME, member.name);
+                intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
+                intent.putExtra(MEMBER_PHONE, member.phone_number);
+                intent.putExtra(MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
             }
         });
-
-        Dlog.i("onCreate()");
 
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         Button addMemberButton = (Button) findViewById(R.id.add_member_button);
@@ -93,7 +94,6 @@ public class GroupActivity extends Activity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
                 intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -136,40 +136,24 @@ public class GroupActivity extends Activity {
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 Bitmap image_bitmap = null;
-                try {
-                    imageUri = data.getData();
-                    image_bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), imageUri);
-                    image_bitmap = NagneRoundedImage.getCircleBitmap(image_bitmap);
-                    imageView.setImageBitmap(image_bitmap);
-                    image_bitmap = null;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                imageUri = data.getData();
+                image_bitmap = NagneCircleImage.getCircleBitmap(this, imageUri);
                 //배치해놓은 ImageView에 set
-
-
+                imageView.setImageBitmap(image_bitmap);
+                image_bitmap = null;
             }
-        } else if(requestCode == REQ_CODE_SELECT_MEMBER_LIST_ITEM) {
-            if(resultCode == MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER) {
+        } else if (requestCode == REQ_CODE_SELECT_MEMBER_LIST_ITEM) {
+            if (resultCode == MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER) {
                 Dlog.d("RESULT_CODE_EDIT_MEMBER");
 
-                Member edited_member_info = data.getParcelableExtra(EditMemberActivity.MEMBER_KEY);
-                int position = data.getIntExtra(MEMBER_LIST_POSITION_KEY, 6);
-                Dlog.i("position"+position);
-                if(edited_member_info==null) {
-                    Dlog.i("null edit ");
-                }
-                Member original_member_info = memberList.get(position);
-                if(original_member_info==null) {
-                    Dlog.i("null original");
-                }
-                original_member_info.imageUri = edited_member_info.imageUri;
-                original_member_info.phone_number = edited_member_info.phone_number;
-                original_member_info.name = edited_member_info.name;
-                edited_member_info = null;
-            } else if(resultCode==MemberItemPopupMenuActivity.RESULT_CODE_DELETE_MEMBER) {
-                int position = data.getIntExtra(MEMBER_LIST_POSITION_KEY, 0);
-                Dlog.d("RESULT_CODE_DELETE_MEMBER"+position);
+                Member member = new Member();
+                member.name = data.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME);
+                member.imageUri = data.getParcelableExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI);
+                member.phone_number = data.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE);
+                int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
+                memberListAdapter.set(position, member);
+            } else if (resultCode == MemberItemPopupMenuActivity.RESULT_CODE_DELETE_MEMBER) {
+                int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
                 memberListAdapter.delete(position);
             }
         }
@@ -195,7 +179,7 @@ public class GroupActivity extends Activity {
             Dlog.i("RestoreImage");
             if (imageUri != null) {
                 Bitmap bitmap = null;
-                bitmap = NagneRoundedImage.getRoundedBitmap(this, imageUri);
+                bitmap = NagneCircleImage.getCircleBitmap(this, imageUri);
                 imageView.setImageBitmap(null);
                 imageView.setImageBitmap(bitmap);
                 bitmap = null;

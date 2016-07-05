@@ -18,6 +18,16 @@ public class Member implements Parcelable {
         phone_number = null;
     }
 
+    public void copy(Member member) {
+        if(member != null) {
+            imageUri = member.imageUri;
+            name = member.name;
+            phone_number = member.phone_number;
+        } else {
+            Dlog.i("member 객체가 널입니다");
+        }
+    }
+
     private Member(Parcel in) {
         Uri.Builder builder = new Uri.Builder();
 

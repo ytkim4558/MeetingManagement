@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -59,6 +60,7 @@ public class MemberListAdapter extends BaseAdapter {
         Button messageButton = (Button) itemLayout.findViewById(R.id.message_button);
         Button deleteButton = (Button) itemLayout.findViewById(R.id.delete_button);
         TextView phoneNumberTextView = (TextView) itemLayout.findViewById(R.id.phone_number);
+        ImageView imageView = (ImageView) itemLayout.findViewById(R.id.member_image);
         // ====================================================================================
 
         // 3. 리스너 등록한다
@@ -83,10 +85,16 @@ public class MemberListAdapter extends BaseAdapter {
 
         // 4. 레이아웃 갱신한다.
         // ====================================================================================
-        memberIdTextView.setText(String.valueOf(position+1));
+        memberIdTextView.setText(String.valueOf(position + 1));
         memberNameTextView.setText(memberList.get(position).name);
-        if(phoneNumberTextView != null) {
+        if (phoneNumberTextView != null) {
             phoneNumberTextView.setText(memberList.get(position).phone_number);
+        }
+        if (imageView != null) {
+            Uri imageUri = memberList.get(position).imageUri;
+            if (imageUri != null) {
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(context, imageUri));
+            }
         }
 
         return itemLayout;
@@ -104,6 +112,11 @@ public class MemberListAdapter extends BaseAdapter {
 
     public void clear() {
         memberList.clear();
+        notifyDataSetChanged();
+    }
+
+    public void set(int index, Member member) {
+        memberList.set(index, member);
         notifyDataSetChanged();
     }
 }
