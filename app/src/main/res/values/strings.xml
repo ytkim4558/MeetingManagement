@@ -2,4 +2,5 @@
     <string name="app_name">MeetingManagement</string>
     <string name="title_activity_new_member_name_popup">newMemberNamePopupActivity</string>
     <string name="title_activity_member_item_popup_menu">MemberItemPopupMenuActivity</string>
+    <string name="title_activity_member_info">MemberInfoActivity</string>
 </resources>

@@ -1,4 +1,4 @@
-package com.nagnek.android.meetingmanagement;
+package com.nagnek.android.nagneImage;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,7 +7,6 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.content.Intent;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 /**

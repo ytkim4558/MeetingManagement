@@ -12,11 +12,14 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.nagnek.android.debugLog.Dlog;
+import com.nagnek.android.nagneImage.NagneCircleImage;
+
 public class EditMemberActivity extends Activity {
+    public static final String BACK_UP_MEMBER_KEY = "BACK_UP_MEMBER";  // 이전 액티비티의 멤버 정보 저장
+    public static final String BACK_UP_MEMBER_POSITION = "BACK_UP_POSITION"; // 최종적으로 GroupActivity에 넘겨주기 위해
     private static final int REQ_CODE_SELECT_IMAGE = 1;
-    private static final String BACK_UP_MEMBER_KEY = "BACK_UP_MEMBER";  // 이전 액티비티의 멤버 정보 저장
     private static final String BACK_UP_TEMP_MEMBER_KEY = "BACK_UP_TEMP_MEMBER"; // 현재 수정중인 멤버 정보 저장, 취소버튼 누를시 저장안하고 사라짐
-    private static final String BACK_UP_MEMBER_POSITION = "BACK_UP_POSITION"; // 최종적으로 GroupActivity에 넘겨주기 위해
     // TODO: 에디트 박스 수정할때 바꿔줘야될려나...
     Member member = null;   // 에디트 박스가 수정될때가 아니라 onSaveInstanceState나 onRestoreInstanceState 또는 ok버튼 누를시 갱신된다
     Member tempMember = null;
@@ -117,7 +120,7 @@ public class EditMemberActivity extends Activity {
         // ====================================================================================
         if (tempMember != null) {
             if (tempMember.imageUri != null) {
-                imageView.setImageBitmap(NagneImage.getBitmap(this, tempMember.imageUri));
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempMember.imageUri));
             }
             if (tempMember.name != null) {
                 memberName.setText(tempMember.name);

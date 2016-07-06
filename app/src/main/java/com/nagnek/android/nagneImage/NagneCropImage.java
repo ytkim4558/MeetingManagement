@@ -1,4 +1,4 @@
-package com.nagnek.android.meetingmanagement;
+package com.nagnek.android.nagneImage;
 
 import android.content.Context;
 import android.content.Intent;

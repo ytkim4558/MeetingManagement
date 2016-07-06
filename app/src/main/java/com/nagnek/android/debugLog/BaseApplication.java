@@ -1,4 +1,4 @@
-package com.nagnek.android.meetingmanagement;
+package com.nagnek.android.debugLog;
 
 import android.app.Application;
 import android.content.Context;

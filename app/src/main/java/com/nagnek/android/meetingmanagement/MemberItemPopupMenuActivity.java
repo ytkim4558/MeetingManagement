@@ -6,12 +6,13 @@ import android.view.View;
 import android.widget.Button;
 
 public class MemberItemPopupMenuActivity extends PopupActivity {
-    public final static int REQ_EDIT_MEMBER_CODE = 20;
+    public final static int REQ_CODE_EDIT_MEMBER = 20;
     public final static int RESULT_CODE_DELETE_MEMBER = 30;
     public final static int RESULT_CODE_EDIT_MEMBER = 50;
     public static final String EDIT_MEMBER_NAME = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_NAME";
     public static final String EDIT_MEMBER_PHONE = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_PHONE";
     public static final String EDIT_MEMBER_IMAGE_URI = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_IMAGE_URI";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,12 +31,11 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
                 member.name = receivedIntent.getStringExtra(GroupActivity.MEMBER_NAME);
                 member.phone_number = receivedIntent.getStringExtra(GroupActivity.MEMBER_PHONE);
                 member.imageUri = receivedIntent.getParcelableExtra(GroupActivity.MEMBER_IMAGE_URI);
-                Dlog.i("member" + member.name);
                 intent.putExtra(EDIT_MEMBER_NAME, member.name);
                 intent.putExtra(EDIT_MEMBER_IMAGE_URI, member.imageUri);
                 intent.putExtra(EDIT_MEMBER_PHONE, member.phone_number);
                 intent.putExtra(GroupActivity.MEMBER_LIST_POSITION, position);
-                startActivityForResult(intent, REQ_EDIT_MEMBER_CODE);
+                startActivityForResult(intent, REQ_CODE_EDIT_MEMBER);
                 member = null;
                 //TODO: finish후에 불리는 생명주기는? onDestroy? onStop? 메모리해제는 어디서?
             }
@@ -60,8 +60,8 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode == REQ_EDIT_MEMBER_CODE) {
-            if(resultCode == RESULT_OK) {
+        if (requestCode == REQ_CODE_EDIT_MEMBER) {
+            if (resultCode == RESULT_OK) {
                 setResult(RESULT_CODE_EDIT_MEMBER, data);
                 finish();
             }

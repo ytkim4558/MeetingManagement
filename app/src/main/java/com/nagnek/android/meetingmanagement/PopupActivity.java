@@ -6,6 +6,8 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.nagnek.android.debugLog.Dlog;
+
 /**
  * Created by yongtakpc on 2016. 7. 4..
  */
@@ -13,7 +15,7 @@ public class PopupActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
+        if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 타이틀 제거
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 

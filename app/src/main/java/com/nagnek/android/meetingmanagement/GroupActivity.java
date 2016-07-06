@@ -18,30 +18,32 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import com.nagnek.android.debugLog.Dlog;
+import com.nagnek.android.nagneImage.NagneCircleImage;
+
 public class GroupActivity extends Activity {
 
-    static final int PICK_CONTACT_REQUEST = 1;
-    //private TextView memberNameView = null;
-    private String number = null; // 멤버 전화번호
-    private String groupName = null;
-    private String groupNameKey = "GROUP1_NAME";
-    private TextView groupNameText = null;
     public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
     public static final String MEMBER_NAME = "com.nagnek.android.meetingmanagement.MEMBER_NAME";
     public static final String MEMBER_PHONE = "com.nagnek.android.meetingmanagement.MEMBER_PHONE";
     public static final String MEMBER_IMAGE_URI = "com.nagnek.android.meetingmanagement.MEMBER_IMAGE_URI";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
+    static final int PICK_CONTACT_REQUEST = 1;
     private final int REQ_CODE_SELECT_IMAGE = 100;
     private final String KEY_CROPPED_RECT = "cropped-rect";
+    private final String MEMBER_LIST_KEY = "MEMBER_LIST_KEY";
     String imagePath = null;
     ImageView imageView;
     Uri imageUri;
     ArrayList<Member> memberList = null;
     MemberListAdapter memberListAdapter = null;
     ListView memberListView = null;
+    //private TextView memberNameView = null;
+    private String number = null; // 멤버 전화번호
+    private String groupName = null;
+    private String groupNameKey = "GROUP1_NAME";
+    private TextView groupNameText = null;
     private String strPhotoName = null;
-    private final String MEMBER_LIST_KEY = "MEMBER_LIST_KEY";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +58,7 @@ public class GroupActivity extends Activity {
         }
         // 어댑터를 생성하고 데이터 설정
         memberListAdapter = new MemberListAdapter(this, memberList);
-        
+
         // 리스트뷰에 어댑터 설정
         memberListView = (ListView) findViewById(R.id.member_list_view);
         memberListView.setAdapter(memberListAdapter);
@@ -64,6 +66,19 @@ public class GroupActivity extends Activity {
         memberListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(GroupActivity.this, MemberInfoActivity.class);
+                Member member = memberList.get(position);
+                intent.putExtra(MEMBER_NAME, member.name);
+                intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
+                intent.putExtra(MEMBER_PHONE, member.phone_number);
+                intent.putExtra(MEMBER_LIST_POSITION, position);
+                startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
+            }
+        });
+
+        memberListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(GroupActivity.this, MemberItemPopupMenuActivity.class);
                 Member member = memberList.get(position);
                 intent.putExtra(MEMBER_NAME, member.name);
@@ -71,6 +86,7 @@ public class GroupActivity extends Activity {
                 intent.putExtra(MEMBER_PHONE, member.phone_number);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
+                return true;
             }
         });
 

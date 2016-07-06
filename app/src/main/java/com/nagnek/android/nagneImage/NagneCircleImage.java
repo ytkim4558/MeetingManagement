@@ -1,4 +1,4 @@
-package com.nagnek.android.meetingmanagement;
+package com.nagnek.android.nagneImage;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -11,16 +11,13 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.provider.MediaStore;
-
-import java.io.IOException;
 
 /**
  * Created by yongtakpc on 2016. 7. 1..
  * http://stackoverflow.com/questions/11932805/cropping-circular-area-from-bitmap-in-android
  *
  */
-public class NagneCircleImage extends NagneImage{
+public class NagneCircleImage extends NagneImage {
     // 서클 이미지로 잘라낸다
     public static Bitmap getCircleBitmap(Bitmap bm) {
 

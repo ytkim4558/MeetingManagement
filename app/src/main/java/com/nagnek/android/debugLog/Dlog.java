@@ -1,4 +1,4 @@
-package com.nagnek.android.meetingmanagement;
+package com.nagnek.android.debugLog;
 
 import android.util.Log;
 
@@ -8,7 +8,7 @@ import android.util.Log;
 public class Dlog {
     static final String TAG = "meetingmanagement";
 
-    static final boolean showToast = false;
+    public static final boolean showToast = false;
 
     /**
      * Log Level Error

@@ -1,8 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -15,21 +13,24 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import com.nagnek.android.nagneImage.NagneCircleImage;
+
 /**
  * Created by yongtakpc on 2016. 7. 3..
  */
 public class MemberListAdapter extends BaseAdapter {
+    public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
+    static Drawable face;   // 얼굴 기본 이미지
     Context context = null;
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
-    public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
-    static Drawable face;   // 얼굴 기본 이미지
 
     public MemberListAdapter(Context context, ArrayList<Member> memberList) {
         this.context = context;
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(context);
-        face = context.getResources().getDrawable(R.drawable.face);;
+        face = context.getResources().getDrawable(R.drawable.face);
+        ;
     }
 
     @Override
@@ -45,16 +46,6 @@ public class MemberListAdapter extends BaseAdapter {
     @Override
     public long getItemId(int position) {
         return position;
-    }
-
-    class ViewHolder {
-        TextView memberNameTextView;
-        TextView memberIdTextView;
-        Button callButton;
-        Button messageButton;
-        Button deleteButton;
-        TextView phoneNumberTextView;
-        ImageView imageView;
     }
 
     @Override
@@ -88,7 +79,7 @@ public class MemberListAdapter extends BaseAdapter {
             // 재사용 아이템에는 이전에 View Holder 객체를 설정해 두었다.
             // 그러므로 설정된 View Holder 객체를 이용해서 findViewById 함수를
             // 사용하지 않고 원하는 뷰를 참조할 수 있다.
-            viewHolder = (ViewHolder)itemLayout.getTag();
+            viewHolder = (ViewHolder) itemLayout.getTag();
         }
         // ====================================================================================
         //
@@ -149,6 +140,16 @@ public class MemberListAdapter extends BaseAdapter {
     public void set(int index, Member member) {
         memberList.set(index, member);
         notifyDataSetChanged();
+    }
+
+    class ViewHolder {
+        TextView memberNameTextView;
+        TextView memberIdTextView;
+        Button callButton;
+        Button messageButton;
+        Button deleteButton;
+        TextView phoneNumberTextView;
+        ImageView imageView;
     }
 }
 
