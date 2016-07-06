@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -38,7 +39,7 @@ public class EditMemberActivity extends Activity {
 
         if (savedInstanceState == null) {
             Intent receivedIntent = getIntent();
-            if(receivedIntent!=null) {
+            if (receivedIntent != null) {
                 //member = receivedIntent.getParcelableExtra(GroupActivity.SELECT_MEMBER_LIST_ITEM);
                 member = new Member();
                 member.name = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME);
@@ -46,7 +47,6 @@ public class EditMemberActivity extends Activity {
                 member.phone_number = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE);
                 tempMember = new Member();
                 tempMember.copy(member);
-                Dlog.i("I"+tempMember.name);
                 position = receivedIntent.getIntExtra(GroupActivity.MEMBER_LIST_POSITION, 0);
             }
         }
@@ -106,10 +106,11 @@ public class EditMemberActivity extends Activity {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);
-                Dlog.i("finish with Cancel Button");
                 finish();
             }
         });
+        //에디트 박스 내용이 전화번호로 표시되게끔 설정
+        phoneNumber.addTextChangedListener(new PhoneNumberFormattingTextWatcher());
         // ====================================================================================
 
         // 레이아웃 갱신한다.
@@ -124,8 +125,6 @@ public class EditMemberActivity extends Activity {
             if (tempMember.phone_number != null) {
                 phoneNumber.setText(tempMember.phone_number);
             }
-        } else {
-            Dlog.i("tempMember가 null입니다 ");
         }
     }
 
