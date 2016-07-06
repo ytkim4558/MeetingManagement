@@ -45,7 +45,6 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
             public void onClick(View v) {
                 Intent intent = getIntent();
                 setResult(RESULT_CODE_DELETE_MEMBER, intent);
-                Dlog.i("delete");
                 finish();
             }
         });
@@ -53,7 +52,6 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
             @Override
             public void onClick(View v) {
                 setResult(RESULT_CANCELED);
-                Dlog.i("finish");
                 finish();
             }
         });

@@ -56,7 +56,7 @@ public class GroupActivity extends Activity {
         }
         // 어댑터를 생성하고 데이터 설정
         memberListAdapter = new MemberListAdapter(this, memberList);
-
+        
         // 리스트뷰에 어댑터 설정
         memberListView = (ListView) findViewById(R.id.member_list_view);
         memberListView.setAdapter(memberListAdapter);

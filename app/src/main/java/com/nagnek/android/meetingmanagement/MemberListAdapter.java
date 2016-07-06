@@ -2,6 +2,8 @@ package com.nagnek.android.meetingmanagement;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,12 +23,13 @@ public class MemberListAdapter extends BaseAdapter {
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
     public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
+    static Drawable face;   // 얼굴 기본 이미지
 
     public MemberListAdapter(Context context, ArrayList<Member> memberList) {
         this.context = context;
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(context);
-
+        face = context.getResources().getDrawable(R.drawable.face);;
     }
 
     @Override
@@ -119,6 +122,8 @@ public class MemberListAdapter extends BaseAdapter {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
                 viewHolder.imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(context, imageUri));
+            } else {
+                viewHolder.imageView.setImageDrawable(face);
             }
         }
 
