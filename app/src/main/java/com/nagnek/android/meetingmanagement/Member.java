@@ -32,9 +32,12 @@ public class Member implements Parcelable {
     }
 
     private Member(Parcel in) {
-        Uri.Builder builder = new Uri.Builder();
-
-        imageUri = builder.path(in.readString()).build();
+        String uriString = in.readString();
+        if(uriString != null) {
+            imageUri = Uri.parse(uriString);
+        } else {
+            imageUri = null;
+        }
         name = in.readString();
         phone_number = in.readString();
     }
@@ -56,7 +59,11 @@ public class Member implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeParcelable(imageUri, flags);
+        if(imageUri != null) {
+            dest.writeString(imageUri.toString());
+        } else {
+            dest.writeString(null);
+        }
         dest.writeString(name);
         dest.writeString(phone_number);
     }

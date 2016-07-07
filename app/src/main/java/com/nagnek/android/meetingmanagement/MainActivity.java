@@ -4,25 +4,80 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 
+import java.util.ArrayList;
+
 public class MainActivity extends Activity {
+
+    public static final String GROUP_LIST_POSITION = "com.nagnek.android.meetingmanagement.GROUP_LIST_POSITION";
+    public static final String GROUP_NAME = "com.nagnek.android.meetingmanagement.GROUP_NAME";
+    public static final String GROUP_IMAGE_URI = "com.nagnek.android.meetingmanagement.GROUP_IMAGE_URI";
+    public static final int REQ_CODE_SELECT_GROUP_LIST_ITEM = 17;
+
     static final int NEW_GROUP_REQUEST = 1;
     static final int NEW_GROUP_GENERATE = 2;
     static final int NEW_GROUP_FALSE = 3;
+    private final String GROUP_LIST_KEY = "GROUP_LIST_KEY";
     String groupName = null;
-    private Button group1Button;
+    ArrayList<Group> groupList = null;
+
+    ArrayList<Member> memberList = null;
+    private GroupListAdapter groupListAdatper = null;
+    ListView groupListView = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Dlog.i("onCreate()");
+
+        if (groupList == null && savedInstanceState == null) {
+            groupList = new ArrayList<Group>();
+        } else {
+            groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
+        }
+        // 어댑터를 생성하고 데이터 설정
+        groupListAdatper = new GroupListAdapter(this, groupList);
+
+        // 리스트뷰에 어댑터 설정
+        groupListView = (ListView) findViewById(R.id.group_list_view);
+        groupListView.setAdapter(groupListAdatper);
+        groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, GroupActivity.class);
+                Group group = groupList.get(position);
+                intent.putExtra(GROUP_NAME, group.name);
+                intent.putExtra(GROUP_IMAGE_URI, group.imageUri);
+                intent.putExtra(GROUP_LIST_POSITION, position);
+                intent.putParcelableArrayListExtra(GroupActivity.MEMBER_LIST_KEY, group.memberList);
+                startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
+            }
+        });
+/*
+        groupListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(MainActivity.this, GroupItemPopupMenuActivity.class);
+                Group group = groupList.get(position);
+                intent.putExtra(GROUP_NAME, group.name);
+                intent.putExtra(GROUP_IMAGE_URI, group.groupImageUri);
+                intent.putExtra(GROUP_PHONE, group.phone_number);
+                intent.putExtra(GROUP_LIST_POSITION, position);
+                startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
+                return true;
+            }
+        });
+  */
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        group1Button = (Button) findViewById(R.id.group1_button);
+
+
         Button addGroupButton = (Button) findViewById(R.id.add_group_button);
         addGroupButton.setOnClickListener(new Button.OnClickListener() {
             @Override
@@ -31,19 +86,9 @@ public class MainActivity extends Activity {
                 startActivityForResult(newGroupActivityIntent, NEW_GROUP_REQUEST);
             }
         });
-        group1Button.setOnClickListener(new Button.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String group1ButtonName = group1Button.getText().toString();
-                if (group1ButtonName != null) {
-                    Intent groupActivityIntent = new Intent(MainActivity.this, GroupActivity.class);
-                    groupActivityIntent.putExtra("GROUP1_NAME", group1ButtonName);
-                    startActivity(groupActivityIntent);
-                }
-            }
-        });
+
         if (savedInstanceState != null) {
-            group1Button.setText(savedInstanceState.getString("GROUP1_NAME"));
+            groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
         }
     }
 
@@ -51,7 +96,7 @@ public class MainActivity extends Activity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         if (Dlog.showToast) Toast.makeText(this, Dlog.s("그룹네임 저장"), Toast.LENGTH_SHORT).show();
-        outState.putString("GROUP1_NAME", group1Button.getText().toString());
+        outState.putParcelableArrayList(GROUP_LIST_KEY, groupList);
     }
 
     @Override
@@ -94,8 +139,21 @@ public class MainActivity extends Activity {
         Dlog.i("onActivityResult()");
         if (requestCode == NEW_GROUP_REQUEST) {
             if (resultCode == RESULT_OK) {
-                String name = data.getStringExtra("RESULT_NEW_GROUP_NAME");
-                group1Button.setText(name);
+                Group group = new Group();
+                group.name = data.getStringExtra(NewGroupPopupActivity.NEW_GROUP_NAME);
+                group.imageUri = data.getParcelableExtra(NewGroupPopupActivity.NEW_GROUP_IMAGE);
+                group.memberList = new ArrayList<Member>();
+                groupListAdatper.add(groupListAdatper.getCount(), group);
+            }
+        }
+
+        if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
+            if (resultCode == RESULT_OK) {
+                ArrayList<Member> memberList = data.getParcelableArrayListExtra(GroupActivity.MEMBER_LIST_KEY);
+                int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                Group group = (Group)groupListAdatper.getItem(position);
+                group.memberList = memberList;
+                groupListAdatper.set(position, group);
             }
         }
     }

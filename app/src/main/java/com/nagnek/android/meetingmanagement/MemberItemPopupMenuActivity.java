@@ -16,7 +16,7 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_member_item_popup_menu);
+        setContentView(R.layout.list_selection_popup_menu);
         Button editButton = (Button) findViewById(R.id.edit_button);
         Button deleteButton = (Button) findViewById(R.id.delete_button);
         Button cancelButton = (Button) findViewById(R.id.cancel_button);

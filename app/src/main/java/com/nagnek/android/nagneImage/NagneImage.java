@@ -1,5 +1,7 @@
 package com.nagnek.android.nagneImage;
 
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -49,5 +51,17 @@ public class NagneImage {
         }
 
         return fName;
+    }
+
+    public static void picImageFromGalleryStartActivityForResult(Context context, int keyCode) {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
+        intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+        try {
+            ((Activity) context).startActivityForResult(intent, keyCode);
+        } catch (ActivityNotFoundException e) {
+            // Do nothing for now
+        }
     }
 }

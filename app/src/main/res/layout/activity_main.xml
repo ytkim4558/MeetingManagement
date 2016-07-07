@@ -3,19 +3,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_gravity="center"
+    android:background="@color/accent_material_dark"
     android:gravity="center"
     android:measureWithLargestChild="true"
-    android:orientation="vertical"
-    android:background="@color/accent_material_dark">
+    android:orientation="vertical">
 
     <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@android:color/holo_blue_light"
         android:text="&lt;공동 구매 관리>"
-        android:id="@+id/textView"
         android:textSize="30dp"
-        android:textStyle="bold"
-        android:background="@android:color/holo_blue_light" />
+        android:textStyle="bold" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,63 +39,15 @@
             android:text="그룹 추가" />
     </LinearLayout>
 
-    <ScrollView
-        android:layout_width="wrap_content"
-        android:layout_height="300dp"
-        >
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:measureWithLargestChild="true"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ListView
+            android:id="@+id/group_list_view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:measureWithLargestChild="true">
-
-            <Button
-                android:id="@+id/group1_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹1" />
-
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹2" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹3" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹4" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹5" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹6" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹7" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹8" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹9" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹10" />
-            <Button
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="그룹11" />
-        </LinearLayout>
-    </ScrollView>
+            android:layout_height="match_parent"></ListView>
+    </LinearLayout>
 </LinearLayout>

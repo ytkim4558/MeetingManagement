@@ -1,7 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -18,6 +17,7 @@ import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 
 import java.util.ArrayList;
 
@@ -28,34 +28,40 @@ public class GroupActivity extends Activity {
     public static final String MEMBER_PHONE = "com.nagnek.android.meetingmanagement.MEMBER_PHONE";
     public static final String MEMBER_IMAGE_URI = "com.nagnek.android.meetingmanagement.MEMBER_IMAGE_URI";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
+    public static final int REQ_CODE_SELECT_IMAGE = 100;
     static final int PICK_CONTACT_REQUEST = 1;
-    private final int REQ_CODE_SELECT_IMAGE = 100;
-    private final String KEY_CROPPED_RECT = "cropped-rect";
-    private final String MEMBER_LIST_KEY = "MEMBER_LIST_KEY";
+    private static final String KEY_CROPPED_RECT = "cropped-rect";
+    private static final String BACKUP_MEMBER_LIST_KEY = "BACKUP_MEMBER_LIST_KEY";
+    public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement";
     String imagePath = null;
     ImageView imageView;
-    Uri imageUri;
+    Uri groupImageUri;
     ArrayList<Member> memberList = null;
     MemberListAdapter memberListAdapter = null;
     ListView memberListView = null;
     //private TextView memberNameView = null;
     private String number = null; // 멤버 전화번호
     private String groupName = null;
-    private String groupNameKey = "GROUP1_NAME";
     private TextView groupNameText = null;
     private String strPhotoName = null;
+    int group_position;
+
+    static void saveMemberInfoAndPostionsOfMemberAndGroup() {
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Dlog.i("onCreate()");
-
-        if (memberList == null && savedInstanceState == null) {
-            memberList = new ArrayList<Member>();
-        } else {
-            memberList = savedInstanceState.getParcelableArrayList(MEMBER_LIST_KEY);
+        Intent intent = getIntent();
+        if (intent != null) {
+            groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
+            groupImageUri = intent.getParcelableExtra(MainActivity.GROUP_IMAGE_URI);
+            memberList = intent.getParcelableArrayListExtra(MEMBER_LIST_KEY);
         }
+
         // 어댑터를 생성하고 데이터 설정
         memberListAdapter = new MemberListAdapter(this, memberList);
 
@@ -72,6 +78,7 @@ public class GroupActivity extends Activity {
                 intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
                 intent.putExtra(MEMBER_PHONE, member.phone_number);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
+                intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
             }
         });
@@ -85,6 +92,7 @@ public class GroupActivity extends Activity {
                 intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
                 intent.putExtra(MEMBER_PHONE, member.phone_number);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
+                intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
                 return true;
             }
@@ -99,26 +107,17 @@ public class GroupActivity extends Activity {
             }
         });
 
-        Intent intent = getIntent();
-        if (intent != null) {
-            groupName = intent.getExtras().getString(groupNameKey);
-        }
         groupNameText = (TextView) findViewById(R.id.group_name_text_view);
         groupNameText.setText(groupName);
 
         imageView = (ImageView) findViewById(R.id.groupImageView);
+        if(groupImageUri != null) {
+            imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri));
+        }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK);
-                intent.setType(android.provider.MediaStore.Images.Media.CONTENT_TYPE);
-                intent.setData(android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-
-                try {
-                    startActivityForResult(intent, REQ_CODE_SELECT_IMAGE);
-                } catch (ActivityNotFoundException e) {
-                    // Do nothing for now
-                }
+                NagneImage.picImageFromGalleryStartActivityForResult(GroupActivity.this, REQ_CODE_SELECT_IMAGE);
             }
         });
     }
@@ -152,8 +151,8 @@ public class GroupActivity extends Activity {
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 Bitmap image_bitmap = null;
-                imageUri = data.getData();
-                image_bitmap = NagneCircleImage.getCircleBitmap(this, imageUri);
+                groupImageUri = data.getData();
+                image_bitmap = NagneCircleImage.getCircleBitmap(this, groupImageUri);
                 //배치해놓은 ImageView에 set
                 imageView.setImageBitmap(image_bitmap);
                 image_bitmap = null;
@@ -191,11 +190,11 @@ public class GroupActivity extends Activity {
         // 해당 액티비티에서 백업된 데이터가 존재하는 것을 의미한다
         // 따라서 번들에 백업된 데이터를 불러서 사용자 이름 및 전화번호를 복원한다.
         if (savedInstanceState != null) {
-            imageUri = savedInstanceState.getParcelable("BACKUP_IMAGE");
+            groupImageUri = savedInstanceState.getParcelable("BACKUP_IMAGE");
             Dlog.i("RestoreImage");
-            if (imageUri != null) {
+            if (groupImageUri != null) {
                 Bitmap bitmap = null;
-                bitmap = NagneCircleImage.getCircleBitmap(this, imageUri);
+                bitmap = NagneCircleImage.getCircleBitmap(this, groupImageUri);
                 imageView.setImageBitmap(null);
                 imageView.setImageBitmap(bitmap);
                 bitmap = null;
@@ -239,7 +238,7 @@ public class GroupActivity extends Activity {
         super.onDestroy();
         Dlog.i("onDestroy()");
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        imageUri = null;
+        groupImageUri = null;
         imageView = null;
         number = null;
         groupName = null;
@@ -252,11 +251,11 @@ public class GroupActivity extends Activity {
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 멤버 리스트를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (memberList != null) {
-            outState.putParcelableArrayList(MEMBER_LIST_KEY, memberList);
+            outState.putParcelableArrayList(BACKUP_MEMBER_LIST_KEY, memberList);
         }
         // 이미지를 onSavedInstanceState 매개 변수인 번들에 저장한다.
-        if (imageUri != null) {
-            outState.putParcelable("BACKUP_IMAGE", imageUri);
+        if (groupImageUri != null) {
+            outState.putParcelable("BACKUP_IMAGE", groupImageUri);
             Dlog.i("저장");
         }
 
@@ -279,5 +278,16 @@ public class GroupActivity extends Activity {
         if (number != null) {
             startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + number)));
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        // TODO: 이후에 이전 액티비티에 넘기지 말고 저장하고 불러오는 식으로 할것
+        Intent intent = new Intent();
+        intent.putExtra(MEMBER_LIST_KEY, memberList);
+        intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
+        intent.putExtra(MainActivity.GROUP_IMAGE_URI, groupImageUri);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
     }
 }

@@ -20,7 +20,7 @@ import java.util.ArrayList;
  */
 public class MemberListAdapter extends BaseAdapter {
     public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
-    static Drawable face;   // 얼굴 기본 이미지
+    static Drawable face;   // 얼굴 이미지
     Context context = null;
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
@@ -30,7 +30,6 @@ public class MemberListAdapter extends BaseAdapter {
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(context);
         face = context.getResources().getDrawable(R.drawable.face);
-        ;
     }
 
     @Override
