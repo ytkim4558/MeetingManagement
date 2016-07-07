@@ -18,6 +18,7 @@ public class BaseApplication extends Application {
         this.DEBUG = isDebuggable(this);
         this.context = getApplicationContext();
     }
+
     private void getContext() {
         context = getApplicationContext();
     }

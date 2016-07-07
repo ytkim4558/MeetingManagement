@@ -11,9 +11,9 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
-
 import com.nagnek.android.nagneImage.NagneCircleImage;
+
+import java.util.ArrayList;
 
 /**
  * Created by yongtakpc on 2016. 7. 3..

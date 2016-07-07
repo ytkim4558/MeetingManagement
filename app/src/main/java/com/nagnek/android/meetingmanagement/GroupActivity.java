@@ -16,10 +16,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.ArrayList;
-
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+
+import java.util.ArrayList;
 
 public class GroupActivity extends Activity {
 

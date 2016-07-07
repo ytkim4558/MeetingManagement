@@ -6,9 +6,8 @@ import android.util.Log;
  * Created by yongtakpc on 2016. 7. 1..
  */
 public class Dlog {
-    static final String TAG = "meetingmanagement";
-
     public static final boolean showToast = false;
+    static final String TAG = "meetingmanagement";
 
     /**
      * Log Level Error
@@ -45,7 +44,7 @@ public class Dlog {
         if (BaseApplication.DEBUG) Log.v(TAG, buildLogMsg(message));
     }
 
-    public static String s(String input){
+    public static String s(String input) {
         if (BaseApplication.DEBUG) {
             String string = buildLogMsg(input);
             return string;

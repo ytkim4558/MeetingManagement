@@ -15,7 +15,6 @@ import android.net.Uri;
 /**
  * Created by yongtakpc on 2016. 7. 1..
  * http://stackoverflow.com/questions/11932805/cropping-circular-area-from-bitmap-in-android
- *
  */
 public class NagneCircleImage extends NagneImage {
     // 서클 이미지로 잘라낸다

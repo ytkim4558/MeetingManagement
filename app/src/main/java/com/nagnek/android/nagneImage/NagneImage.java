@@ -1,11 +1,11 @@
 package com.nagnek.android.nagneImage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.provider.MediaStore;
-import android.content.Intent;
 
 import java.io.IOException;
 
@@ -23,6 +23,7 @@ public class NagneImage {
         intent.setAction(Intent.ACTION_GET_CONTENT);
         return intent;
     }
+
     public static Bitmap getBitmap(Context context, Uri imageUri) {
         Bitmap bitmap = null;
         try {
@@ -34,7 +35,7 @@ public class NagneImage {
     }
 
     protected static String getfilePath(Context context, Uri uri) {
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        String[] filePathColumn = {MediaStore.Images.Media.DATA};
 
         Cursor cursor = context.getContentResolver().query(uri, filePathColumn, null, null, null);
         String fName = null;
