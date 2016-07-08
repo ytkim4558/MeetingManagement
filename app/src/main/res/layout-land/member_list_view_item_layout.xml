@@ -30,12 +30,14 @@
         android:lines="1"
         android:layout_alignParentTop="true" />
     <TextView android:id="@+id/phone_number"
+        android:paddingTop="10dp"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/member_name"
         android:layout_alignBaseline="@id/member_image"
         android:text="010-3356-4558"
         android:textSize="20dp"
+        android:layout_alignParentTop="true"
         />
     <Button android:id="@+id/call_button"
         android:layout_width="wrap_content"

@@ -21,7 +21,7 @@ import com.nagnek.android.nagneImage.NagneImage;
 
 import java.util.ArrayList;
 
-public class GroupActivity extends Activity {
+public class GroupInfoActivity extends Activity {
 
     public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
     public static final String MEMBER_INFO = "com.nagenk.android.meetingmanagement.MEMBER_INFO";
@@ -33,6 +33,8 @@ public class GroupActivity extends Activity {
     public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement.MEMBER_LIST_KEY";
     public static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
     private static final String BACKUP_GROUP_IMAGE_URI = "BACKUP_GROUP_IMAGE_URI";
+    public static final String POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY";
+
     String imagePath = null;
     ImageView imageView;
     Uri groupImageUri;
@@ -73,7 +75,7 @@ public class GroupActivity extends Activity {
         memberListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(GroupActivity.this, MemberInfoActivity.class);
+                Intent intent = new Intent(GroupInfoActivity.this, MemberInfoActivity.class);
                 Member member = memberList.get(position);
                 intent.putExtra(MEMBER_INFO, member);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
@@ -84,8 +86,10 @@ public class GroupActivity extends Activity {
         memberListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(GroupActivity.this, MemberItemPopupMenuActivity.class);
+                Intent intent = new Intent(GroupInfoActivity.this, ListItemPopupMenuActivity.class);
                 Member member = memberList.get(position);
+                intent.putExtra(ListItemPopupMenuActivity.WHO_CALL_LIST_ITEM_POPUP_MENU_ACTIVITY, ListItemPopupMenuActivity.POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK);
+                intent.putExtra(POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY, ListItemPopupMenuActivity.POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK);
                 intent.putExtra(MEMBER_INFO, member);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
@@ -112,7 +116,7 @@ public class GroupActivity extends Activity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NagneImage.picImageFromGalleryStartActivityForResult(GroupActivity.this, REQ_CODE_SELECT_IMAGE);
+                NagneImage.picImageFromGalleryStartActivityForResult(GroupInfoActivity.this, REQ_CODE_SELECT_IMAGE);
             }
         });
     }
@@ -153,16 +157,13 @@ public class GroupActivity extends Activity {
                 image_bitmap = null;
             }
         } else if (requestCode == REQ_CODE_SELECT_MEMBER_LIST_ITEM) {
-            if (resultCode == MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER) {
-                Dlog.d("RESULT_CODE_EDIT_MEMBER");
+            if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO) {
+                Dlog.d("RESULT_CODE_EDIT_MEMBER_INFO");
 
-                Member member = new Member();
-                member.name = data.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME);
-                member.imageUri = data.getParcelableExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI);
-                member.phone_number = data.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE);
+                Member member = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
                 int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
                 memberListAdapter.set(position, member);
-            } else if (resultCode == MemberItemPopupMenuActivity.RESULT_CODE_DELETE_MEMBER) {
+            } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_DELETE_MEMBER) {
                 int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
                 memberListAdapter.delete(position);
             }

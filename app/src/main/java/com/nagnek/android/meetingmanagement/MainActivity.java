@@ -18,7 +18,9 @@ public class MainActivity extends Activity {
     public static final String GROUP_LIST_POSITION = "com.nagnek.android.meetingmanagement.GROUP_LIST_POSITION";
     public static final String GROUP_NAME = "com.nagnek.android.meetingmanagement.GROUP_NAME";
     public static final String GROUP_IMAGE_URI = "com.nagnek.android.meetingmanagement.GROUP_IMAGE_URI";
+    public static final String GROUP_INFO = "com.nagnek.android.meetingmanagement.GROUP_INFO";
     public static final int REQ_CODE_SELECT_GROUP_LIST_ITEM = 17;
+    public static final String POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY";
 
     static final int NEW_GROUP_REQUEST = 1;
     static final int NEW_GROUP_GENERATE = 2;
@@ -51,30 +53,29 @@ public class MainActivity extends Activity {
         groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, GroupActivity.class);
+                Intent intent = new Intent(MainActivity.this, GroupInfoActivity.class);
                 Group group = groupList.get(position);
                 intent.putExtra(GROUP_NAME, group.name);
                 intent.putExtra(GROUP_IMAGE_URI, group.imageUri);
                 intent.putExtra(GROUP_LIST_POSITION, position);
-                intent.putParcelableArrayListExtra(GroupActivity.MEMBER_LIST_KEY, group.memberList);
+                intent.putParcelableArrayListExtra(GroupInfoActivity.MEMBER_LIST_KEY, group.memberList);
                 startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
             }
         });
-/*
+
         groupListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, GroupItemPopupMenuActivity.class);
+                Intent intent = new Intent(MainActivity.this, ListItemPopupMenuActivity.class);
                 Group group = groupList.get(position);
-                intent.putExtra(GROUP_NAME, group.name);
-                intent.putExtra(GROUP_IMAGE_URI, group.groupImageUri);
-                intent.putExtra(GROUP_PHONE, group.phone_number);
+                intent.putExtra(ListItemPopupMenuActivity.WHO_CALL_LIST_ITEM_POPUP_MENU_ACTIVITY, ListItemPopupMenuActivity.POPUP_MENU_CALLED_BY_GROUP_LIST_VIEW_ITEM_LONG_CLICK);
+                intent.putExtra(GROUP_INFO, group);
                 intent.putExtra(GROUP_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
                 return true;
             }
         });
-  */
+
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
 
 
@@ -149,13 +150,23 @@ public class MainActivity extends Activity {
         if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
             if (resultCode == RESULT_OK) {
                 Dlog.i("멤버리스트 반환");
-                ArrayList<Member> memberList = data.getParcelableArrayListExtra(GroupActivity.MEMBER_LIST_KEY);
+                ArrayList<Member> memberList = data.getParcelableArrayListExtra(GroupInfoActivity.MEMBER_LIST_KEY);
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
                 Dlog.i("position("+position+")반환");
                 Group group = (Group)groupListAdatper.getItem(position);
                 group.imageUri = data.getParcelableExtra(GROUP_IMAGE_URI);
                 group.memberList = memberList;
                 groupListAdatper.set(position, group);
+            }
+
+            else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_GROUP_INFO) {
+                Dlog.d("RESULT_CODE_EDIT_MEMBER_INFO");
+                Group group = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO);
+                int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                groupListAdatper.set(position, group);
+            } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_DELETE_GROUP_INFO) {
+                int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                groupListAdatper.delete(position);
             }
         }
     }

@@ -35,7 +35,7 @@ public class NewGroupPopupActivity extends PopupActivity {
         groupImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NagneImage.picImageFromGalleryStartActivityForResult(NewGroupPopupActivity.this, GroupActivity.REQ_CODE_SELECT_IMAGE);
+                NagneImage.picImageFromGalleryStartActivityForResult(NewGroupPopupActivity.this, GroupInfoActivity.REQ_CODE_SELECT_IMAGE);
             }
         });
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -62,7 +62,7 @@ public class NewGroupPopupActivity extends PopupActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GroupActivity.REQ_CODE_SELECT_IMAGE) {
+        if (requestCode == GroupInfoActivity.REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 groupImageUri = data.getData();
                 groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(NewGroupPopupActivity.this, groupImageUri));

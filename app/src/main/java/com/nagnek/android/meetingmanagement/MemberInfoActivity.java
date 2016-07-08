@@ -32,11 +32,11 @@ public class MemberInfoActivity extends Activity {
         // ====================================================================================
         if (savedInstanceState == null) {
             Intent receivedIntent = getIntent();
-            member = receivedIntent.getParcelableExtra(GroupActivity.MEMBER_INFO);
-            position = receivedIntent.getIntExtra(GroupActivity.MEMBER_LIST_POSITION, 0);
+            member = receivedIntent.getParcelableExtra(GroupInfoActivity.MEMBER_INFO);
+            position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
         } else {
-            member = savedInstanceState.getParcelable(EditMemberActivity.BACK_UP_MEMBER_KEY);
-            position = savedInstanceState.getInt(GroupActivity.MEMBER_LIST_POSITION, 0);
+            member = savedInstanceState.getParcelable(EditMemberInfoActivity.BACK_UP_MEMBER_KEY);
+            position = savedInstanceState.getInt(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
             resultIntent = savedInstanceState.getParcelable(BACKUP_INSTANCE);
             isEditMemberInfo = savedInstanceState.getBoolean(BACKUP_IS_EDIT_MEMBER_INFO);
         }
@@ -57,7 +57,7 @@ public class MemberInfoActivity extends Activity {
             @Override
             public void onClick(View v) {
                 if(isEditMemberInfo) {
-                    setResult(MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER, resultIntent);
+                    setResult(ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO, resultIntent);
                 }
                 finish();
             }
@@ -65,12 +65,10 @@ public class MemberInfoActivity extends Activity {
         editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MemberInfoActivity.this, EditMemberActivity.class);
-                intent.putExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME, member.name);
-                intent.putExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI, member.imageUri);
-                intent.putExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE, member.phone_number);
-                intent.putExtra(GroupActivity.MEMBER_LIST_POSITION, position);
-                startActivityForResult(intent, MemberItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER);
+                Intent intent = new Intent(MemberInfoActivity.this, EditMemberInfoActivity.class);
+                intent.putExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO, member);
+                intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
+                startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO);
             }
         });
 
@@ -92,16 +90,14 @@ public class MemberInfoActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == MemberItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER) {
+        if (requestCode == ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO) {
             if (resultCode == RESULT_OK) {
                 Dlog.d("편집됨");
                 Intent receivedIntent = data;
                 isEditMemberInfo = true;
                 resultIntent = data;
-                member.name = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME);
-                member.imageUri = receivedIntent.getParcelableExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI);
-                member.phone_number = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE);
-                position = receivedIntent.getIntExtra(GroupActivity.MEMBER_LIST_POSITION, 0);
+                member = receivedIntent.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
+                position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
 
                 // ====================================================================================
                 //
@@ -132,8 +128,8 @@ public class MemberInfoActivity extends Activity {
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putParcelable(EditMemberActivity.BACK_UP_MEMBER_KEY, member);
-        outState.putInt(EditMemberActivity.BACK_UP_MEMBER_POSITION, position);
+        outState.putParcelable(EditMemberInfoActivity.BACK_UP_MEMBER_KEY, member);
+        outState.putInt(EditMemberInfoActivity.BACK_UP_MEMBER_POSITION, position);
         outState.putParcelable(BACKUP_INSTANCE, resultIntent);
         outState.putBoolean(BACKUP_IS_EDIT_MEMBER_INFO, isEditMemberInfo);
     }
@@ -142,7 +138,7 @@ public class MemberInfoActivity extends Activity {
     public void onBackPressed() {
         Dlog.i("onBackPressed()");
         if(isEditMemberInfo) {
-            setResult(MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER, resultIntent);
+            setResult(ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO, resultIntent);
             finish();
         }
         super.onBackPressed();

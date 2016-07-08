@@ -15,7 +15,7 @@ import android.widget.Toast;
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneImage.NagneCircleImage;
 
-public class EditMemberActivity extends Activity {
+public class EditMemberInfoActivity extends Activity {
     public static final String BACK_UP_MEMBER_KEY = "BACK_UP_MEMBER";  // 이전 액티비티의 멤버 정보 저장
     public static final String BACK_UP_MEMBER_POSITION = "BACK_UP_POSITION"; // 최종적으로 GroupActivity에 넘겨주기 위해
     private static final int REQ_CODE_SELECT_IMAGE = 1;
@@ -43,14 +43,10 @@ public class EditMemberActivity extends Activity {
         if (savedInstanceState == null) {
             Intent receivedIntent = getIntent();
             if (receivedIntent != null) {
-                //member = receivedIntent.getParcelableExtra(GroupActivity.SELECT_MEMBER_LIST_ITEM);
-                member = new Member();
-                member.name = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME);
-                member.imageUri = receivedIntent.getParcelableExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI);
-                member.phone_number = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE);
+                member = receivedIntent.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
                 tempMember = new Member();
                 tempMember.copy(member);
-                position = receivedIntent.getIntExtra(GroupActivity.MEMBER_LIST_POSITION, 0);
+                position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
             }
         }
         // ====================================================================================
@@ -96,11 +92,9 @@ public class EditMemberActivity extends Activity {
                 member.phone_number = phoneNumber.getText().toString();
 
                 Intent intent = new Intent();
-                //intent.putExtra(GroupActivity.SELECT_MEMBER_LIST_ITEM, member);
-                intent.putExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_PHONE, member.phone_number);
-                intent.putExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI, member.imageUri);
-                intent.putExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME, member.name);
-                intent.putExtra(GroupActivity.MEMBER_LIST_POSITION, position);
+                //intent.putExtra(GroupInfoActivity.SELECT_MEMBER_LIST_ITEM, member);
+                intent.putExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO, member);
+                intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
                 setResult(RESULT_OK, intent);
                 finish();
             }
