@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nagnek.android.externalIntent.Message;
+import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneImage.NagneCircleImage;
 
 import java.util.ArrayList;

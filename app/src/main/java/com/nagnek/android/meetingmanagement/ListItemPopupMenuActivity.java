@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.nagnek.android.debugLog.Dlog;
+
 public class ListItemPopupMenuActivity extends PopupActivity {
 
     // MEMBER 편집 정보 관련 REQUEST_CODE 와 RESULT_CODE
@@ -70,13 +72,15 @@ public class ListItemPopupMenuActivity extends PopupActivity {
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = getIntent();
+                Intent receivedIntent = getIntent();
+                whoCallThisPopupMenu = receivedIntent.getIntExtra(WHO_CALL_LIST_ITEM_POPUP_MENU_ACTIVITY, -1);
                 switch (whoCallThisPopupMenu) {
-                    case RESULT_CODE_DELETE_MEMBER:
-                        setResult(RESULT_CODE_DELETE_MEMBER, intent);
+                    case POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK:
+                        setResult(RESULT_CODE_DELETE_MEMBER, receivedIntent);
                         break;
-                    case RESULT_CODE_DELETE_GROUP_INFO:
-                        setResult(RESULT_CODE_DELETE_GROUP_INFO, intent);
+                    case POPUP_MENU_CALLED_BY_GROUP_LIST_VIEW_ITEM_LONG_CLICK:
+                        Dlog.i("제거하라고");
+                        setResult(RESULT_CODE_DELETE_GROUP_INFO, receivedIntent);
                         break;
                 }
 
