@@ -1,4 +1,4 @@
-package com.nagnek.android.meetingmanagement;
+package com.nagnek.android.externalIntent;
 
 import android.content.Context;
 import android.content.Intent;
