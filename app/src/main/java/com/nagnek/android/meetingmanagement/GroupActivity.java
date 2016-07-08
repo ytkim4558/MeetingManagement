@@ -24,9 +24,7 @@ import java.util.ArrayList;
 public class GroupActivity extends Activity {
 
     public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
-    public static final String MEMBER_NAME = "com.nagnek.android.meetingmanagement.MEMBER_NAME";
-    public static final String MEMBER_PHONE = "com.nagnek.android.meetingmanagement.MEMBER_PHONE";
-    public static final String MEMBER_IMAGE_URI = "com.nagnek.android.meetingmanagement.MEMBER_IMAGE_URI";
+    public static final String MEMBER_INFO = "com.nagenk.android.meetingmanagement.MEMBER_INFO";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
     public static final int REQ_CODE_SELECT_IMAGE = 100;
     static final int PICK_CONTACT_REQUEST = 1;
@@ -77,9 +75,7 @@ public class GroupActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(GroupActivity.this, MemberInfoActivity.class);
                 Member member = memberList.get(position);
-                intent.putExtra(MEMBER_NAME, member.name);
-                intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
-                intent.putExtra(MEMBER_PHONE, member.phone_number);
+                intent.putExtra(MEMBER_INFO, member);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
             }
@@ -90,9 +86,7 @@ public class GroupActivity extends Activity {
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(GroupActivity.this, MemberItemPopupMenuActivity.class);
                 Member member = memberList.get(position);
-                intent.putExtra(MEMBER_NAME, member.name);
-                intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
-                intent.putExtra(MEMBER_PHONE, member.phone_number);
+                intent.putExtra(MEMBER_INFO, member);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
                 return true;

@@ -12,6 +12,7 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
     public static final String EDIT_MEMBER_NAME = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_NAME";
     public static final String EDIT_MEMBER_PHONE = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_PHONE";
     public static final String EDIT_MEMBER_IMAGE_URI = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_IMAGE_URI";
+    public static final String EDIT_MEMBER_INFO = "com.nagnek.android.meetingmanagement.EDIT_MEMBER_INFO";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,13 +28,9 @@ public class MemberItemPopupMenuActivity extends PopupActivity {
                 Intent intent = new Intent(MemberItemPopupMenuActivity.this, EditMemberActivity.class);
                 Intent receivedIntent = getIntent();
                 int position = receivedIntent.getIntExtra(GroupActivity.MEMBER_LIST_POSITION, 0);
-                Member member = new Member();
-                member.name = receivedIntent.getStringExtra(GroupActivity.MEMBER_NAME);
-                member.phone_number = receivedIntent.getStringExtra(GroupActivity.MEMBER_PHONE);
-                member.imageUri = receivedIntent.getParcelableExtra(GroupActivity.MEMBER_IMAGE_URI);
-                intent.putExtra(EDIT_MEMBER_NAME, member.name);
-                intent.putExtra(EDIT_MEMBER_IMAGE_URI, member.imageUri);
-                intent.putExtra(EDIT_MEMBER_PHONE, member.phone_number);
+                Member member;
+                member = receivedIntent.getParcelableExtra(GroupActivity.MEMBER_INFO);
+                intent.putExtra(EDIT_MEMBER_INFO, member);
                 intent.putExtra(GroupActivity.MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_EDIT_MEMBER);
                 member = null;

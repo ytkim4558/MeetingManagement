@@ -30,12 +30,9 @@ public class MemberInfoActivity extends Activity {
         //
         // 호출한 인텐트에서 정보를 추출한다
         // ====================================================================================
-        member = new Member();
         if (savedInstanceState == null) {
             Intent receivedIntent = getIntent();
-            member.name = receivedIntent.getStringExtra(GroupActivity.MEMBER_NAME);
-            member.imageUri = receivedIntent.getParcelableExtra(GroupActivity.MEMBER_IMAGE_URI);
-            member.phone_number = receivedIntent.getStringExtra(GroupActivity.MEMBER_PHONE);
+            member = receivedIntent.getParcelableExtra(GroupActivity.MEMBER_INFO);
             position = receivedIntent.getIntExtra(GroupActivity.MEMBER_LIST_POSITION, 0);
         } else {
             member = savedInstanceState.getParcelable(EditMemberActivity.BACK_UP_MEMBER_KEY);
