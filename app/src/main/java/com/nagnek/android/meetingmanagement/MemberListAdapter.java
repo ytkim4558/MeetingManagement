@@ -24,6 +24,7 @@ public class MemberListAdapter extends BaseAdapter {
     Context context = null;
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
+    private static final String MESSAGE_BODY = "안녕하세요 김용탁입니다.";
 
     public MemberListAdapter(Context context, ArrayList<Member> memberList) {
         this.context = context;
@@ -89,6 +90,13 @@ public class MemberListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Phone phone = new Phone();
                 phone.call(context, memberList.get(pos).phone_number);
+            }
+        });
+        viewHolder.messageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Message message = new Message();
+                message.sendSMS(context, memberList.get(position).phone_number, MESSAGE_BODY);
             }
         });
 
