@@ -28,7 +28,7 @@ public class Group implements Parcelable {
     Group() {
         this.imageUri = null;
         this.name = null;
-        this.memberList = null;
+        this.memberList = new ArrayList<Member>();
     }
 
     Group(String name) {
@@ -38,6 +38,7 @@ public class Group implements Parcelable {
     Group(String name, Uri imageUri) {
         this.name = name;
         this.imageUri = imageUri;
+        this.memberList = new ArrayList<Member>();
     }
 
     protected Group(Parcel in) {
@@ -48,6 +49,8 @@ public class Group implements Parcelable {
             imageUri = null;
         }
         name = in.readString();
+        memberList = new ArrayList<Member>();
+        in.readTypedList(memberList, Member.CREATOR);
         memberList = in.readArrayList(Member.class.getClassLoader());
     }
 
@@ -76,6 +79,7 @@ public class Group implements Parcelable {
     ArrayList<Member> getMemberList() { return memberList;}
 
     void setMemberList(ArrayList<Member> memberList) {
+        this.memberList.clear();
         this.memberList = memberList;
     }
 
@@ -92,6 +96,6 @@ public class Group implements Parcelable {
             dest.writeString(null);
         }
         dest.writeString(name);
-        dest.writeList(memberList);
+        dest.writeTypedList(memberList);
     }
 }

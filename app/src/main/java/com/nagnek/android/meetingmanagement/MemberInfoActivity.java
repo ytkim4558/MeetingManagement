@@ -14,10 +14,12 @@ import com.nagnek.android.nagneImage.NagneCircleImage;
 public class MemberInfoActivity extends Activity {
 
     public final static String BACKUP_INSTANCE = "BACKUP_INSTANCE";
+    private final static String BACKUP_IS_EDIT_MEMBER_INFO = "BACKUP_IS_EDIT_MEMBER_INFO";
 
     Member member;
     int position;
     Intent resultIntent;
+    boolean isEditMemberInfo = false; // 멤버 info를 edit 했었는지 확인
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +41,7 @@ public class MemberInfoActivity extends Activity {
             member = savedInstanceState.getParcelable(EditMemberActivity.BACK_UP_MEMBER_KEY);
             position = savedInstanceState.getInt(GroupActivity.MEMBER_LIST_POSITION, 0);
             resultIntent = savedInstanceState.getParcelable(BACKUP_INSTANCE);
+            isEditMemberInfo = savedInstanceState.getBoolean(BACKUP_IS_EDIT_MEMBER_INFO);
         }
         // ====================================================================================
         //
@@ -56,7 +59,9 @@ public class MemberInfoActivity extends Activity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER, resultIntent);
+                if(isEditMemberInfo) {
+                    setResult(MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER, resultIntent);
+                }
                 finish();
             }
         });
@@ -92,8 +97,9 @@ public class MemberInfoActivity extends Activity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == MemberItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER) {
             if (resultCode == RESULT_OK) {
-                Dlog.d("편집시작");
+                Dlog.d("편집됨");
                 Intent receivedIntent = data;
+                isEditMemberInfo = true;
                 resultIntent = data;
                 member.name = receivedIntent.getStringExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_NAME);
                 member.imageUri = receivedIntent.getParcelableExtra(MemberItemPopupMenuActivity.EDIT_MEMBER_IMAGE_URI);
@@ -132,13 +138,16 @@ public class MemberInfoActivity extends Activity {
         outState.putParcelable(EditMemberActivity.BACK_UP_MEMBER_KEY, member);
         outState.putInt(EditMemberActivity.BACK_UP_MEMBER_POSITION, position);
         outState.putParcelable(BACKUP_INSTANCE, resultIntent);
+        outState.putBoolean(BACKUP_IS_EDIT_MEMBER_INFO, isEditMemberInfo);
     }
 
     @Override
     public void onBackPressed() {
         Dlog.i("onBackPressed()");
-        setResult(MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER, resultIntent);
-        finish();
+        if(isEditMemberInfo) {
+            setResult(MemberItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER, resultIntent);
+            finish();
+        }
         super.onBackPressed();
     }
 

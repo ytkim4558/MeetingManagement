@@ -142,16 +142,18 @@ public class MainActivity extends Activity {
                 Group group = new Group();
                 group.name = data.getStringExtra(NewGroupPopupActivity.NEW_GROUP_NAME);
                 group.imageUri = data.getParcelableExtra(NewGroupPopupActivity.NEW_GROUP_IMAGE);
-                group.memberList = new ArrayList<Member>();
                 groupListAdatper.add(groupListAdatper.getCount(), group);
             }
         }
 
         if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
             if (resultCode == RESULT_OK) {
+                Dlog.i("멤버리스트 반환");
                 ArrayList<Member> memberList = data.getParcelableArrayListExtra(GroupActivity.MEMBER_LIST_KEY);
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                Dlog.i("position("+position+")반환");
                 Group group = (Group)groupListAdatper.getItem(position);
+                group.imageUri = data.getParcelableExtra(GROUP_IMAGE_URI);
                 group.memberList = memberList;
                 groupListAdatper.set(position, group);
             }

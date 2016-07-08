@@ -32,7 +32,9 @@ public class GroupActivity extends Activity {
     static final int PICK_CONTACT_REQUEST = 1;
     private static final String KEY_CROPPED_RECT = "cropped-rect";
     private static final String BACKUP_MEMBER_LIST_KEY = "BACKUP_MEMBER_LIST_KEY";
-    public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement";
+    public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement.MEMBER_LIST_KEY";
+    public static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
+    private static final String BACKUP_GROUP_IMAGE_URI = "BACKUP_GROUP_IMAGE_URI";
     String imagePath = null;
     ImageView imageView;
     Uri groupImageUri;
@@ -59,6 +61,7 @@ public class GroupActivity extends Activity {
         if (intent != null) {
             groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
             groupImageUri = intent.getParcelableExtra(MainActivity.GROUP_IMAGE_URI);
+            group_position = intent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
             memberList = intent.getParcelableArrayListExtra(MEMBER_LIST_KEY);
         }
 
@@ -78,7 +81,6 @@ public class GroupActivity extends Activity {
                 intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
                 intent.putExtra(MEMBER_PHONE, member.phone_number);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
-                intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
             }
         });
@@ -92,7 +94,6 @@ public class GroupActivity extends Activity {
                 intent.putExtra(MEMBER_IMAGE_URI, member.imageUri);
                 intent.putExtra(MEMBER_PHONE, member.phone_number);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
-                intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
                 startActivityForResult(intent, REQ_CODE_SELECT_MEMBER_LIST_ITEM);
                 return true;
             }
@@ -190,7 +191,7 @@ public class GroupActivity extends Activity {
         // 해당 액티비티에서 백업된 데이터가 존재하는 것을 의미한다
         // 따라서 번들에 백업된 데이터를 불러서 사용자 이름 및 전화번호를 복원한다.
         if (savedInstanceState != null) {
-            groupImageUri = savedInstanceState.getParcelable("BACKUP_IMAGE");
+            groupImageUri = savedInstanceState.getParcelable(BACKUP_GROUP_IMAGE_URI);
             Dlog.i("RestoreImage");
             if (groupImageUri != null) {
                 Bitmap bitmap = null;
@@ -199,6 +200,7 @@ public class GroupActivity extends Activity {
                 imageView.setImageBitmap(bitmap);
                 bitmap = null;
             }
+            group_position = savedInstanceState.getInt(BACKUP_GROUP_POSITION_KEY);
         }
 
         super.onRestoreInstanceState(savedInstanceState);
@@ -255,9 +257,11 @@ public class GroupActivity extends Activity {
         }
         // 이미지를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (groupImageUri != null) {
-            outState.putParcelable("BACKUP_IMAGE", groupImageUri);
+            outState.putParcelable(BACKUP_GROUP_IMAGE_URI, groupImageUri);
             Dlog.i("저장");
         }
+
+        outState.putInt(BACKUP_GROUP_POSITION_KEY, group_position);
 
         super.onSaveInstanceState(outState);
     }
