@@ -10,6 +10,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
+import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
+import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
 
@@ -32,6 +34,7 @@ public class MainActivity extends Activity {
     ArrayList<Member> memberList = null;
     ListView groupListView = null;
     private GroupListAdapter groupListAdatper = null;
+    static int groupNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,9 +42,13 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Dlog.i("onCreate()");
 
+        groupNumber = Integer.parseInt(NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER));
+
         if (groupList == null && savedInstanceState == null) {
             groupList = new ArrayList<Group>();
-        } else {
+        } else if (groupNumber != 0){
+        }
+        else {
             groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
         }
         // 어댑터를 생성하고 데이터 설정
@@ -58,7 +65,6 @@ public class MainActivity extends Activity {
                 intent.putExtra(GROUP_NAME, group.name);
                 intent.putExtra(GROUP_IMAGE_URI, group.imageUri);
                 intent.putExtra(GROUP_LIST_POSITION, position);
-                intent.putParcelableArrayListExtra(GroupInfoActivity.MEMBER_LIST_KEY, group.memberList);
                 startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
             }
         });
@@ -155,7 +161,6 @@ public class MainActivity extends Activity {
                 Dlog.i("position(" + position + ")반환");
                 Group group = (Group) groupListAdatper.getItem(position);
                 group.imageUri = data.getParcelableExtra(GROUP_IMAGE_URI);
-                group.memberList = memberList;
                 groupListAdatper.set(position, group);
             } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_GROUP_INFO) {
                 Dlog.d("RESULT_CODE_EDIT_MEMBER_INFO");
