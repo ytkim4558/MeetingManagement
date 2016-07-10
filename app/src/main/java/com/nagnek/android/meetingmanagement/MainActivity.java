@@ -2,6 +2,7 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -31,10 +32,8 @@ public class MainActivity extends Activity {
     String groupName = null;
     ArrayList<Group> groupList = null;
 
-    ArrayList<Member> memberList = null;
     ListView groupListView = null;
     private GroupListAdapter groupListAdatper = null;
-    static int groupNumber = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +41,29 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
         Dlog.i("onCreate()");
 
-        groupNumber = Integer.parseInt(NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER));
+        String groupNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER);
+        int groupNumber = 0;
+        if(groupNumberString == null) {
+            groupNumber = 0;
+        } else {
+            groupNumber = Integer.parseInt(groupNumberString);
+        }
 
-        if (groupList == null && savedInstanceState == null) {
+        if (groupList == null && savedInstanceState == null && groupNumber == 0) {
             groupList = new ArrayList<Group>();
-        } else if (groupNumber != 0){
+        } else if (savedInstanceState == null && groupNumber != 0){
+            groupList = new ArrayList<Group>();
+            for(int i = 0; i < groupNumber; ++i) {
+                String[] resultGroupInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, i);
+                Dlog.i("resultGroupInfo[0] : " + resultGroupInfo[0]);
+                Group group;
+                if(resultGroupInfo[0].equals("null")) {
+                    group = new Group(resultGroupInfo[1], null);
+                } else {
+                    group = new Group(resultGroupInfo[1], Uri.parse(resultGroupInfo[0]));
+                }
+                groupList.add(group);
+            }
         }
         else {
             groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
@@ -117,6 +134,12 @@ public class MainActivity extends Activity {
     protected void onResume() {
         super.onResume();
         Dlog.i("onResume()");
+        String resultValue = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, "0");
+        Dlog.i("resultValue : " + resultValue);
+        String[] resultvalueList = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, 0);
+        for(String value : resultvalueList) {
+            Dlog.i("value : " + value);
+        }
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
     }
 
@@ -149,14 +172,15 @@ public class MainActivity extends Activity {
                 Group group = new Group();
                 group.name = data.getStringExtra(NewGroupPopupActivity.NEW_GROUP_NAME);
                 group.imageUri = data.getParcelableExtra(NewGroupPopupActivity.NEW_GROUP_IMAGE);
+                Dlog.i("group 수 : " + groupListAdatper.getCount());
+                NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(this, Storage.SAVE_MEMBER_INFO_FILE, group, groupListAdatper.getCount());
                 groupListAdatper.add(groupListAdatper.getCount(), group);
+                NagneSharedPreferenceUtil.saveValueToSharedPreferenceUsingKey(this, Storage.SAVE_MEMBER_INFO_FILE, groupListAdatper.getCount(), Storage.GROUP_NUMBER);
             }
         }
 
         if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
             if (resultCode == RESULT_OK) {
-                Dlog.i("멤버리스트 반환");
-                ArrayList<Member> memberList = data.getParcelableArrayListExtra(GroupInfoActivity.MEMBER_LIST_KEY);
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
                 Dlog.i("position(" + position + ")반환");
                 Group group = (Group) groupListAdatper.getItem(position);
@@ -166,10 +190,13 @@ public class MainActivity extends Activity {
                 Dlog.d("RESULT_CODE_EDIT_MEMBER_INFO");
                 Group group = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO);
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(this, Storage.SAVE_MEMBER_INFO_FILE, group, position);
                 groupListAdatper.set(position, group);
             } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_DELETE_GROUP_INFO) {
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                NagneSharedPreferenceUtil.removeKey(this, Storage.SAVE_MEMBER_INFO_FILE, position);
                 groupListAdatper.delete(position);
+                NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER, groupListAdatper.getCount());
             }
         }
     }

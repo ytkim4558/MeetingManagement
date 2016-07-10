@@ -13,7 +13,7 @@ public class NagneReflect {
         try {
             field = aClass.getField(fieldName);
             try {
-                fieldValue = field.get(object); // ojbect에서 keyFiled의 값 가져오기
+                fieldValue = field.get(object); // ojbect에서 field의 값 가져오기
             } catch (IllegalAccessException e) {
                 e.printStackTrace();
             }

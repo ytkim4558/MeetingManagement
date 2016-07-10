@@ -24,7 +24,7 @@ public class NagneSharedPreferenceUtil {
     가령 연락처 Contractor 클래스에서 키 필드가 phoneNumber 라면 keyFiledName을 phoneNumer로 넘겨준다.
     각 필드별로 String.valueOf 형태를 통해 필드들의 String 값을 , 형태로 묶어서 저장한다
     */
-    public static int saveOjbectToSharedPreference(Activity activity, String fileName, Object object, String keyFieldName) {
+    public static int saveObjectToSharedPreferenceUsingKeyFieldName(Activity activity, String fileName, Object object, String keyFieldName) {
         Class aClass = object.getClass();
         Field[] fields = aClass.getDeclaredFields();
         Object key = NagneReflect.getFieldValue(object, keyFieldName);
@@ -44,7 +44,85 @@ public class NagneSharedPreferenceUtil {
         return SUCCESS;
     }
 
-    public static String[] loadObjectFromSharedPreference(Activity activity, String fileName, Object object, String keyFieldName) {
+    public static int saveObjectToSharedPreferenceUsingKeyFieldName(Activity activity, String fileName, Object object, int keyFieldName) {
+        Class aClass = object.getClass();
+        Field[] fields = aClass.getDeclaredFields();
+        Dlog.i("keyField " + keyFieldName);
+        Object key = NagneReflect.getFieldValue(object, String.valueOf(keyFieldName));
+        String keyString = String.valueOf(key);
+        Dlog.i("keyString " + keyString);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
+
+        for (Field field : fields) {
+            if(field.getName().contentEquals("CREATOR")) {
+                continue;
+            }
+            Object fieldValue = NagneReflect.getFieldValue(object, field.getName());
+            String fieldStringValue = String.valueOf(fieldValue);
+            Dlog.i(fieldStringValue);
+            NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, fieldStringValue);
+        }
+
+        return SUCCESS;
+    }
+
+    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, String key) {
+        String keyString = String.valueOf(key);
+        Dlog.i("keyString " + keyString);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
+        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, String.valueOf(value));
+
+        return SUCCESS;
+    }
+
+    public static int saveObjectToSharedPreferenceUsingKey(Activity activity, String fileName, Object object, int key) {
+        Class aClass = object.getClass();
+        Field[] fields = aClass.getDeclaredFields();
+        String keyString = String.valueOf(key);
+        Dlog.i("keyString " + keyString);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
+
+        for (Field field : fields) {
+            if(field.getName().contentEquals("CREATOR")) {
+                continue;
+            }
+            Object fieldValue = NagneReflect.getFieldValue(object, field.getName());
+            String fieldStringValue = String.valueOf(fieldValue);
+            Dlog.i(fieldStringValue);
+            NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, fieldStringValue);
+        }
+
+        return SUCCESS;
+    }
+
+    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, int key) {
+        String keyString = String.valueOf(key);
+        Dlog.i("keyString " + keyString);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
+        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, String.valueOf(value));
+
+        return SUCCESS;
+    }
+
+    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, String value, int key) {
+        String keyString = String.valueOf(key);
+        Dlog.i("keyString " + keyString);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
+        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, value);
+
+        return SUCCESS;
+    }
+
+    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, String value, String key) {
+        String keyString = String.valueOf(key);
+        Dlog.i("keyString " + keyString);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
+        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, value);
+
+        return SUCCESS;
+    }
+
+    public static String[] loadObjectFromSharedPreferenceUsingKeyFieldName(Activity activity, String fileName, Object object, String keyFieldName) {
         Class aClass = object.getClass();
         Object key = NagneReflect.getFieldValue(object, keyFieldName);
         String keyString = String.valueOf(key);
@@ -90,9 +168,38 @@ public class NagneSharedPreferenceUtil {
         return SUCCESS;
     }
 
+    public static int removeKey(Activity activity, String fileName, int key) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
+        String keyString = String.valueOf(key);
+        String temp = sharedPreferences.getString(keyString, null);
+        if (temp == null) {
+            Dlog.i("key" + key + "가 없음");
+            return FAIL_NONE_EXIST_ITEM;
+        } else {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(keyString);
+            editor.apply();
+            Dlog.i("key" + key + "제거");
+        }
+        return SUCCESS;
+    }
+
     public static String[] getValueList(Activity activity, String fileName, String key) {
         String valueList = getStringFromPreferences(activity, fileName, null, key);
         Dlog.i("valueListFinal : " + valueList);
+        if(valueList == null) {
+            return null;
+        }
+        return convertStringToArray(valueList);
+    }
+
+    public static String[] getValueList(Activity activity, String fileName, int key) {
+        String keyString = String.valueOf(key);
+        String valueList = getStringFromPreferences(activity, fileName, null, keyString);
+        Dlog.i("valueListFinal : " + valueList);
+        if(valueList == null) {
+            return null;
+        }
         return convertStringToArray(valueList);
     }
 

@@ -26,12 +26,10 @@ import com.nagnek.android.sharedString.Storage;
 import java.util.ArrayList;
 
 public class GroupInfoActivity extends Activity {
-
     public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
     public static final String MEMBER_INFO = "com.nagenk.android.meetingmanagement.MEMBER_INFO";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
     public static final int REQ_CODE_SELECT_IMAGE = 100;
-    public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement.MEMBER_LIST_KEY";
     public static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
     public static final String POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY";
     static final int PICK_CONTACT_REQUEST = 1;
@@ -51,21 +49,18 @@ public class GroupInfoActivity extends Activity {
     private TextView groupNameText = null;
     private String strPhotoName = null;
 
-    static void saveMemberInfoAndPostionsOfMemberAndGroup() {
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Dlog.i("onCreate()");
         Intent intent = getIntent();
+        memberList = new ArrayList<Member>();
+        memberList = new ArrayList<Member>();
         if (intent != null) {
             groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
             groupImageUri = intent.getParcelableExtra(MainActivity.GROUP_IMAGE_URI);
             group_position = intent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
-            memberList = intent.getParcelableArrayListExtra(MEMBER_LIST_KEY);
         }
 
         // 어댑터를 생성하고 데이터 설정
@@ -150,8 +145,8 @@ public class GroupInfoActivity extends Activity {
 
                 memberListAdapter.add(memberListAdapter.getCount(), member);
 
-                NagneSharedPreferenceUtil.saveOjbectToSharedPreference(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
-                String[] resultList = NagneSharedPreferenceUtil.loadObjectFromSharedPreference(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
+                NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKeyFieldName(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
+                String[] resultList = NagneSharedPreferenceUtil.loadObjectFromSharedPreferenceUsingKeyFieldName(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
 
                 Dlog.i("result : ");
                 String result = null;
@@ -291,16 +286,5 @@ public class GroupInfoActivity extends Activity {
         if (number != null) {
             startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + number)));
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        // TODO: 이후에 이전 액티비티에 넘기지 말고 저장하고 불러오는 식으로 할것
-        Intent intent = new Intent();
-        intent.putExtra(MEMBER_LIST_KEY, memberList);
-        intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
-        intent.putExtra(MainActivity.GROUP_IMAGE_URI, groupImageUri);
-        setResult(RESULT_OK, intent);
-        super.onBackPressed();
     }
 }
