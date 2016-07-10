@@ -56,7 +56,7 @@ public class MemberInfoActivity extends Activity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(isEditMemberInfo) {
+                if (isEditMemberInfo) {
                     setResult(ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO, resultIntent);
                 }
                 finish();
@@ -137,7 +137,7 @@ public class MemberInfoActivity extends Activity {
     @Override
     public void onBackPressed() {
         Dlog.i("onBackPressed()");
-        if(isEditMemberInfo) {
+        if (isEditMemberInfo) {
             setResult(ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO, resultIntent);
             finish();
         }

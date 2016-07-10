@@ -1,7 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +29,7 @@ public class ListItemPopupMenuActivity extends PopupActivity {
     public static final int POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK = 2;
     private static final String BACKUP_WHO_CALL_THIS_POPUP_MENU = "BACKUP_WHO_CALL_THIS_POPUP_MENU";
     private static int whoCallThisPopupMenu = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,7 +44,7 @@ public class ListItemPopupMenuActivity extends PopupActivity {
             public void onClick(View v) {
                 Intent receivedIntent = getIntent();
                 whoCallThisPopupMenu = receivedIntent.getIntExtra(WHO_CALL_LIST_ITEM_POPUP_MENU_ACTIVITY, -1);
-                switch(whoCallThisPopupMenu) {
+                switch (whoCallThisPopupMenu) {
                     case POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK: {
                         Intent intent = new Intent(ListItemPopupMenuActivity.this, EditMemberInfoActivity.class);
                         int position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
@@ -55,7 +55,7 @@ public class ListItemPopupMenuActivity extends PopupActivity {
                         startActivityForResult(intent, REQ_CODE_EDIT_MEMBER_INFO);
                         member = null;
                     }
-                        break;
+                    break;
                     case POPUP_MENU_CALLED_BY_GROUP_LIST_VIEW_ITEM_LONG_CLICK: {
                         Intent intent = new Intent(ListItemPopupMenuActivity.this, EditGroupInfoActivity.class);
                         int position = receivedIntent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
@@ -64,7 +64,7 @@ public class ListItemPopupMenuActivity extends PopupActivity {
                         intent.putExtra(MainActivity.GROUP_LIST_POSITION, position);
                         startActivityForResult(intent, REQ_CODE_EDIT_GROUP_INFO);
                     }
-                        break;
+                    break;
                 }
                 //TODO: finish후에 불리는 생명주기는? onDestroy? onStop? 메모리해제는 어디서?
             }
@@ -104,9 +104,7 @@ public class ListItemPopupMenuActivity extends PopupActivity {
                 setResult(RESULT_CODE_EDIT_MEMBER_INFO, data);
                 finish();
             }
-        }
-
-        else if (requestCode == REQ_CODE_EDIT_GROUP_INFO) {
+        } else if (requestCode == REQ_CODE_EDIT_GROUP_INFO) {
             if (resultCode == RESULT_OK) {
                 setResult(RESULT_CODE_EDIT_GROUP_INFO, data);
                 finish();

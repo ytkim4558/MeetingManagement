@@ -9,6 +9,8 @@ import com.nagnek.android.debugLog.Dlog;
 /**
  * Created by yongtakpc on 2016. 7. 3..
  */
+
+// Member의 객체를 바꿀 때 saveMemberInfoToSharedPreference에서 저장하는 필드나 순서등을 변경해야 함.
 public class Member implements Parcelable {
     public static final Creator<Member> CREATOR = new Creator<Member>() {
         @Override
@@ -21,9 +23,9 @@ public class Member implements Parcelable {
             return new Member[size];
         }
     };
-    Uri imageUri;    // 이미지 주소 (sd카드등의 장소)
-    String name;    // 이름
-    String phone_number;  // 폰 번호
+    public Uri imageUri;    // 이미지 주소 (sd카드등의 장소)
+    public String name;    // 이름
+    public String phone_number;  // 폰 번호
 
     Member() {
         imageUri = null;
@@ -33,7 +35,7 @@ public class Member implements Parcelable {
 
     private Member(Parcel in) {
         String uriString = in.readString();
-        if(uriString != null) {
+        if (uriString != null) {
             imageUri = Uri.parse(uriString);
         } else {
             imageUri = null;
@@ -59,7 +61,7 @@ public class Member implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if(imageUri != null) {
+        if (imageUri != null) {
             dest.writeString(imageUri.toString());
         } else {
             dest.writeString(null);

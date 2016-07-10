@@ -9,7 +9,7 @@ import android.net.Uri;
  */
 public class Message {
     public void sendSMS(Context context, String phoneNumber, String message) {
-        Uri uri = Uri.parse("smsto:"+phoneNumber);
+        Uri uri = Uri.parse("smsto:" + phoneNumber);
         Intent it = new Intent(Intent.ACTION_SENDTO, uri);
         it.putExtra("sms_body", message);
         context.startActivity(it);

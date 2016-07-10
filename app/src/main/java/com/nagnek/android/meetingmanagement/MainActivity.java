@@ -30,8 +30,8 @@ public class MainActivity extends Activity {
     ArrayList<Group> groupList = null;
 
     ArrayList<Member> memberList = null;
-    private GroupListAdapter groupListAdatper = null;
     ListView groupListView = null;
+    private GroupListAdapter groupListAdatper = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -152,14 +152,12 @@ public class MainActivity extends Activity {
                 Dlog.i("멤버리스트 반환");
                 ArrayList<Member> memberList = data.getParcelableArrayListExtra(GroupInfoActivity.MEMBER_LIST_KEY);
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
-                Dlog.i("position("+position+")반환");
-                Group group = (Group)groupListAdatper.getItem(position);
+                Dlog.i("position(" + position + ")반환");
+                Group group = (Group) groupListAdatper.getItem(position);
                 group.imageUri = data.getParcelableExtra(GROUP_IMAGE_URI);
                 group.memberList = memberList;
                 groupListAdatper.set(position, group);
-            }
-
-            else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_GROUP_INFO) {
+            } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_GROUP_INFO) {
                 Dlog.d("RESULT_CODE_EDIT_MEMBER_INFO");
                 Group group = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO);
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);

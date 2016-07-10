@@ -43,7 +43,7 @@ public class Group implements Parcelable {
 
     protected Group(Parcel in) {
         String uriString = in.readString();
-        if(uriString != null) {
+        if (uriString != null) {
             imageUri = Uri.parse(uriString);
         } else {
             imageUri = null;
@@ -76,7 +76,9 @@ public class Group implements Parcelable {
         this.imageUri = imageUri;
     }
 
-    ArrayList<Member> getMemberList() { return memberList;}
+    ArrayList<Member> getMemberList() {
+        return memberList;
+    }
 
     void setMemberList(ArrayList<Member> memberList) {
         this.memberList.clear();
@@ -90,7 +92,7 @@ public class Group implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        if(imageUri != null) {
+        if (imageUri != null) {
             dest.writeString(imageUri.toString());
         } else {
             dest.writeString(null);

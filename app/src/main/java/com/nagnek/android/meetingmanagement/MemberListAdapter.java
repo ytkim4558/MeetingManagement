@@ -22,11 +22,11 @@ import java.util.ArrayList;
  */
 public class MemberListAdapter extends BaseAdapter {
     public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
+    private static final String MESSAGE_BODY = "안녕하세요 김용탁입니다.";
     static Drawable face;   // 얼굴 이미지
     Context context = null;
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
-    private static final String MESSAGE_BODY = "안녕하세요 김용탁입니다.";
 
     public MemberListAdapter(Context context, ArrayList<Member> memberList) {
         this.context = context;

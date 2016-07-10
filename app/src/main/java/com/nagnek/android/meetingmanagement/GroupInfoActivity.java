@@ -16,8 +16,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
+import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
+
+import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
+import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
 
@@ -27,26 +31,25 @@ public class GroupInfoActivity extends Activity {
     public static final String MEMBER_INFO = "com.nagenk.android.meetingmanagement.MEMBER_INFO";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
     public static final int REQ_CODE_SELECT_IMAGE = 100;
+    public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement.MEMBER_LIST_KEY";
+    public static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
+    public static final String POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY";
     static final int PICK_CONTACT_REQUEST = 1;
     private static final String KEY_CROPPED_RECT = "cropped-rect";
     private static final String BACKUP_MEMBER_LIST_KEY = "BACKUP_MEMBER_LIST_KEY";
-    public static final String MEMBER_LIST_KEY = "com.nagnek.android.meetingmanagement.MEMBER_LIST_KEY";
-    public static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
     private static final String BACKUP_GROUP_IMAGE_URI = "BACKUP_GROUP_IMAGE_URI";
-    public static final String POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY";
-
     String imagePath = null;
     ImageView imageView;
     Uri groupImageUri;
     ArrayList<Member> memberList = null;
     MemberListAdapter memberListAdapter = null;
     ListView memberListView = null;
+    int group_position;
     //private TextView memberNameView = null;
     private String number = null; // 멤버 전화번호
     private String groupName = null;
     private TextView groupNameText = null;
     private String strPhotoName = null;
-    int group_position;
 
     static void saveMemberInfoAndPostionsOfMemberAndGroup() {
 
@@ -110,7 +113,7 @@ public class GroupInfoActivity extends Activity {
         groupNameText.setText(groupName);
 
         imageView = (ImageView) findViewById(R.id.groupImageView);
-        if(groupImageUri != null) {
+        if (groupImageUri != null) {
             imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri));
         }
         imageView.setOnClickListener(new View.OnClickListener() {
@@ -140,11 +143,22 @@ public class GroupInfoActivity extends Activity {
                 int column = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER);
                 Member member = new Member();
                 member.phone_number = cursor.getString(column);
+                member.phone_number = Phone.getFormatPhoneNumberFormat(member.phone_number);
 
                 int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                 member.name = cursor.getString(nameIndex);
 
                 memberListAdapter.add(memberListAdapter.getCount(), member);
+
+                NagneSharedPreferenceUtil.saveOjbectToSharedPreference(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
+                String[] resultList = NagneSharedPreferenceUtil.loadObjectFromSharedPreference(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
+
+                Dlog.i("result : ");
+                String result = null;
+                for (int i = 0; i < resultList.length; ++i) {
+                    result += resultList[i];
+                }
+                Dlog.i(result);
             }
 
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
