@@ -96,6 +96,12 @@ public class NagneSharedPreferenceUtil {
         return convertStringToArray(valueList);
     }
 
+    public static String getValue(Activity activity, String fileName, String key) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
+        String temp = sharedPreferences.getString(key, null);
+        return temp;
+    }
+
     private static boolean putStringInPreferences(Activity activity, String fileName, String key, String value) {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
