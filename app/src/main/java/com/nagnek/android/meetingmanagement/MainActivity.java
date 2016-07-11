@@ -31,7 +31,7 @@ public class MainActivity extends Activity {
     private final String GROUP_LIST_KEY = "GROUP_LIST_KEY";
     String groupName = null;
     ArrayList<Group> groupList = null;
-    public static int groupNumber;
+    private int groupNumber;
 
     ListView groupListView = null;
     private GroupListAdapter groupListAdatper = null;
@@ -57,12 +57,16 @@ public class MainActivity extends Activity {
             for (int i = 0; i < groupNumber; ++i) {
                 String[] resultGroupInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, i);
                 Group group;
-                if (resultGroupInfo[0].equals("null")) {
-                    group = new Group(resultGroupInfo[1], null);
-                } else {
-                    group = new Group(resultGroupInfo[1], Uri.parse(resultGroupInfo[0]));
+                if(resultGroupInfo != null) {
+                    if(resultGroupInfo.length == 2) {
+                        if (resultGroupInfo[0].equals("null")) {
+                            group = new Group(resultGroupInfo[1], null);
+                        } else {
+                            group = new Group(resultGroupInfo[1], Uri.parse(resultGroupInfo[0]));
+                        }
+                        groupList.add(group);
+                    }
                 }
-                groupList.add(group);
             }
         } else {
             groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);

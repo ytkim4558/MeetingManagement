@@ -2,6 +2,7 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -46,7 +47,6 @@ public class GroupInfoActivity extends Activity {
     private String number = null; // 멤버 전화번호
     private String groupName = null;
     private TextView groupNameText = null;
-    private String strPhotoName = null;
     public static int group_position = 0;
 
     @Override
@@ -54,13 +54,14 @@ public class GroupInfoActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
         Dlog.i("onCreate()");
+
         Intent intent = getIntent();
-        memberList = new ArrayList<Member>();
         if (intent != null) {
             groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
             groupImageUri = intent.getParcelableExtra(MainActivity.GROUP_IMAGE_URI);
             group_position = intent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
         }
+        memberList = new ArrayList<Member>();
         int memberNumber = 0;
 
         String memberNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + Storage.MEMBER_NUMBER); // 멤버리스트 수 = 그룹위치숫자그룹숫자
@@ -166,6 +167,7 @@ public class GroupInfoActivity extends Activity {
 
                 int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                 member.name = cursor.getString(nameIndex);
+                cursor.close();
                 memberListAdapter.add(memberListAdapter.getCount(), member);
             }
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
@@ -176,6 +178,8 @@ public class GroupInfoActivity extends Activity {
                 //배치해놓은 ImageView에 set
                 imageView.setImageBitmap(image_bitmap);
                 image_bitmap = null;
+                Group group = new Group(groupName, groupImageUri);
+                NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(this, Storage.SAVE_MEMBER_INFO_FILE, group, group_position);
             }
         } else if (requestCode == REQ_CODE_SELECT_MEMBER_LIST_ITEM) {
             if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO) {
@@ -297,4 +301,14 @@ public class GroupInfoActivity extends Activity {
             startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + number)));
         }
     }
+
+    @Override
+    public void onBackPressed() {
+        Intent intent = new Intent();
+        intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
+        intent.putExtra(MainActivity.GROUP_IMAGE_URI, groupImageUri);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+    }
+
 }

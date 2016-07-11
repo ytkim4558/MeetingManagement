@@ -31,9 +31,7 @@ public class GroupListAdapter extends BaseAdapter {
         this.context = context;
         this.groupList = groupList;
         this.layoutInflater = LayoutInflater.from(context);
-        Dlog.i("체크");
         blank = context.getResources().getDrawable(R.drawable.blank);
-        Dlog.i("후후");
     }
 
     @Override
