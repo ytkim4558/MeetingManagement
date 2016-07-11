@@ -1,5 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -13,7 +14,9 @@ import android.widget.TextView;
 
 import com.nagnek.android.externalIntent.Message;
 import com.nagnek.android.externalIntent.Phone;
+import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
 
@@ -132,12 +135,18 @@ public class MemberListAdapter extends BaseAdapter {
     }
 
     public void add(int index, Member member) {
+        NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, member, GroupInfoActivity.group_position + "|" + this.getCount());
         memberList.add(index, member);
+        NagneSharedPreferenceUtil.saveValueToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, this.getCount(), GroupInfoActivity.group_position + "|" + Storage.MEMBER_NUMBER);
         notifyDataSetChanged();
     }
 
     public void delete(int index) {
         memberList.remove(index);
+        // group_position|position 을 키로 둠. 해당 키 파일 제거
+        NagneSharedPreferenceUtil.removeKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, GroupInfoActivity.group_position + "|" + index);
+        // 멤버 수를 업데이트 하기 위함
+        NagneSharedPreferenceUtil.saveValueToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, this.getCount(), GroupInfoActivity.group_position + "|" + Storage.MEMBER_NUMBER);
         notifyDataSetChanged();
     }
 
@@ -148,6 +157,7 @@ public class MemberListAdapter extends BaseAdapter {
 
     public void set(int index, Member member) {
         memberList.set(index, member);
+        NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, member, GroupInfoActivity.group_position + "|" + index);
         notifyDataSetChanged();
     }
 

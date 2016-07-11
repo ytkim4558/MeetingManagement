@@ -1,6 +1,7 @@
 package com.nagnek.android.nagneAndroidUtil;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.nagnek.android.debugLog.Dlog;
@@ -95,6 +96,25 @@ public class NagneSharedPreferenceUtil {
         return SUCCESS;
     }
 
+    public static int saveObjectToSharedPreferenceUsingKey(Activity activity, String fileName, Object object, String key) {
+        Class aClass = object.getClass();
+        Field[] fields = aClass.getDeclaredFields();
+        Dlog.i("key : " + key);
+        NagneSharedPreferenceUtil.removeKey(activity, fileName, key);
+
+        for (Field field : fields) {
+            if(field.getName().contentEquals("CREATOR")) {
+                continue;
+            }
+            Object fieldValue = NagneReflect.getFieldValue(object, field.getName());
+            String fieldStringValue = String.valueOf(fieldValue);
+            Dlog.i(fieldStringValue);
+            NagneSharedPreferenceUtil.appendValue(activity, fileName, key, fieldStringValue);
+        }
+
+        return SUCCESS;
+    }
+
     public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, int key) {
         String keyString = String.valueOf(key);
         Dlog.i("keyString " + keyString);
@@ -142,7 +162,9 @@ public class NagneSharedPreferenceUtil {
     public static boolean appendValue(Activity activity, String fileName, String key, String value) {
         //Get previous value items
         String valueList = getStringFromPreferences(activity, fileName, null, key);
-        Dlog.i("valueList : " + valueList + "| key : " + key + "| value : " + value);
+        Dlog.i("key : " + key);
+        Dlog.i("valueList : " + valueList);
+        Dlog.i("value : " + value);
         // Append new Value item
         if (valueList != null) {
             valueList = valueList + "," + value;

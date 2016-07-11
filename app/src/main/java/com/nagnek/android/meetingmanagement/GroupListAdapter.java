@@ -1,5 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -11,7 +12,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nagnek.android.debugLog.Dlog;
+import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
 
@@ -95,12 +98,16 @@ public class GroupListAdapter extends BaseAdapter {
     }
 
     public void add(int index, Group group) {
+        NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, group, this.getCount());
         groupList.add(index, group);
+        NagneSharedPreferenceUtil.saveValueToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, this.getCount(), Storage.GROUP_NUMBER);
         notifyDataSetChanged();
     }
 
     public void delete(int index) {
         groupList.remove(index);
+        NagneSharedPreferenceUtil.removeKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, index);
+        NagneSharedPreferenceUtil.saveValueToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, this.getCount(), Storage.GROUP_NUMBER);
         notifyDataSetChanged();
     }
 
@@ -111,6 +118,7 @@ public class GroupListAdapter extends BaseAdapter {
 
     public void set(int index, Group group) {
         groupList.set(index, group);
+        NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey((Activity) context, Storage.SAVE_MEMBER_INFO_FILE, group, index);
         notifyDataSetChanged();
     }
 

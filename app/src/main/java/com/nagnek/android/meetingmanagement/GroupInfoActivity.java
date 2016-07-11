@@ -42,12 +42,12 @@ public class GroupInfoActivity extends Activity {
     ArrayList<Member> memberList = null;
     MemberListAdapter memberListAdapter = null;
     ListView memberListView = null;
-    int group_position;
     //private TextView memberNameView = null;
     private String number = null; // 멤버 전화번호
     private String groupName = null;
     private TextView groupNameText = null;
     private String strPhotoName = null;
+    public static int group_position = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,11 +56,35 @@ public class GroupInfoActivity extends Activity {
         Dlog.i("onCreate()");
         Intent intent = getIntent();
         memberList = new ArrayList<Member>();
-        memberList = new ArrayList<Member>();
         if (intent != null) {
             groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
             groupImageUri = intent.getParcelableExtra(MainActivity.GROUP_IMAGE_URI);
             group_position = intent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
+        }
+        int memberNumber = 0;
+
+        String memberNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + Storage.MEMBER_NUMBER); // 멤버리스트 수 = 그룹위치숫자그룹숫자
+        if(memberNumberString == null) {
+            memberNumber = 0;
+        } else {
+            memberNumber = Integer.parseInt(memberNumberString);
+        }
+        Dlog.i("멤버 수 : " + memberNumber);
+        if(memberNumber != 0) {
+            for(int i = 0; i < memberNumber; ++i) {
+                String[] resultMemberInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + i);
+                if(resultMemberInfo != null) {
+                    Member member = new Member();
+                    if (resultMemberInfo[0].equals("null")) {
+                        member.imageUri = null;
+                    } else {
+                        member.imageUri = Uri.parse(resultMemberInfo[0]);
+                    }
+                    member.phone_number = resultMemberInfo[2];
+                    member.name = resultMemberInfo[1];
+                    memberList.add(member);
+                }
+            }
         }
 
         // 어댑터를 생성하고 데이터 설정
@@ -128,7 +152,7 @@ public class GroupInfoActivity extends Activity {
                 // 선택한 결과는 Uri 리턴되며 해당 Uri를 쿼리하여 얻어오게 된다
                 Uri contactUri = data.getData();
                 String[] projection = {ContactsContract.CommonDataKinds.Phone.NUMBER, //연락처
-                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}; // 연락처 이
+                        ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME}; // 연락처 이름
 
                 // 주의 : UI의 블락킹 때문에라도(화면 버벅거림 쿼리 실행은 별도의 스레드에서 처리하는게 좋다
                 Cursor cursor = getContentResolver().query(contactUri, projection, null, null, null);
@@ -142,20 +166,8 @@ public class GroupInfoActivity extends Activity {
 
                 int nameIndex = cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME);
                 member.name = cursor.getString(nameIndex);
-
                 memberListAdapter.add(memberListAdapter.getCount(), member);
-
-                NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKeyFieldName(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
-                String[] resultList = NagneSharedPreferenceUtil.loadObjectFromSharedPreferenceUsingKeyFieldName(this, Storage.SAVE_MEMBER_INFO_FILE, member, "phone_number");
-
-                Dlog.i("result : ");
-                String result = null;
-                for (int i = 0; i < resultList.length; ++i) {
-                    result += resultList[i];
-                }
-                Dlog.i(result);
             }
-
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 Bitmap image_bitmap = null;
@@ -168,7 +180,6 @@ public class GroupInfoActivity extends Activity {
         } else if (requestCode == REQ_CODE_SELECT_MEMBER_LIST_ITEM) {
             if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_EDIT_MEMBER_INFO) {
                 Dlog.d("RESULT_CODE_EDIT_MEMBER_INFO");
-
                 Member member = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
                 int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
                 memberListAdapter.set(position, member);
@@ -262,7 +273,6 @@ public class GroupInfoActivity extends Activity {
         // 이미지를 onSavedInstanceState 매개 변수인 번들에 저장한다.
         if (groupImageUri != null) {
             outState.putParcelable(BACKUP_GROUP_IMAGE_URI, groupImageUri);
-            Dlog.i("저장");
         }
 
         outState.putInt(BACKUP_GROUP_POSITION_KEY, group_position);
