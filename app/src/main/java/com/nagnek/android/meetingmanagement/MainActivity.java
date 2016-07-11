@@ -57,13 +57,18 @@ public class MainActivity extends Activity {
             for (int i = 0; i < groupNumber; ++i) {
                 String[] resultGroupInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, i);
                 Group group;
-                if(resultGroupInfo != null) {
-                    if(resultGroupInfo.length == 2) {
+                if (resultGroupInfo != null) {
+                    if (resultGroupInfo.length == 2) {
+                        Uri imageUri = null;
                         if (resultGroupInfo[0].equals("null")) {
-                            group = new Group(resultGroupInfo[1], null);
+                            imageUri = null;
                         } else {
-                            group = new Group(resultGroupInfo[1], Uri.parse(resultGroupInfo[0]));
+                            imageUri = Uri.parse(resultGroupInfo[0]);
                         }
+                        if (resultGroupInfo[1].equals("null")) {
+                            resultGroupInfo[1] = null;
+                        }
+                        group = new Group(resultGroupInfo[1], imageUri);
                         groupList.add(group);
                     }
                 }

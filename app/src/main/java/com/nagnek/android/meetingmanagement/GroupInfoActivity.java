@@ -75,15 +75,25 @@ public class GroupInfoActivity extends Activity {
             for(int i = 0; i < memberNumber; ++i) {
                 String[] resultMemberInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + i);
                 if(resultMemberInfo != null) {
-                    Member member = new Member();
-                    if (resultMemberInfo[0].equals("null")) {
-                        member.imageUri = null;
-                    } else {
-                        member.imageUri = Uri.parse(resultMemberInfo[0]);
+                    if(resultMemberInfo.length == 3) {
+                        Member member = new Member();
+                        if (resultMemberInfo[0].equals("null")) {
+                            member.imageUri = null;
+                        } else {
+                            member.imageUri = Uri.parse(resultMemberInfo[0]);
+                        }
+                        if (resultMemberInfo[2].equals("null")) {
+                            resultMemberInfo[2] = null;
+                        } else {
+                            member.phone_number = resultMemberInfo[2];
+                        }
+                        if (resultMemberInfo[1].equals("null")) {
+                            resultMemberInfo[1] = null;
+                        } else {
+                            member.name = resultMemberInfo[1];
+                        }
+                        memberList.add(member);
                     }
-                    member.phone_number = resultMemberInfo[2];
-                    member.name = resultMemberInfo[1];
-                    memberList.add(member);
                 }
             }
         }

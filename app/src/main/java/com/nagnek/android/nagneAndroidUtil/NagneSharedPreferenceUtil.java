@@ -46,54 +46,11 @@ public class NagneSharedPreferenceUtil {
     }
 
     public static int saveObjectToSharedPreferenceUsingKeyFieldName(Activity activity, String fileName, Object object, int keyFieldName) {
-        Class aClass = object.getClass();
-        Field[] fields = aClass.getDeclaredFields();
-        Dlog.i("keyField " + keyFieldName);
-        Object key = NagneReflect.getFieldValue(object, String.valueOf(keyFieldName));
-        String keyString = String.valueOf(key);
-        Dlog.i("keyString " + keyString);
-        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
-
-        for (Field field : fields) {
-            if(field.getName().contentEquals("CREATOR")) {
-                continue;
-            }
-            Object fieldValue = NagneReflect.getFieldValue(object, field.getName());
-            String fieldStringValue = String.valueOf(fieldValue);
-            Dlog.i(fieldStringValue);
-            NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, fieldStringValue);
-        }
-
-        return SUCCESS;
-    }
-
-    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, String key) {
-        String keyString = String.valueOf(key);
-        Dlog.i("keyString " + keyString);
-        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
-        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, String.valueOf(value));
-
-        return SUCCESS;
+        return saveObjectToSharedPreferenceUsingKeyFieldName(activity, fileName, object, String.valueOf(keyFieldName));
     }
 
     public static int saveObjectToSharedPreferenceUsingKey(Activity activity, String fileName, Object object, int key) {
-        Class aClass = object.getClass();
-        Field[] fields = aClass.getDeclaredFields();
-        String keyString = String.valueOf(key);
-        Dlog.i("keyString " + keyString);
-        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
-
-        for (Field field : fields) {
-            if(field.getName().contentEquals("CREATOR")) {
-                continue;
-            }
-            Object fieldValue = NagneReflect.getFieldValue(object, field.getName());
-            String fieldStringValue = String.valueOf(fieldValue);
-            Dlog.i(fieldStringValue);
-            NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, fieldStringValue);
-        }
-
-        return SUCCESS;
+        return saveObjectToSharedPreferenceUsingKey(activity, fileName, object, String.valueOf(key));
     }
 
     public static int saveObjectToSharedPreferenceUsingKey(Activity activity, String fileName, Object object, String key) {
@@ -115,30 +72,20 @@ public class NagneSharedPreferenceUtil {
         return SUCCESS;
     }
 
-    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, int key) {
-        String keyString = String.valueOf(key);
-        Dlog.i("keyString " + keyString);
-        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
-        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, String.valueOf(value));
+    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, String key) {
+        return saveValueToSharedPreferenceUsingKey(activity, fileName, String.valueOf(value), key);
+    }
 
-        return SUCCESS;
+    public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, int value, int key) {
+        return saveValueToSharedPreferenceUsingKey(activity, fileName, String.valueOf(value), String.valueOf(key));
     }
 
     public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, String value, int key) {
-        String keyString = String.valueOf(key);
-        Dlog.i("keyString " + keyString);
-        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
-        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, value);
-
-        return SUCCESS;
+        return saveValueToSharedPreferenceUsingKey(activity, fileName, value, String.valueOf(key));
     }
 
     public static int saveValueToSharedPreferenceUsingKey(Activity activity, String fileName, String value, String key) {
-        String keyString = String.valueOf(key);
-        Dlog.i("keyString " + keyString);
-        NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
-        NagneSharedPreferenceUtil.appendValue(activity, fileName, keyString, value);
-
+        NagneSharedPreferenceUtil.setValue(activity, fileName, key, value);
         return SUCCESS;
     }
 
@@ -162,8 +109,10 @@ public class NagneSharedPreferenceUtil {
     public static boolean appendValue(Activity activity, String fileName, String key, String value) {
         //Get previous value items
         String valueList = getStringFromPreferences(activity, fileName, null, key);
+        if(value == null || value.equals("")) {
+            value = "null";
+        }
         Dlog.i("key : " + key);
-        Dlog.i("valueList : " + valueList);
         Dlog.i("value : " + value);
         // Append new Value item
         if (valueList != null) {
@@ -171,8 +120,14 @@ public class NagneSharedPreferenceUtil {
         } else {
             valueList = value;
         }
+        Dlog.i("valueList : " + valueList);
         // Save in Shared Preferences
         return putStringInPreferences(activity, fileName, key, valueList);
+    }
+
+    public static boolean setValue(Activity activity, String fileName, String key, String value) {
+        // Save in Shared Preferences
+        return putStringInPreferences(activity, fileName, key, value);
     }
 
     public static int removeKey(Activity activity, String fileName, String key) {
@@ -191,19 +146,7 @@ public class NagneSharedPreferenceUtil {
     }
 
     public static int removeKey(Activity activity, String fileName, int key) {
-        SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
-        String keyString = String.valueOf(key);
-        String temp = sharedPreferences.getString(keyString, null);
-        if (temp == null) {
-            Dlog.i("key" + key + "가 없음");
-            return FAIL_NONE_EXIST_ITEM;
-        } else {
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(keyString);
-            editor.apply();
-            Dlog.i("key" + key + "제거");
-        }
-        return SUCCESS;
+        return removeKey(activity, fileName, String.valueOf(key));
     }
 
     public static String[] getValueList(Activity activity, String fileName, String key) {
@@ -216,19 +159,17 @@ public class NagneSharedPreferenceUtil {
     }
 
     public static String[] getValueList(Activity activity, String fileName, int key) {
-        String keyString = String.valueOf(key);
-        String valueList = getStringFromPreferences(activity, fileName, null, keyString);
-        Dlog.i("valueListFinal : " + valueList);
-        if(valueList == null) {
-            return null;
-        }
-        return convertStringToArray(valueList);
+        return getValueList(activity, fileName, String.valueOf(key));
     }
 
     public static String getValue(Activity activity, String fileName, String key) {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
         String temp = sharedPreferences.getString(key, null);
         return temp;
+    }
+
+    public static String getValue(Activity activity, String fileName, int key) {
+        return getValue(activity, fileName, String.valueOf(key));
     }
 
     private static boolean putStringInPreferences(Activity activity, String fileName, String key, String value) {
@@ -248,5 +189,13 @@ public class NagneSharedPreferenceUtil {
      private static String[] convertStringToArray(String str) {
         String[] arr = str.split(",");
         return arr;
+    }
+
+    public static boolean clearSharedPreference(Activity activity, String fileName) {
+        SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.clear();
+        editor.apply();
+        return true;
     }
 }
