@@ -17,29 +17,30 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON">
+    <style name="IDSTYLE_IMAGEVIEW_BASE">
+        <item name="android:background">#00000000</item>
+        <item name="android:adjustViewBounds">true</item>
+    </style>
+
+    <style name="IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON" parent="IDSTYLE_IMAGEVIEW_BASE">
         <item name="android:layout_width">34dp</item>
         <item name="android:layout_height">34dp</item>
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:layout_marginRight">4dp</item>
         <item name="android:layout_marginBottom">4dp</item>
         <item name="android:layout_marginTop">4dp</item>
-        <item name="android:background">#00000000</item>
-        <item name="android:adjustViewBounds">true</item>
     </style>
 
-    <style name="IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON">
+    <style name="IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" parent="IDSTYLE_IMAGEVIEW_BASE">
         <item name="android:layout_width">100dp</item>
         <item name="android:layout_height">100dp</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>
         <item name="android:layout_marginTop">10dp</item>
-        <item name="android:background">#00000000</item>
-        <item name="android:adjustViewBounds">true</item>
     </style>
 
-    <style name="IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE">
+    <style name="IDSTYLE_TEXTVIEW_BASE">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">5dp</item>
@@ -47,17 +48,13 @@
         <item name="android:layout_marginBottom">5dp</item>
         <item name="android:layout_marginTop">5dp</item>
         <item name="android:textSize">20dp</item>
+    </style>
+
+    <style name="IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE" parent="IDSTYLE_TEXTVIEW_BASE">
         <item name="android:textStyle">bold</item>
     </style>
 
-    <style name="IDSTYLE_TEXTVIEW_BASE_ITEM_CONTENT">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">5dp</item>
-        <item name="android:layout_marginRight">5dp</item>
-        <item name="android:layout_marginBottom">5dp</item>
-        <item name="android:layout_marginTop">5dp</item>
-        <item name="android:textSize">20dp</item>
+    <style name="IDSTYLE_TEXTVIEW_BASE_ITEM_CONTENT" parent="IDSTYLE_TEXTVIEW_BASE">
     </style>
 
 </resources>
