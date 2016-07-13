@@ -2,7 +2,7 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
@@ -22,7 +23,10 @@ import java.util.ArrayList;
  * Created by yongtakpc on 2016. 7. 7..
  */
 public class GroupListAdapter extends BaseAdapter {
-    static Drawable blank;   // 그룹 이미지
+    private int groupImageId;   // 그룹 이미지
+    private float groupImageLength;
+    private float pushIconLength;
+
     Activity activity = null;
     ArrayList<Group> groupList = null;
     LayoutInflater layoutInflater = null;
@@ -31,7 +35,9 @@ public class GroupListAdapter extends BaseAdapter {
         this.activity = activity;
         this.groupList = groupList;
         this.layoutInflater = LayoutInflater.from(this.activity);
-        blank = this.activity.getResources().getDrawable(R.drawable.group);
+        groupImageId = R.drawable.group;
+        groupImageLength = MainActivity.showable_icon_length;
+        pushIconLength = MainActivity.push_icon_length;
     }
 
     @Override
@@ -107,9 +113,11 @@ public class GroupListAdapter extends BaseAdapter {
         if (viewHolder.groupImageView != null) {
             Uri imageUri = groupList.get(position).imageUri;
             if (imageUri != null) {
-                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri));
+                Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, groupImageLength, groupImageLength);
+                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
             } else {
-                viewHolder.groupImageView.setImageDrawable(blank);
+                Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), groupImageId, groupImageLength, groupImageLength);
+                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
             }
         }
 

@@ -15,7 +15,7 @@
         style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
         android:layout_toRightOf="@id/member_id"
         android:layout_centerInParent="true"
-        android:src="@drawable/add_user"/>
+        android:src="@drawable/user"/>
     <TextView android:id="@+id/member_name"
         style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
         android:layout_toRightOf="@id/member_image"

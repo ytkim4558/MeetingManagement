@@ -2,6 +2,7 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import com.nagnek.android.externalIntent.Message;
 import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
@@ -25,16 +27,20 @@ import java.util.ArrayList;
 public class MemberListAdapter extends BaseAdapter {
     public final static String SHOW_MEMBER_KEY = "com.nagnek.android.meetingmanagement.SHOW_MEMBER";
     private static final String MESSAGE_BODY = "안녕하세요 김용탁입니다.";
-    static Drawable face;   // 얼굴 이미지
+    static int memberImageId;   // 멤버 이미지 id
     Activity activity = null;
     ArrayList<Member> memberList = null;
     LayoutInflater layoutInflater = null;
+    private float memberImageLength;
+    private float pushIconLength;
 
     public MemberListAdapter(Activity activity, ArrayList<Member> memberList) {
         this.activity = activity;
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(activity);
-        face = activity.getResources().getDrawable(R.drawable.add_user);
+        memberImageId = R.drawable.user;
+        memberImageLength = MainActivity.showable_icon_length;
+        pushIconLength = MainActivity.push_icon_length;
     }
 
     @Override
@@ -114,6 +120,7 @@ public class MemberListAdapter extends BaseAdapter {
                 activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO);
             }
         });
+
         viewHolder.deleteMemberImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,12 +136,15 @@ public class MemberListAdapter extends BaseAdapter {
         if (viewHolder.phoneNumberTextView != null) {
             viewHolder.phoneNumberTextView.setText(memberList.get(position).phone_number);
         }
+
         if (viewHolder.memberImageView != null) {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
-                viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri));
+                Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, memberImageLength, memberImageLength);
+                viewHolder.memberImageView.setImageBitmap(bitmap);
             } else {
-                viewHolder.memberImageView.setImageDrawable(face);
+                Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), memberImageId, memberImageLength, memberImageLength);
+                viewHolder.memberImageView.setImageBitmap(bitmap);
             }
         }
 

@@ -2,6 +2,7 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
+import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
@@ -25,6 +28,8 @@ public class MainActivity extends Activity {
     public static final String GROUP_INFO = "com.nagnek.android.meetingmanagement.GROUP_INFO";
     public static final int REQ_CODE_SELECT_GROUP_LIST_ITEM = 17;
     public static final String POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY";
+    public static float showable_icon_length;
+    public static float push_icon_length;
 
     static final int NEW_GROUP_REQUEST = 1;
     static final int NEW_GROUP_GENERATE = 2;
@@ -42,6 +47,20 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Dlog.i("onCreate()");
+        // ====================================================================================
+        //
+        // 1. 현재 아이템의 내용을 변경할 뷰를 찾는다.
+        // ====================================================================================
+        ImageView groupImageView = (ImageView) findViewById(R.id.group_image);
+        ImageView addGroupButton = (ImageView) findViewById(R.id.add_group_button);
+        // ====================================================================================
+        //
+        // 2. 데이터 설정한다.
+        // ====================================================================================
+        showable_icon_length = getResources().getDimension(R.dimen.image_view_showable_icon_length);
+        push_icon_length = getResources().getDimension(R.dimen.image_view_push_icon_length);
+        Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.group, showable_icon_length, showable_icon_length);
+        Bitmap addGroupImageButtonImage = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, push_icon_length, push_icon_length);
         String groupNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER);
         Dlog.i(groupNumberString);
         groupNumber = 0;
@@ -77,6 +96,7 @@ public class MainActivity extends Activity {
         } else {
             groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
         }
+
         // 어댑터를 생성하고 데이터 설정
         groupListAdatper = new GroupListAdapter(this, groupList);
 
@@ -95,6 +115,13 @@ public class MainActivity extends Activity {
             }
         });
 
+        if (savedInstanceState != null) {
+            groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
+        }
+        // ====================================================================================
+        //
+        // 3. 리스너 등록한다
+        // ====================================================================================
         groupListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -111,7 +138,6 @@ public class MainActivity extends Activity {
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
 
 
-        ImageView addGroupButton = (ImageView) findViewById(R.id.add_group_button);
         addGroupButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -119,10 +145,12 @@ public class MainActivity extends Activity {
                 startActivityForResult(newGroupActivityIntent, NEW_GROUP_REQUEST);
             }
         });
+        // ====================================================================================
 
-        if (savedInstanceState != null) {
-            groupList = savedInstanceState.getParcelableArrayList(GROUP_LIST_KEY);
-        }
+        // 4. 레이아웃 갱신한다.
+        // ====================================================================================
+        groupImageView.setImageBitmap(groupImageBitmap);
+        addGroupButton.setImageBitmap(addGroupImageButtonImage);
     }
 
     @Override
