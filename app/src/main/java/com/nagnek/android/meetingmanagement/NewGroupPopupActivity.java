@@ -29,8 +29,8 @@ public class NewGroupPopupActivity extends PopupActivity {
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
         // 타이틀 제거
         setContentView(R.layout.activity_new_group);
-        Button okButton = (Button) findViewById(R.id.ok_button);
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        ImageView okButton = (ImageView) findViewById(R.id.ok_button);
+        ImageView cancelButton = (ImageView) findViewById(R.id.cancel_button);
         groupImageView = (ImageView) findViewById(R.id.group_image);
         groupImageView.setOnClickListener(new View.OnClickListener() {
             @Override

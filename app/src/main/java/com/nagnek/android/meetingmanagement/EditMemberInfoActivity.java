@@ -26,8 +26,8 @@ public class EditMemberInfoActivity extends Activity {
     ImageView imageView = null;
     EditText memberName = null;
     EditText phoneNumber = null;
-    Button okButton = null;
-    Button cancelButton = null;
+    ImageView okButton = null;
+    ImageView cancelButton = null;
     int position;
 
     @Override
@@ -56,8 +56,8 @@ public class EditMemberInfoActivity extends Activity {
         imageView = (ImageView) findViewById(R.id.member_image);
         memberName = (EditText) findViewById(R.id.member_name);
         phoneNumber = (EditText) findViewById(R.id.phone_number);
-        okButton = (Button) findViewById(R.id.ok_button);
-        cancelButton = (Button) findViewById(R.id.cancel_button);
+        okButton = (ImageView) findViewById(R.id.ok_button);
+        cancelButton = (ImageView) findViewById(R.id.cancel_button);
         // ====================================================================================
 
         // 뷰에 리스너 등록

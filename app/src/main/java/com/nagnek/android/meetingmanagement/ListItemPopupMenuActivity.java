@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 
 import com.nagnek.android.debugLog.Dlog;
 
@@ -34,9 +35,9 @@ public class ListItemPopupMenuActivity extends PopupActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.list_item_long_click_popup_menu);
-        Button editButton = (Button) findViewById(R.id.edit_button);
-        Button deleteButton = (Button) findViewById(R.id.delete_button);
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
+        ImageView editButton = (ImageView) findViewById(R.id.edit_button);
+        ImageView deleteButton = (ImageView) findViewById(R.id.delete_button);
+        ImageView cancelButton = (ImageView) findViewById(R.id.cancel_button);
 
 
         editButton.setOnClickListener(new View.OnClickListener() {

@@ -1,6 +1,7 @@
 package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
@@ -30,7 +31,7 @@ public class GroupListAdapter extends BaseAdapter {
         this.activity = activity;
         this.groupList = groupList;
         this.layoutInflater = LayoutInflater.from(this.activity);
-        blank = this.activity.getResources().getDrawable(R.drawable.blank);
+        blank = this.activity.getResources().getDrawable(R.drawable.group);
     }
 
     @Override
@@ -49,7 +50,7 @@ public class GroupListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         // 1. 리스트의 한 항목에 해당하는 레이아웃을 생성한다
         // 어댑터뷰가 재사용할 뷰를 넘겨주지 않은 경우에만 새로운 뷰를 생성한다.
         // ====================================================================================
@@ -67,7 +68,9 @@ public class GroupListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.groupNameTextView = (TextView) itemLayout.findViewById(R.id.group_name);
             viewHolder.groupIdTextView = (TextView) itemLayout.findViewById(R.id.group_id);
-            viewHolder.imageView = (ImageView) itemLayout.findViewById(R.id.group_image);
+            viewHolder.groupImageView = (ImageView) itemLayout.findViewById(R.id.group_image);
+            viewHolder.editGroupImageButton = (ImageView) itemLayout.findViewById(R.id.edit_button);
+            viewHolder.deleteGroupImageButton = (ImageView) itemLayout.findViewById(R.id.delete_button);
             itemLayout.setTag(viewHolder);
             // ------------------------------------------------------------------------------------
         } else {
@@ -77,17 +80,36 @@ public class GroupListAdapter extends BaseAdapter {
             viewHolder = (ViewHolder) itemLayout.getTag();
         }
         // ====================================================================================
+        //
+        // 3. 리스너 등록한다 (position마다 다른)
+        // ====================================================================================
+        viewHolder.editGroupImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, EditGroupInfoActivity.class);
+                intent.putExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO, groupList.get(position));
+                intent.putExtra(MainActivity.GROUP_LIST_POSITION, position);
+                activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_GROUP_INFO);
+            }
+        });
+        viewHolder.deleteGroupImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                delete(position);
+            }
+        });
+        // ====================================================================================
 
         // 4. 레이아웃 갱신한다.
         // ====================================================================================
         viewHolder.groupIdTextView.setText(String.valueOf(position + 1));
         viewHolder.groupNameTextView.setText(groupList.get(position).name);
-        if (viewHolder.imageView != null) {
+        if (viewHolder.groupImageView != null) {
             Uri imageUri = groupList.get(position).imageUri;
             if (imageUri != null) {
-                viewHolder.imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri));
+                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri));
             } else {
-                viewHolder.imageView.setImageDrawable(blank);
+                viewHolder.groupImageView.setImageDrawable(blank);
             }
         }
 
@@ -177,7 +199,9 @@ public class GroupListAdapter extends BaseAdapter {
     class ViewHolder {
         TextView groupNameTextView;
         TextView groupIdTextView;
-        ImageView imageView;
+        ImageView groupImageView;
+        ImageView editGroupImageButton;
+        ImageView deleteGroupImageButton;
     }
 
     // 삭제된 아이템 이후 SharedPreference에서 저장된 데이터들을 인덱스 하나씩 당기는 함수.

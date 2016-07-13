@@ -3,20 +3,23 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
+    <TextView
+        style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
+        android:text="연락처 수정"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <Button android:id="@+id/cancel_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="취소" />
 
-        <Button android:id="@+id/ok_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+        <ImageView android:id="@+id/cancel_button"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
             android:layout_weight="1"
-            android:text="저장" />
+            android:src="@drawable/back"/>
+
+        <ImageView android:id="@+id/ok_button"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+            android:layout_weight="1"
+            android:src="@drawable/save"/>
     </LinearLayout>
 
     <LinearLayout
@@ -25,9 +28,8 @@
         android:gravity="center_vertical">
 
         <ImageView android:id="@+id/member_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/blank" />
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
+            android:src="@drawable/add_user" />
 
         <EditText
             android:id="@+id/member_name"
@@ -52,6 +54,4 @@
         android:hint="010-0000-0000"
         android:inputType="phone"
         android:textSize="20dp" />
-
-
 </LinearLayout>

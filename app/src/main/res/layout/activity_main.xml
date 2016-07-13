@@ -23,22 +23,18 @@
         android:baselineAligned="true"
         android:gravity="center_horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:text="그룹 리스트"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
+            android:src="@drawable/group"
+            android:layout_gravity="center_vertical" />
 
-        <Button
+        <ImageView
             android:id="@+id/add_group_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:background="#00000000"
-            android:drawableLeft="@android:drawable/alert_dark_frame"
-            android:layout_gravity="top"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+            android:src="@drawable/add_group"
+            android:layout_gravity="center_vertical"
             android:text="그룹 추가"/>
     </LinearLayout>
 

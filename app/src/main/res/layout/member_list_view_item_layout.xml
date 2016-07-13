@@ -1,36 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_vertical"
     android:descendantFocusability="blocksDescendants">
     <TextView android:id="@+id/member_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
         android:text=" 1 "/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="이름:"/>
     <TextView android:id="@+id/member_name"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
+        style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
         android:text="홍길동"
+        android:layout_weight="1"
         android:lines="1"
         />
-    <Button android:id="@+id/call_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="전화"/>
-    <Button android:id="@+id/message_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="문자"/>
-    <Button android:id="@+id/delete_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="삭제"/>
-
-
+    <ImageView android:id="@+id/call_button"
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+        android:src="@drawable/phone"
+        android:layout_gravity="right|center_vertical"/>
+    <ImageView android:id="@+id/message_button"
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+        android:src="@drawable/envelope"
+        android:layout_gravity="right|center_vertical"
+        />
+    <ImageView android:id="@+id/edit_button"
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+        android:src="@drawable/edit_user"
+        android:layout_gravity="right|center_vertical"/>
+    <ImageView android:id="@+id/delete_button"
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+        android:src="@drawable/delete_user"
+        android:layout_gravity="right|center_vertical"/>
 
 </LinearLayout>

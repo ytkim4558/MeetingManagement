@@ -30,8 +30,8 @@ public class EditGroupInfoActivity extends Activity {
     Group tempGroup;
     ImageView imageView = null;
     EditText groupNameEditText = null;
-    Button okButton = null;
-    Button cancelButton = null;
+    ImageView okButton = null;
+    ImageView cancelButton = null;
     int position;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -64,8 +64,8 @@ public class EditGroupInfoActivity extends Activity {
         // ====================================================================================
         imageView = (ImageView) findViewById(R.id.group_image);
         groupNameEditText = (EditText) findViewById(R.id.group_name);
-        okButton = (Button) findViewById(R.id.ok_button);
-        cancelButton = (Button) findViewById(R.id.cancel_button);
+        okButton = (ImageView) findViewById(R.id.ok_button);
+        cancelButton = (ImageView) findViewById(R.id.cancel_button);
         // ====================================================================================
 
         // 뷰에 리스너 등록

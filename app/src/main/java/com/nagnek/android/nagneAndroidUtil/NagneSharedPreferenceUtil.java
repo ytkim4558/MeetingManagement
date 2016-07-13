@@ -191,11 +191,16 @@ public class NagneSharedPreferenceUtil {
         return arr;
     }
 
-    public static boolean clearSharedPreference(Activity activity, String fileName) {
+    public static boolean clearSpecificSharedPreference(Activity activity, String fileName) {
         SharedPreferences sharedPreferences = activity.getSharedPreferences(fileName, Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPreferences.edit();
         editor.clear();
         editor.apply();
+        return true;
+    }
+
+    public static boolean clearAllSharedPreferences(Activity activity) {
+        activity.getSharedPreferences("YOUR_PREFS", 0).edit().clear().commit();
         return true;
     }
 }

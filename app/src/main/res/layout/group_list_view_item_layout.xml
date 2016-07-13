@@ -5,9 +5,7 @@
     android:gravity="center"
     android:descendantFocusability="blocksDescendants">
     <TextView android:id="@+id/group_id"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:gravity="right"
+        style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
         android:text=" 1 "/>
     <LinearLayout
         android:layout_width="wrap_content"
@@ -17,13 +15,17 @@
         android:orientation="vertical"
         android:gravity="center">
         <TextView android:id="@+id/group_name"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
             android:text="그룹 이름"/>
         <ImageView android:id="@+id/group_image"
-            android:layout_width="200dp"
-            android:layout_height="200dp"
-            android:src="@drawable/blank"/>
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
+            android:src="@drawable/group"/>
     </LinearLayout>
+    <ImageView android:id="@+id/edit_button"
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+        android:src="@drawable/edit_group"/>
+    <ImageView android:id="@+id/delete_button"
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+        android:src="@drawable/delete_group"/>
 
 </LinearLayout>

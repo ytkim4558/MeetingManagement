@@ -7,9 +7,8 @@
     android:baselineAligned="true">
 
     <ImageView android:id="@+id/group_image"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:src="@drawable/blank" />
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
+        android:src="@drawable/add_group" />
 
     <EditText android:id="@+id/group_name"
         android:layout_width="match_parent"
@@ -21,14 +20,12 @@
         android:layout_height="wrap_content"
         android:gravity="right">
 
-        <Button android:id="@+id/cancel_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="취소" />
+        <ImageView android:id="@+id/cancel_button"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+            android:src="@drawable/back"/>
 
-        <Button android:id="@+id/ok_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="확인" />
+        <ImageView android:id="@+id/ok_button"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+            android:src="@drawable/save"/>
     </LinearLayout>
 </LinearLayout>

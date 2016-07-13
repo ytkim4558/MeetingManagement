@@ -1,13 +1,13 @@
 package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -34,7 +34,7 @@ public class MemberListAdapter extends BaseAdapter {
         this.activity = activity;
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(activity);
-        face = activity.getResources().getDrawable(R.drawable.face);
+        face = activity.getResources().getDrawable(R.drawable.add_user);
     }
 
     @Override
@@ -72,11 +72,12 @@ public class MemberListAdapter extends BaseAdapter {
             viewHolder = new ViewHolder();
             viewHolder.memberNameTextView = (TextView) itemLayout.findViewById(R.id.member_name);
             viewHolder.memberIdTextView = (TextView) itemLayout.findViewById(R.id.member_id);
-            viewHolder.callButton = (Button) itemLayout.findViewById(R.id.call_button);
-            viewHolder.messageButton = (Button) itemLayout.findViewById(R.id.message_button);
-            viewHolder.deleteButton = (Button) itemLayout.findViewById(R.id.delete_button);
+            viewHolder.callButton = (ImageView) itemLayout.findViewById(R.id.call_button);
+            viewHolder.messageButton = (ImageView) itemLayout.findViewById(R.id.message_button);
             viewHolder.phoneNumberTextView = (TextView) itemLayout.findViewById(R.id.phone_number);
-            viewHolder.imageView = (ImageView) itemLayout.findViewById(R.id.member_image);
+            viewHolder.memberImageView = (ImageView) itemLayout.findViewById(R.id.member_image);
+            viewHolder.editMemberImageView = (ImageView) itemLayout.findViewById(R.id.edit_button);
+            viewHolder.deleteMemberImageView = (ImageView) itemLayout.findViewById(R.id.delete_button);
             itemLayout.setTag(viewHolder);
             // ------------------------------------------------------------------------------------
         } else {
@@ -104,14 +105,21 @@ public class MemberListAdapter extends BaseAdapter {
             }
         });
 
-        viewHolder.deleteButton.setOnClickListener(new View.OnClickListener() {
+        viewHolder.editMemberImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(activity, EditMemberInfoActivity.class);
+                intent.putExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO, memberList.get(position));
+                intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
+                activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO);
+            }
+        });
+        viewHolder.deleteMemberImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 delete(position);
             }
         });
-
-
         // ====================================================================================
 
         // 4. 레이아웃 갱신한다.
@@ -121,12 +129,12 @@ public class MemberListAdapter extends BaseAdapter {
         if (viewHolder.phoneNumberTextView != null) {
             viewHolder.phoneNumberTextView.setText(memberList.get(position).phone_number);
         }
-        if (viewHolder.imageView != null) {
+        if (viewHolder.memberImageView != null) {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
-                viewHolder.imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri));
+                viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri));
             } else {
-                viewHolder.imageView.setImageDrawable(face);
+                viewHolder.memberImageView.setImageDrawable(face);
             }
         }
 
@@ -225,11 +233,12 @@ public class MemberListAdapter extends BaseAdapter {
     class ViewHolder {
         TextView memberNameTextView;
         TextView memberIdTextView;
-        Button callButton;
-        Button messageButton;
-        Button deleteButton;
+        ImageView callButton;
+        ImageView messageButton;
         TextView phoneNumberTextView;
-        ImageView imageView;
+        ImageView memberImageView;
+        ImageView editMemberImageView;
+        ImageView deleteMemberImageView;
     }
 }
 

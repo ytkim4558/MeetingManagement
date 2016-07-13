@@ -2,6 +2,8 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -47,8 +49,8 @@ public class MemberInfoActivity extends Activity {
         TextView memberName = (TextView) findViewById(R.id.member_name);
         TextView phoneNumber = (TextView) findViewById(R.id.phone_number);
         ImageView memberImage = (ImageView) findViewById(R.id.member_image);
-        Button cancelButton = (Button) findViewById(R.id.cancel_button);
-        Button editButton = (Button) findViewById(R.id.edit_button);
+        ImageView cancelButton = (ImageView) findViewById(R.id.cancel_button);
+        ImageView editButton = (ImageView) findViewById(R.id.edit_button);
         // ====================================================================================
 
         // 리스너 등록
@@ -85,7 +87,6 @@ public class MemberInfoActivity extends Activity {
         if (member.phone_number != null) {
             phoneNumber.setText(member.phone_number);
         }
-
     }
 
     @Override
@@ -98,7 +99,6 @@ public class MemberInfoActivity extends Activity {
                 resultIntent = data;
                 member = receivedIntent.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
                 position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
-
                 // ====================================================================================
                 //
                 // 현재 아이템의 내용을 변경할 뷰를 찾는다.
@@ -106,8 +106,6 @@ public class MemberInfoActivity extends Activity {
                 TextView memberName = (TextView) findViewById(R.id.member_name);
                 TextView phoneNumber = (TextView) findViewById(R.id.phone_number);
                 ImageView memberImage = (ImageView) findViewById(R.id.member_image);
-                Button cancelButton = (Button) findViewById(R.id.cancel_button);
-                Button editButton = (Button) findViewById(R.id.edit_button);
                 // ====================================================================================
                 //
                 // 뷰 내용 변경

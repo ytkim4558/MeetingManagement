@@ -2,7 +2,6 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
@@ -10,7 +9,6 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -18,10 +16,9 @@ import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.externalIntent.Phone;
+import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
-
-import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
@@ -65,17 +62,17 @@ public class GroupInfoActivity extends Activity {
         int memberNumber = 0;
 
         String memberNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + Storage.MEMBER_NUMBER); // 멤버리스트 수 = 그룹위치숫자그룹숫자
-        if(memberNumberString == null) {
+        if (memberNumberString == null) {
             memberNumber = 0;
         } else {
             memberNumber = Integer.parseInt(memberNumberString);
         }
         Dlog.i("멤버 수 : " + memberNumber);
-        if(memberNumber != 0) {
-            for(int i = 0; i < memberNumber; ++i) {
+        if (memberNumber != 0) {
+            for (int i = 0; i < memberNumber; ++i) {
                 String[] resultMemberInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + i);
-                if(resultMemberInfo != null) {
-                    if(resultMemberInfo.length == 3) {
+                if (resultMemberInfo != null) {
+                    if (resultMemberInfo.length == 3) {
                         Member member = new Member();
                         if (resultMemberInfo[0].equals("null")) {
                             member.imageUri = null;
@@ -131,7 +128,7 @@ public class GroupInfoActivity extends Activity {
         });
 
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        Button addMemberButton = (Button) findViewById(R.id.add_member_button);
+        ImageView addMemberButton = (ImageView) findViewById(R.id.add_member_button);
         addMemberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -200,6 +197,12 @@ public class GroupInfoActivity extends Activity {
             } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_DELETE_MEMBER) {
                 int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
                 memberListAdapter.delete(position);
+            }
+        } else if (requestCode == ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO) {
+            if (resultCode == RESULT_OK) {
+                Member member = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
+                int position = data.getIntExtra(MEMBER_LIST_POSITION, 0);
+                memberListAdapter.set(position, member);
             }
         }
     }

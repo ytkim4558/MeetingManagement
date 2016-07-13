@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -110,7 +111,7 @@ public class MainActivity extends Activity {
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
 
 
-        Button addGroupButton = (Button) findViewById(R.id.add_group_button);
+        ImageView addGroupButton = (ImageView) findViewById(R.id.add_group_button);
         addGroupButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,9 +177,7 @@ public class MainActivity extends Activity {
                 group.imageUri = data.getParcelableExtra(NewGroupPopupActivity.NEW_GROUP_IMAGE);
                 groupListAdatper.add(groupListAdatper.getCount(), group);
             }
-        }
-
-        if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
+        } else if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
             if (resultCode == RESULT_OK) {
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
                 Dlog.i("position(" + position + ")반환");
@@ -193,6 +192,12 @@ public class MainActivity extends Activity {
             } else if (resultCode == ListItemPopupMenuActivity.RESULT_CODE_DELETE_GROUP_INFO) {
                 int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
                 groupListAdatper.delete(position);
+            }
+        } else if (requestCode == ListItemPopupMenuActivity.REQ_CODE_EDIT_GROUP_INFO) {
+            if (resultCode == RESULT_OK) {
+                Group group = data.getParcelableExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO);
+                int position = data.getIntExtra(GROUP_LIST_POSITION, 0);
+                groupListAdatper.set(position, group);
             }
         }
     }
