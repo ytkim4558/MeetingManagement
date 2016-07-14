@@ -24,6 +24,8 @@ import java.util.ArrayList;
  */
 public class GroupListAdapter extends BaseAdapter {
     private int groupImageId;   // 그룹 이미지
+    private int editGroupImageId; // 그룹 수정 이미지
+    private int deleteGroupImageid; // 그룹 삭제 이미지
     private float groupImageLength;
     private float pushIconLength;
 
@@ -36,8 +38,11 @@ public class GroupListAdapter extends BaseAdapter {
         this.groupList = groupList;
         this.layoutInflater = LayoutInflater.from(this.activity);
         groupImageId = R.drawable.group;
+        editGroupImageId = R.drawable.edit_group;
+        deleteGroupImageid = R.drawable.delete_group;
         groupImageLength = MainActivity.showable_icon_length;
         pushIconLength = MainActivity.push_icon_length;
+        Dlog.i("GroupListAdapter()");
     }
 
     @Override
@@ -113,8 +118,8 @@ public class GroupListAdapter extends BaseAdapter {
         if (viewHolder.groupImageView != null) {
             Uri imageUri = groupList.get(position).imageUri;
             if (imageUri != null) {
-                Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, groupImageLength, groupImageLength);
-                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
+                Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, groupImageLength, groupImageLength);
+                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(groupImageBitmap));
             } else {
                 Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), groupImageId, groupImageLength, groupImageLength);
                 viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));

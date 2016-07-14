@@ -1,31 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:descendantFocusability="blocksDescendants"
     android:gravity="center"
-    android:descendantFocusability="blocksDescendants">
-    <TextView android:id="@+id/group_id"
+    android:orientation="horizontal">
+
+    <TextView
+        android:id="@+id/group_id"
         style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
-        android:text=" 1 "/>
+        android:text=" 1 " />
+
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:orientation="vertical"
-        android:gravity="center">
-        <TextView android:id="@+id/group_name"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/group_name"
             style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
-            android:text="그룹 이름"/>
-        <ImageView android:id="@+id/group_image"
-            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
-            android:src="@drawable/group"/>
+            android:text="그룹 이름" />
+
+        <ImageView
+            android:id="@+id/group_image"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" />
     </LinearLayout>
-    <ImageView android:id="@+id/edit_button"
+
+    <ImageView
+        android:id="@+id/edit_button"
         style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
-        android:src="@drawable/edit_group"/>
-    <ImageView android:id="@+id/delete_button"
+        android:src="@drawable/edit_group" />
+
+    <ImageView
+        android:id="@+id/delete_button"
         style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
-        android:src="@drawable/delete_group"/>
+        android:src="@drawable/delete_group" />
 
 </LinearLayout>
