@@ -32,6 +32,8 @@ public class EditGroupInfoActivity extends Activity {
     EditText groupNameEditText = null;
     ImageView okButton = null;
     ImageView cancelButton = null;
+    private float userImageLength;
+    private float pushIconLength;
     int position;
     /**
      * ATTENTION: This was auto-generated to implement the App Indexing API.
@@ -58,6 +60,8 @@ public class EditGroupInfoActivity extends Activity {
                 position = receivedIntent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
             }
         }
+        userImageLength = R.dimen.image_view_showable_icon_length;
+        pushIconLength = R.dimen.image_view_push_icon_length;
         // ====================================================================================
 
         // 현재 아이템의 내용을 변경할 뷰를 찾는다.
@@ -118,7 +122,7 @@ public class EditGroupInfoActivity extends Activity {
         // ====================================================================================
         if (tempGroup != null) {
             if (tempGroup.imageUri != null) {
-                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri));
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri, userImageLength, userImageLength));
             }
             if (tempGroup.name != null) {
                 groupNameEditText.setText(tempGroup.name);
@@ -134,7 +138,7 @@ public class EditGroupInfoActivity extends Activity {
         if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 tempGroup.imageUri = data.getData();
-                Bitmap image_bitmap = NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri);
+                Bitmap image_bitmap = NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri, userImageLength, userImageLength);
                 //배치해놓은 ImageView에 set
                 imageView.setImageBitmap(image_bitmap);
                 image_bitmap = null;
@@ -173,7 +177,7 @@ public class EditGroupInfoActivity extends Activity {
             tempGroup = savedInstanceState.getParcelable(BACK_UP_TEMP_GROUP_KEY);
             position = savedInstanceState.getInt(BACK_UP_GROUP_POSITION);
             if (tempGroup.imageUri != null) {
-                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri));
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri, userImageLength, userImageLength));
             }
             if (tempGroup.name != null) {
                 groupNameEditText.setText(tempGroup.name);

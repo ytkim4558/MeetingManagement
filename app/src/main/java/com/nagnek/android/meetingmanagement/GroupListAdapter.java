@@ -82,6 +82,10 @@ public class GroupListAdapter extends BaseAdapter {
             viewHolder.groupImageView = (ImageView) itemLayout.findViewById(R.id.group_image);
             viewHolder.editGroupImageButton = (ImageView) itemLayout.findViewById(R.id.edit_button);
             viewHolder.deleteGroupImageButton = (ImageView) itemLayout.findViewById(R.id.delete_button);
+
+            // 레이아웃 갱신 (position값 상관없는 것)
+            viewHolder.editGroupImageButton.setImageBitmap(NagneCircleImage.getCircleBitmap(activity.getResources(), editGroupImageId, pushIconLength, pushIconLength));
+            viewHolder.deleteGroupImageButton.setImageBitmap(NagneCircleImage.getCircleBitmap(activity.getResources(), deleteGroupImageid, pushIconLength, pushIconLength));
             itemLayout.setTag(viewHolder);
             // ------------------------------------------------------------------------------------
         } else {

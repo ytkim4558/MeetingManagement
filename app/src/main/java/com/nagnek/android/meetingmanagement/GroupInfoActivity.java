@@ -45,6 +45,7 @@ public class GroupInfoActivity extends Activity {
     private String groupName = null;
     private TextView groupNameText = null;
     public static int group_position = 0;
+    private int userImageLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +53,7 @@ public class GroupInfoActivity extends Activity {
         setContentView(R.layout.activity_group);
         Dlog.i("onCreate()");
 
+        userImageLength = R.dimen.image_view_showable_icon_length;
         Intent intent = getIntent();
         if (intent != null) {
             groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
@@ -141,7 +143,7 @@ public class GroupInfoActivity extends Activity {
 
         imageView = (ImageView) findViewById(R.id.groupImageView);
         if (groupImageUri != null) {
-            imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri));
+            imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri, userImageLength, userImageLength));
         }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -179,12 +181,9 @@ public class GroupInfoActivity extends Activity {
             }
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
-                Bitmap image_bitmap = null;
                 groupImageUri = data.getData();
-                image_bitmap = NagneCircleImage.getCircleBitmap(this, groupImageUri);
                 //배치해놓은 ImageView에 set
-                imageView.setImageBitmap(image_bitmap);
-                image_bitmap = null;
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri, userImageLength, userImageLength));
                 Group group = new Group(groupName, groupImageUri);
                 NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(this, Storage.SAVE_MEMBER_INFO_FILE, group, group_position);
             }
@@ -227,7 +226,7 @@ public class GroupInfoActivity extends Activity {
             Dlog.i("RestoreImage");
             if (groupImageUri != null) {
                 Bitmap bitmap = null;
-                bitmap = NagneCircleImage.getCircleBitmap(this, groupImageUri);
+                bitmap = NagneCircleImage.getCircleBitmap(this, groupImageUri, userImageLength, userImageLength);
                 imageView.setImageBitmap(null);
                 imageView.setImageBitmap(bitmap);
                 bitmap = null;

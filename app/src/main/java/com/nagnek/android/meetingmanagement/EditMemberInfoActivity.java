@@ -28,12 +28,23 @@ public class EditMemberInfoActivity extends Activity {
     EditText phoneNumber = null;
     ImageView okButton = null;
     ImageView cancelButton = null;
+    private int addUserImageButtonId;
+    private int backImageButtonId;
+    private int saveImageButtonId;
+    private float userImageLength;
+    private float pushIconLength;
     int position;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_member_info);
+        addUserImageButtonId = R.drawable.add_user;
+        backImageButtonId = R.drawable.back;
+        saveImageButtonId = R.drawable.save;
+        userImageLength = R.dimen.image_view_showable_icon_length;
+        pushIconLength = R.dimen.image_view_push_icon_length;
+
         Dlog.i("onCreate");
         // ====================================================================================
 
@@ -114,7 +125,7 @@ public class EditMemberInfoActivity extends Activity {
         // ====================================================================================
         if (tempMember != null) {
             if (tempMember.imageUri != null) {
-                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempMember.imageUri));
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, member.imageUri, userImageLength, userImageLength));
             }
             if (tempMember.name != null) {
                 memberName.setText(tempMember.name);
@@ -123,6 +134,9 @@ public class EditMemberInfoActivity extends Activity {
                 phoneNumber.setText(tempMember.phone_number);
             }
         }
+        imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), addUserImageButtonId, userImageLength, userImageLength));
+        cancelButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), backImageButtonId, pushIconLength, pushIconLength));
+        okButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), saveImageButtonId, pushIconLength, pushIconLength));
     }
 
     @Override
@@ -130,7 +144,7 @@ public class EditMemberInfoActivity extends Activity {
         if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 tempMember.imageUri = data.getData();
-                Bitmap image_bitmap = NagneCircleImage.getCircleBitmap(this, tempMember.imageUri);
+                Bitmap image_bitmap = NagneCircleImage.getCircleBitmap(this, tempMember.imageUri, userImageLength, userImageLength);
                 //배치해놓은 ImageView에 set
                 imageView.setImageBitmap(image_bitmap);
                 image_bitmap = null;
@@ -170,7 +184,7 @@ public class EditMemberInfoActivity extends Activity {
             tempMember = savedInstanceState.getParcelable(BACK_UP_TEMP_MEMBER_KEY);
             position = savedInstanceState.getInt(BACK_UP_MEMBER_POSITION);
             if (tempMember.imageUri != null) {
-                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempMember.imageUri));
+                imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempMember.imageUri, userImageLength, userImageLength));
             }
             if (tempMember.name != null) {
                 memberName.setText(tempMember.name);

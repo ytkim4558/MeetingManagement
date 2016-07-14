@@ -141,10 +141,12 @@ public class MemberListAdapter extends BaseAdapter {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
                 Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, memberImageLength, memberImageLength);
-                viewHolder.memberImageView.setImageBitmap(bitmap);
+                viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
+                bitmap = null;
             } else {
                 Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), memberImageId, memberImageLength, memberImageLength);
                 viewHolder.memberImageView.setImageBitmap(bitmap);
+                bitmap = null;
             }
         }
 

@@ -22,12 +22,15 @@ public class NewGroupPopupActivity extends PopupActivity {
     private static final String BACKUP_GROUP_IMAGE_URI = "BACKUP_GROUP_IMAGE_URI";
     private Uri groupImageUri;  // 생명주기에서 살아남게 하기 위함
     private ImageView groupImageView;    // 리소스 아이디 계속 가져오는 것을 피하기 위해 전역변수로 둠
+    private float groupImageLength;
+    private float pushIconLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        // 타이틀 제거
+        groupImageLength = R.dimen.image_view_showable_icon_length;
+        pushIconLength = R.dimen.image_view_push_icon_length;
         setContentView(R.layout.activity_new_group);
         ImageView okButton = (ImageView) findViewById(R.id.ok_button);
         ImageView cancelButton = (ImageView) findViewById(R.id.cancel_button);
@@ -58,6 +61,9 @@ public class NewGroupPopupActivity extends PopupActivity {
                 finish();
             }
         });
+        groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), R.drawable.add_group, groupImageLength, groupImageLength ));
+        cancelButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), R.drawable.back, pushIconLength, pushIconLength));
+        okButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), R.drawable.save, pushIconLength, pushIconLength));
     }
 
     @Override
@@ -92,7 +98,7 @@ public class NewGroupPopupActivity extends PopupActivity {
         if (savedInstanceState != null) {
             groupImageUri = savedInstanceState.getParcelable(BACKUP_GROUP_IMAGE_URI);
             if (groupImageUri != null) {
-                groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(NewGroupPopupActivity.this, groupImageUri));
+                groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(NewGroupPopupActivity.this, groupImageUri, groupImageLength, groupImageLength));
             }
         }
         super.onRestoreInstanceState(savedInstanceState);
