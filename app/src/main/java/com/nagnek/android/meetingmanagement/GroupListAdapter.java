@@ -84,8 +84,8 @@ public class GroupListAdapter extends BaseAdapter {
             viewHolder.deleteGroupImageButton = (ImageView) itemLayout.findViewById(R.id.delete_button);
 
             // 레이아웃 갱신 (position값 상관없는 것)
-            viewHolder.editGroupImageButton.setImageBitmap(NagneCircleImage.getCircleBitmap(activity.getResources(), editGroupImageId, pushIconLength, pushIconLength));
-            viewHolder.deleteGroupImageButton.setImageBitmap(NagneCircleImage.getCircleBitmap(activity.getResources(), deleteGroupImageid, pushIconLength, pushIconLength));
+            viewHolder.editGroupImageButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), editGroupImageId, pushIconLength, pushIconLength));
+            viewHolder.deleteGroupImageButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), deleteGroupImageid, pushIconLength, pushIconLength));
             itemLayout.setTag(viewHolder);
             // ------------------------------------------------------------------------------------
         } else {
@@ -124,7 +124,7 @@ public class GroupListAdapter extends BaseAdapter {
             if (imageUri != null) {
                 viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri, groupImageLength, groupImageLength));
             } else {
-                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity.getResources(), groupImageId, groupImageLength, groupImageLength));
+                viewHolder.groupImageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), groupImageId, groupImageLength, groupImageLength));
             }
         }
 

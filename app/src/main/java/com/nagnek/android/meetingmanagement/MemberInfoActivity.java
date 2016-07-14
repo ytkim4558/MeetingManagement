@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 
 public class MemberInfoActivity extends Activity {
 
@@ -22,11 +23,13 @@ public class MemberInfoActivity extends Activity {
     int position;
     Intent resultIntent;
     boolean isEditMemberInfo = false; // 멤버 info를 edit 했었는지 확인
+    private float memberImageLength;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_member_info);
+        memberImageLength = R.dimen.image_view_showable_icon_length;
         Dlog.d("onCreate()");
         // ====================================================================================
         //
@@ -82,7 +85,9 @@ public class MemberInfoActivity extends Activity {
             memberName.setText(member.name);
         }
         if (member.imageUri != null) {
-            memberImage.setImageBitmap(NagneCircleImage.getCircleBitmap(this, member.imageUri));
+            memberImage.setImageBitmap(NagneCircleImage.getCircleBitmap(this, member.imageUri, memberImageLength, memberImageLength));
+        } else {
+            memberImage.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.user, memberImageLength, memberImageLength));
         }
         if (member.phone_number != null) {
             phoneNumber.setText(member.phone_number);

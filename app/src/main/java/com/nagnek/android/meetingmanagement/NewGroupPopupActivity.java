@@ -61,9 +61,9 @@ public class NewGroupPopupActivity extends PopupActivity {
                 finish();
             }
         });
-        groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), R.drawable.add_group, groupImageLength, groupImageLength ));
-        cancelButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), R.drawable.back, pushIconLength, pushIconLength));
-        okButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), R.drawable.save, pushIconLength, pushIconLength));
+        groupImageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, groupImageLength, groupImageLength ));
+        cancelButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.back, pushIconLength, pushIconLength));
+        okButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.save, pushIconLength, pushIconLength));
     }
 
     @Override

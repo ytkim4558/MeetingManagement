@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 
 public class EditMemberInfoActivity extends Activity {
     public static final String BACK_UP_MEMBER_KEY = "BACK_UP_MEMBER";  // 이전 액티비티의 멤버 정보 저장
@@ -134,9 +135,9 @@ public class EditMemberInfoActivity extends Activity {
                 phoneNumber.setText(tempMember.phone_number);
             }
         }
-        imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), addUserImageButtonId, userImageLength, userImageLength));
-        cancelButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), backImageButtonId, pushIconLength, pushIconLength));
-        okButton.setImageBitmap(NagneCircleImage.getCircleBitmap(getResources(), saveImageButtonId, pushIconLength, pushIconLength));
+        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), addUserImageButtonId, userImageLength, userImageLength));
+        cancelButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), backImageButtonId, pushIconLength, pushIconLength));
+        okButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), saveImageButtonId, pushIconLength, pushIconLength));
     }
 
     @Override

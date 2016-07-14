@@ -151,6 +151,7 @@ public class GroupInfoActivity extends Activity {
                 NagneImage.picImageFromGalleryStartActivityForResult(GroupInfoActivity.this, REQ_CODE_SELECT_IMAGE);
             }
         });
+        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.group, userImageLength, userImageLength ));
     }
 
 

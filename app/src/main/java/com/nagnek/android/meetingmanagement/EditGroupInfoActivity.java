@@ -16,6 +16,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneImage.NagneCircleImage;
+import com.nagnek.android.nagneImage.NagneImage;
 
 public class EditGroupInfoActivity extends Activity {
 
@@ -128,6 +129,8 @@ public class EditGroupInfoActivity extends Activity {
                 groupNameEditText.setText(tempGroup.name);
             }
         }
+        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, R.dimen.image_view_showable_icon_length, R.dimen.image_view_showable_icon_length));
+
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
