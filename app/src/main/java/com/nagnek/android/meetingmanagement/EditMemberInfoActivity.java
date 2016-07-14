@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.telephony.PhoneNumberFormattingTextWatcher;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -43,7 +42,7 @@ public class EditMemberInfoActivity extends Activity {
         addUserImageButtonId = R.drawable.add_user;
         backImageButtonId = R.drawable.back;
         saveImageButtonId = R.drawable.save;
-        userImageLength = R.dimen.image_view_showable_icon_length;
+        userImageLength = R.dimen.image_view_showable_big_icon_length;
         pushIconLength = R.dimen.image_view_push_icon_length;
 
         Dlog.i("onCreate");

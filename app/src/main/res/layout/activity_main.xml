@@ -26,7 +26,7 @@
         <ImageView android:id="@+id/group_image"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON"
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON"
             android:layout_gravity="center_vertical" />
 
         <ImageView

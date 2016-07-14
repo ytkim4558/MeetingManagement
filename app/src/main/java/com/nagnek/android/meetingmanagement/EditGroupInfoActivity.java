@@ -7,7 +7,6 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -61,7 +60,7 @@ public class EditGroupInfoActivity extends Activity {
                 position = receivedIntent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
             }
         }
-        userImageLength = R.dimen.image_view_showable_icon_length;
+        userImageLength = R.dimen.image_view_showable_big_icon_length;
         pushIconLength = R.dimen.image_view_push_icon_length;
         // ====================================================================================
 
@@ -129,7 +128,7 @@ public class EditGroupInfoActivity extends Activity {
                 groupNameEditText.setText(tempGroup.name);
             }
         }
-        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, R.dimen.image_view_showable_icon_length, R.dimen.image_view_showable_icon_length));
+        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, R.dimen.image_view_showable_big_icon_length, R.dimen.image_view_showable_big_icon_length));
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.

@@ -12,7 +12,7 @@
         />
 
     <ImageView android:id="@+id/groupImageView"
-        style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" />
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" />
 
     <ImageView android:id="@+id/add_member_button"
         style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"

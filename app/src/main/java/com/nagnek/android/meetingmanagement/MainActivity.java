@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
-import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
@@ -57,9 +56,9 @@ public class MainActivity extends Activity {
         //
         // 2. 데이터 설정한다.
         // ====================================================================================
-        showable_icon_length = getResources().getDimension(R.dimen.image_view_showable_icon_length);
+        showable_icon_length = getResources().getDimension(R.dimen.image_view_showable_big_icon_length);
         push_icon_length = getResources().getDimension(R.dimen.image_view_push_icon_length);
-        Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.group, showable_icon_length, showable_icon_length);
+        Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.database, showable_icon_length, showable_icon_length);
         Bitmap addGroupImageButtonImage = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, push_icon_length, push_icon_length);
         String groupNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER);
         Dlog.i(groupNumberString);

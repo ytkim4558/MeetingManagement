@@ -31,9 +31,18 @@
         <item name="android:layout_marginTop">4dp</item>
     </style>
 
-    <style name="IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" parent="IDSTYLE_IMAGEVIEW_BASE">
-        <item name="android:layout_width">@dimen/image_view_showable_icon_length</item>
-        <item name="android:layout_height">@dimen/image_view_showable_icon_length</item>
+    <style name="IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" parent="IDSTYLE_IMAGEVIEW_BASE">
+        <item name="android:layout_width">@dimen/image_view_showable_big_icon_length</item>
+        <item name="android:layout_height">@dimen/image_view_showable_big_icon_length</item>
+        <item name="android:layout_marginLeft">10dp</item>
+        <item name="android:layout_marginRight">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+        <item name="android:layout_marginTop">10dp</item>
+    </style>
+
+    <style name="IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_SMALL_ICON" parent="IDSTYLE_IMAGEVIEW_BASE">
+        <item name="android:layout_width">@dimen/image_view_showable_small_icon_length</item>
+        <item name="android:layout_height">@dimen/image_view_showable_small_icon_length</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
         <item name="android:layout_marginBottom">10dp</item>

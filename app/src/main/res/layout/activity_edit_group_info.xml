@@ -7,7 +7,7 @@
     android:baselineAligned="true">
 
     <ImageView android:id="@+id/group_image"
-        style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" />
+        style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" />
 
     <EditText android:id="@+id/group_name"
         android:layout_width="match_parent"

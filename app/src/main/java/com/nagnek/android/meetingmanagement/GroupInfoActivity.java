@@ -53,7 +53,7 @@ public class GroupInfoActivity extends Activity {
         setContentView(R.layout.activity_group);
         Dlog.i("onCreate()");
 
-        userImageLength = R.dimen.image_view_showable_icon_length;
+        userImageLength = R.dimen.image_view_showable_big_icon_length;
         Intent intent = getIntent();
         if (intent != null) {
             groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);

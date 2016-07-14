@@ -26,7 +26,7 @@
 
         <ImageView
             android:id="@+id/group_image"
-            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" />
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" />
     </LinearLayout>
 
     <ImageView

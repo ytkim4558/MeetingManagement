@@ -17,7 +17,7 @@
             android:text="그룹이름" />
 
         <ImageView android:id="@+id/groupImageView"
-            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_ICON" />
+            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" />
 
     </LinearLayout>
 

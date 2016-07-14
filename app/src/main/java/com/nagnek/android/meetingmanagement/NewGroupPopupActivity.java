@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -29,7 +28,7 @@ public class NewGroupPopupActivity extends PopupActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        groupImageLength = R.dimen.image_view_showable_icon_length;
+        groupImageLength = R.dimen.image_view_showable_big_icon_length;
         pushIconLength = R.dimen.image_view_push_icon_length;
         setContentView(R.layout.activity_new_group);
         ImageView okButton = (ImageView) findViewById(R.id.ok_button);
