@@ -1,6 +1,7 @@
 package com.nagnek.android.nagneImage;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -51,6 +52,22 @@ public class NagneCircleImage extends NagneImage {
 
     public static Bitmap getCircleBitmap(Context context, Uri imageUri) {
         Bitmap bitmap = getBitmap(context, imageUri);
+        Bitmap circleBitmap = getCircleBitmap(bitmap);
+        bitmap = null;
+        return circleBitmap;
+    }
+
+    public static Bitmap getCircleBitmap(Resources res, int resId,
+                                         float reqWidth, float reqHeight) {
+        Bitmap bitmap = decodeSampledBitmapFromResource(res, resId, reqWidth, reqHeight);
+        Bitmap circleBitmap = getCircleBitmap(bitmap);
+        bitmap = null;
+        return circleBitmap;
+    }
+
+    public static Bitmap getCircleBitmap(Context context, Uri imageUri,
+                                         float reqWidth, float reqHeight) {
+        Bitmap bitmap = decodeSampledBitmapFromUri(context, imageUri, reqWidth, reqHeight);
         Bitmap circleBitmap = getCircleBitmap(bitmap);
         bitmap = null;
         return circleBitmap;

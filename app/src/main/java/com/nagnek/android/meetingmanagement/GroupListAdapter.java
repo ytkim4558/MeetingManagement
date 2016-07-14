@@ -118,11 +118,9 @@ public class GroupListAdapter extends BaseAdapter {
         if (viewHolder.groupImageView != null) {
             Uri imageUri = groupList.get(position).imageUri;
             if (imageUri != null) {
-                Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, groupImageLength, groupImageLength);
-                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(groupImageBitmap));
+                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri, groupImageLength, groupImageLength));
             } else {
-                Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), groupImageId, groupImageLength, groupImageLength);
-                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
+                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity.getResources(), groupImageId, groupImageLength, groupImageLength));
             }
         }
 
