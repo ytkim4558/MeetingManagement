@@ -2,7 +2,6 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +16,9 @@ import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by yongtakpc on 2016. 7. 7..
@@ -40,7 +41,7 @@ public class GroupListAdapter extends BaseAdapter {
         groupImageId = R.drawable.group;
         editGroupImageId = R.drawable.edit_group;
         deleteGroupImageid = R.drawable.delete_group;
-        groupImageLength = MainActivity.showable_icon_length;
+        groupImageLength = MainActivity.showable_small_icon_length;
         pushIconLength = MainActivity.push_icon_length;
         Dlog.i("GroupListAdapter()");
     }

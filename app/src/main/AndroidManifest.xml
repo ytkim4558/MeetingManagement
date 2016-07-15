@@ -26,7 +26,7 @@
         <activity
             android:name=".EditMemberInfoActivity"
             android:label="@string/title_activity_new_member_name_popup"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity
             android:name=".ListItemPopupMenuActivity"
             android:label="@string/title_activity_member_item_popup_menu"
@@ -34,7 +34,7 @@
         <activity
             android:name=".MemberInfoActivity"
             android:label="@string/title_activity_member_info"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme" />
         <activity android:name=".EditGroupInfoActivity"></activity><!-- ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information. -->
         <meta-data

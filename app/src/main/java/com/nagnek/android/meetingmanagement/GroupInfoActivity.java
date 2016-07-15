@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -20,20 +22,22 @@ import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
+import com.nagnek.nagneJavaUtil.NagneString;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
-public class GroupInfoActivity extends Activity {
+public class GroupInfoActivity extends AppCompatActivity {
     public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
     public static final String MEMBER_INFO = "com.nagenk.android.meetingmanagement.MEMBER_INFO";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
     public static final int REQ_CODE_SELECT_IMAGE = 100;
-    public static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
     public static final String POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY";
     static final int PICK_CONTACT_REQUEST = 1;
     private static final String KEY_CROPPED_RECT = "cropped-rect";
     private static final String BACKUP_MEMBER_LIST_KEY = "BACKUP_MEMBER_LIST_KEY";
     private static final String BACKUP_GROUP_IMAGE_URI = "BACKUP_GROUP_IMAGE_URI";
+    private static final String BACKUP_GROUP_POSITION_KEY = "BACKUP_GROUP_POSITION_KEY";
     String imagePath = null;
     ImageView imageView;
     Uri groupImageUri;
@@ -45,12 +49,17 @@ public class GroupInfoActivity extends Activity {
     private String groupName = null;
     private TextView groupNameText = null;
     public static int group_position = 0;
+    public static int dialog_list_position = 0; // 어떤 리스트 인덱스가 팝업 띄웠는지. (생명주기에서 살아남게 하기 위해)
+
     private int userImageLength;
+    static HashMap<String, String> phoneNumberKeyToMatchGroupPositionAndMemberPosition; // 키 : 폰넘버, 값 : 그룹위치 | 멤버 위치 arraylist (값) . 멤버위치 arraylist는 한값에 멤버 위치가 여러개 있을수 있기 때문
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
+        Toolbar memberToolBar = (Toolbar) findViewById(R.id.member_toolbar);
+        setSupportActionBar(memberToolBar);
         Dlog.i("onCreate()");
 
         userImageLength = R.dimen.image_view_showable_big_icon_length;
@@ -104,6 +113,20 @@ public class GroupInfoActivity extends Activity {
         memberListView = (ListView) findViewById(R.id.member_list_view);
         memberListView.setAdapter(memberListAdapter);
 
+        // 해시맵 생성
+        phoneNumberKeyToMatchGroupPositionAndMemberPosition = new HashMap<String, String>();
+        for (int i = 0; i < memberList.size(); ++i) {
+            String key = memberList.get(i).phone_number;
+            String value = GroupInfoActivity.group_position + "|" + i;
+            if (phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(key)) {
+                String gotValue = phoneNumberKeyToMatchGroupPositionAndMemberPosition.get(key);
+                String[] valueList = NagneString.convertStringToArray(gotValue);
+                phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(memberList.get(i).phone_number, gotValue + "," + GroupInfoActivity.group_position + "|" + i);
+            } else {
+                phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(memberList.get(i).phone_number, GroupInfoActivity.group_position + "|" + i);
+            }
+        }
+
         memberListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -144,6 +167,8 @@ public class GroupInfoActivity extends Activity {
         imageView = (ImageView) findViewById(R.id.groupImageView);
         if (groupImageUri != null) {
             imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri, userImageLength, userImageLength));
+        } else {
+            imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.group, userImageLength, userImageLength ));
         }
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,7 +176,7 @@ public class GroupInfoActivity extends Activity {
                 NagneImage.picImageFromGalleryStartActivityForResult(GroupInfoActivity.this, REQ_CODE_SELECT_IMAGE);
             }
         });
-        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.group, userImageLength, userImageLength ));
+
     }
 
 

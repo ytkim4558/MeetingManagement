@@ -1,43 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/holo_blue_bright"
     android:gravity="center"
-    android:orientation="horizontal">>
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="vertical">
-
-        <TextView android:id="@+id/group_name_text_view"
-            style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
-            android:text="그룹이름" />
-
-        <ImageView android:id="@+id/groupImageView"
-            style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" />
-
-    </LinearLayout>
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/member_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="멤버리스트"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="top"
-        android:orientation="vertical">
+        android:gravity="center"
+        android:orientation="horizontal">
 
-        <ImageView android:id="@+id/add_member_button"
-            style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
-            android:src="@drawable/add_user" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical">
 
-        <ListView android:id="@+id/member_list_view"
+            <TextView android:id="@+id/group_name_text_view"
+                style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
+                android:text="그룹이름" />
+
+            <ImageView android:id="@+id/groupImageView"
+                style="@style/IDSTYLE_IMAGEVIEW_BASE_SHOWABLE_BIG_ICON" />
+
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:gravity="top"
+            android:orientation="vertical">
 
-        </ListView>
+            <ImageView android:id="@+id/add_member_button"
+                style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
+                android:src="@drawable/add_user" />
+
+            <ListView android:id="@+id/member_list_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            </ListView>
+
+        </LinearLayout>
 
     </LinearLayout>
-
-
 </LinearLayout>

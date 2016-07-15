@@ -3,8 +3,12 @@ package com.nagnek.android.meetingmanagement;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -19,7 +23,7 @@ import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
 
-public class MainActivity extends Activity {
+public class MainActivity extends AppCompatActivity {
 
     public static final String GROUP_LIST_POSITION = "com.nagnek.android.meetingmanagement.GROUP_LIST_POSITION";
     public static final String GROUP_NAME = "com.nagnek.android.meetingmanagement.GROUP_NAME";
@@ -27,7 +31,7 @@ public class MainActivity extends Activity {
     public static final String GROUP_INFO = "com.nagnek.android.meetingmanagement.GROUP_INFO";
     public static final int REQ_CODE_SELECT_GROUP_LIST_ITEM = 17;
     public static final String POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY";
-    public static float showable_icon_length;
+    public static float showable_small_icon_length;
     public static float push_icon_length;
 
     static final int NEW_GROUP_REQUEST = 1;
@@ -40,25 +44,29 @@ public class MainActivity extends Activity {
 
     ListView groupListView = null;
     private GroupListAdapter groupListAdatper = null;
-
+    ImageView groupImageView;
+    ImageView addGroupButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
+        setSupportActionBar(myToolbar);
+
         Dlog.i("onCreate()");
         // ====================================================================================
         //
         // 1. 현재 아이템의 내용을 변경할 뷰를 찾는다.
         // ====================================================================================
-        ImageView groupImageView = (ImageView) findViewById(R.id.group_image);
-        ImageView addGroupButton = (ImageView) findViewById(R.id.add_group_button);
+        groupImageView = (ImageView) findViewById(R.id.group_image);
+        addGroupButton = (ImageView) findViewById(R.id.add_group_button);
         // ====================================================================================
         //
         // 2. 데이터 설정한다.
         // ====================================================================================
-        showable_icon_length = getResources().getDimension(R.dimen.image_view_showable_big_icon_length);
+        showable_small_icon_length = getResources().getDimension(R.dimen.image_view_showable_small_icon_length);
         push_icon_length = getResources().getDimension(R.dimen.image_view_push_icon_length);
-        Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.database, showable_icon_length, showable_icon_length);
+        Bitmap groupImageBitmap = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.database, showable_small_icon_length, showable_small_icon_length);
         Bitmap addGroupImageButtonImage = NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, push_icon_length, push_icon_length);
         String groupNumberString = NagneSharedPreferenceUtil.getValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER);
         Dlog.i(groupNumberString);
@@ -231,8 +239,21 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
-        super.onDestroy();
         Dlog.i("onDestroy()");
+        recycleImageView(groupImageView);
+        recycleImageView(addGroupButton);
+        super.onDestroy();
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
+    }
+
+    void recycleImageView(ImageView imageView) {
+        Drawable d = imageView.getDrawable();
+        if(d instanceof BitmapDrawable) {
+            Dlog.d("recycle");
+            Bitmap bitmap = ((BitmapDrawable)d).getBitmap();
+            bitmap.recycle();
+            bitmap = null;
+        }
+        d.setCallback(null);
     }
 }

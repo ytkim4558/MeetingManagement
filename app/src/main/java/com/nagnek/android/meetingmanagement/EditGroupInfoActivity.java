@@ -123,12 +123,13 @@ public class EditGroupInfoActivity extends Activity {
         if (tempGroup != null) {
             if (tempGroup.imageUri != null) {
                 imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, tempGroup.imageUri, userImageLength, userImageLength));
+            } else {
+                imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_image, userImageLength, userImageLength));
             }
             if (tempGroup.name != null) {
                 groupNameEditText.setText(tempGroup.name);
             }
         }
-        imageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, R.dimen.image_view_showable_big_icon_length, R.dimen.image_view_showable_big_icon_length));
 
         // ATTENTION: This was auto-generated to implement the App Indexing API.
         // See https://g.co/AppIndexing/AndroidStudio for more information.

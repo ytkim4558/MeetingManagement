@@ -1,7 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">MeetingManagement</string>
     <string name="title_activity_new_member_name_popup">newMemberNamePopupActivity</string>
     <string name="title_activity_member_item_popup_menu">MemberItemPopupMenuActivity</string>
     <string name="title_activity_member_info">MemberInfoActivity</string>
     <string name="title_activity_group_info">GroupInfoActivity</string>
+    <string name="cancel">cancel</string>
+    <string name="fire">run</string>
+    <string name="dialog_double_check_phone_number">폰번호 중복</string>
 </resources>

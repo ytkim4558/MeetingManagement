@@ -18,6 +18,7 @@
     <TextView android:id="@+id/member_name"
         style="@style/IDSTYLE_TEXTVIEW_BASE_ITEM_TITLE"
         android:layout_toRightOf="@id/member_image"
+        android:layout_toLeftOf="@id/phone_number"
         android:layout_centerInParent="true"
         android:text="홍길동"
         android:lines="1"
@@ -43,9 +44,11 @@
     <ImageView android:id="@+id/edit_button"
         style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
         android:layout_toLeftOf="@id/delete_button"
+        android:src="@drawable/edit_user"
         android:layout_below="@id/member_image" />
     <ImageView android:id="@+id/delete_button"
         style="@style/IDSTYLE_IMAGEVIEW_BASE_PUSH_ICON"
         android:layout_alignRight="@id/phone_number"
+        android:src="@drawable/delete_user"
         android:layout_below="@id/member_image" />
 </RelativeLayout>
