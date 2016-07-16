@@ -60,7 +60,7 @@ public class NewGroupPopupActivity extends PopupActivity {
                 finish();
             }
         });
-        groupImageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_group, groupImageLength, groupImageLength ));
+        groupImageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.add_image, groupImageLength, groupImageLength ));
         cancelButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.back, pushIconLength, pushIconLength));
         okButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(getResources(), R.drawable.save, pushIconLength, pushIconLength));
     }
