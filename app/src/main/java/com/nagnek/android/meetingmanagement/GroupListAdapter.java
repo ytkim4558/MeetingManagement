@@ -2,6 +2,9 @@ package com.nagnek.android.meetingmanagement;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,11 +15,17 @@ import android.widget.TextView;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
+import com.nagnek.android.nagneImage.AsyncDrawable;
+import com.nagnek.android.nagneImage.BitmapShape;
+import com.nagnek.android.nagneImage.BitmapWorkerOptions;
+import com.nagnek.android.nagneImage.BitmapWorkerTask;
 import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
+
+import static com.nagnek.android.nagneImage.BitmapWorkerTask.cancelPotentialWork;
 
 /**
  * Created by yongtakpc on 2016. 7. 7..
@@ -31,6 +40,8 @@ public class GroupListAdapter extends BaseAdapter {
     Activity activity = null;
     ArrayList<Group> groupList = null;
     LayoutInflater layoutInflater = null;
+    Bitmap mPlaceHolderBitmap;
+    Resources mResources;
 
     GroupListAdapter(Activity activity, ArrayList<Group> groupList) {
         this.activity = activity;
@@ -41,7 +52,13 @@ public class GroupListAdapter extends BaseAdapter {
         deleteGroupImageid = R.drawable.delete_group;
         groupImageLength = MainActivity.showable_small_icon_length;
         pushIconLength = MainActivity.push_icon_length;
+        mResources = activity.getResources();
+        setLoadingImage(groupImageId);
         Dlog.i("GroupListAdapter()");
+    }
+
+    public void setLoadingImage(int resId) {
+        mPlaceHolderBitmap = BitmapFactory.decodeResource(mResources, resId);
     }
 
     @Override
@@ -121,9 +138,9 @@ public class GroupListAdapter extends BaseAdapter {
         if (viewHolder.groupImageView != null) {
             Uri imageUri = groupList.get(position).imageUri;
             if (imageUri != null) {
-                viewHolder.groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(activity, imageUri, groupImageLength, groupImageLength));
+                loadCircleBitmap(imageUri, viewHolder.groupImageView);
             } else {
-                viewHolder.groupImageView.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), groupImageId, groupImageLength, groupImageLength));
+                loadBitmap(groupImageId, viewHolder.groupImageView);
             }
         }
 
@@ -275,6 +292,32 @@ public class GroupListAdapter extends BaseAdapter {
                     NagneSharedPreferenceUtil.removeKey(activity, Storage.SAVE_MEMBER_INFO_FILE, groupList.size() + "|" + i);
                 }
             }
+        }
+    }
+
+    public void loadBitmap(int resId, ImageView imageView) {
+        BitmapWorkerOptions bitmapWorkerOptions = new BitmapWorkerOptions.Builder(activity).resource(resId).build();
+        loadBitmapThroughThread(bitmapWorkerOptions, imageView);
+    }
+
+    public void loadBitmap(Uri imageUri, ImageView imageView) {
+        BitmapWorkerOptions bitmapWorkerOptions = new BitmapWorkerOptions.Builder(activity).resource(imageUri).build();
+        loadBitmapThroughThread(bitmapWorkerOptions, imageView);
+    }
+
+    public void loadCircleBitmap(Uri imageUri, ImageView imageView) {
+        BitmapWorkerOptions bitmapWorkerOptions = new BitmapWorkerOptions.Builder(activity).shape(BitmapShape.Circle).resource(imageUri).build();
+        loadBitmapThroughThread(bitmapWorkerOptions, imageView);
+    }
+
+
+    public void loadBitmapThroughThread(BitmapWorkerOptions bitmapWorkerOptions, ImageView imageView) {
+        if (cancelPotentialWork(bitmapWorkerOptions, imageView)) {
+            final BitmapWorkerTask task = new BitmapWorkerTask(activity.getApplicationContext(), imageView, groupImageLength, groupImageLength);
+            final AsyncDrawable asyncDrawable =
+                    new AsyncDrawable(activity.getResources(), mPlaceHolderBitmap, task);
+            imageView.setImageDrawable(asyncDrawable);
+            task.execute(bitmapWorkerOptions);
         }
     }
 }

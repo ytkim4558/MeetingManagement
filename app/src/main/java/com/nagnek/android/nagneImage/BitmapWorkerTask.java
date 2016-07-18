@@ -10,6 +10,7 @@ import com.nagnek.android.debugLog.Dlog;
 
 import java.lang.ref.WeakReference;
 
+import static com.nagnek.android.nagneImage.NagneCircleImage.getCircleBitmap;
 import static com.nagnek.android.nagneImage.NagneImage.decodeSampledBitmapFromResource;
 import static com.nagnek.android.nagneImage.NagneImage.decodeSampledBitmapFromUri;
 
@@ -44,6 +45,9 @@ public class BitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, Bitma
         if (workerOptions.isFromResource()) {
             return decodeSampledBitmapFromResource(context.getResources(), workerOptions.getResourceId(), reqWidth, reqHeight);
         } else if (workerOptions.isFromImageUri()) {
+            if(workerOptions.isRequireCircleBitmap()) {
+                return getCircleBitmap(context, workerOptions.getImageUri(), reqWidth, reqHeight);
+            }
             return decodeSampledBitmapFromUri(context, workerOptions.getImageUri(), reqWidth, reqHeight);
         } else {
             Dlog.e("Error loading bitmap - no source!");

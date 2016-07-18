@@ -20,6 +20,7 @@ import com.nagnek.android.externalIntent.Message;
 import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.AsyncDrawable;
+import com.nagnek.android.nagneImage.BitmapShape;
 import com.nagnek.android.nagneImage.BitmapWorkerOptions;
 import com.nagnek.android.nagneImage.BitmapWorkerTask;
 import com.nagnek.android.sharedString.Storage;
@@ -162,15 +163,9 @@ public class MemberListAdapter extends BaseAdapter {
         if (viewHolder.memberImageView != null) {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
-                //Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, memberImageLength, memberImageLength);
-                //viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
-                loadBitmap(imageUri, viewHolder.memberImageView);
-                //bitmap = null;
+                loadCircleBitmap(imageUri, viewHolder.memberImageView);
             } else {
-                //Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), memberImageId, memberImageLength, memberImageLength);
-                //viewHolder.memberImageView.setImageBitmap(bitmap);
                 loadBitmap(memberImageId, viewHolder.memberImageView);
-                //bitmap = null;
             }
         }
 
@@ -387,6 +382,10 @@ public class MemberListAdapter extends BaseAdapter {
         loadBitmapThroughThread(bitmapWorkerOptions, imageView);
     }
 
+    public void loadCircleBitmap(Uri imageUri, ImageView imageView) {
+        BitmapWorkerOptions bitmapWorkerOptions = new BitmapWorkerOptions.Builder(activity).shape(BitmapShape.Circle).resource(imageUri).build();
+        loadBitmapThroughThread(bitmapWorkerOptions, imageView);
+    }
 
     public void loadBitmapThroughThread(BitmapWorkerOptions bitmapWorkerOptions, ImageView imageView) {
         if (cancelPotentialWork(bitmapWorkerOptions, imageView)) {

@@ -8,6 +8,7 @@ import java.util.IllegalFormatCodePointException;
 /**
  * Created by yongtakpc on 2016. 7. 18..
  */
+
 public class BitmapWorkerOptions {
     private Context mContext;
 
@@ -15,6 +16,7 @@ public class BitmapWorkerOptions {
     private Integer mResourceId;
     private int mWidth;
     private int mHeight;
+    private BitmapShape mShape;
 
     public static class Builder {
         private Context mContext;
@@ -23,11 +25,13 @@ public class BitmapWorkerOptions {
         private Integer mResourceId;
         private int mWidth;
         private int mHeight;
+        private BitmapShape mShape;
 
         public Builder(Context context) {
             mContext = context.getApplicationContext();
             mWidth = 0;
             mHeight = 0;
+            mShape = BitmapShape.Rect;
         }
 
         public BitmapWorkerOptions build() {
@@ -38,6 +42,7 @@ public class BitmapWorkerOptions {
             options.mResourceId = mResourceId;
             options.mWidth = mWidth;
             options.mHeight = mHeight;
+            options.mShape = mShape;
 
             return options;
         }
@@ -63,6 +68,11 @@ public class BitmapWorkerOptions {
             } else {
                 throw new IllegalArgumentException("Can't set width to " + width);
             }
+            return this;
+        }
+
+        public Builder shape(BitmapShape shape) {
+            mShape = shape;
             return this;
         }
 
@@ -104,6 +114,10 @@ public class BitmapWorkerOptions {
         return mContext;
     }
 
+    public BitmapShape getShape() {
+        return mShape;
+    }
+
     public boolean isFromResource() {
         return getResourceId() != null;
     }
@@ -112,4 +126,7 @@ public class BitmapWorkerOptions {
         return getImageUri() != null;
     }
 
+    public boolean isRequireCircleBitmap() {    // circle 형태의 비트맵을 요구하는지
+        return getShape() == BitmapShape.Circle;
+    }
 }
