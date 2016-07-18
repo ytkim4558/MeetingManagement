@@ -16,9 +16,7 @@ import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 /**
  * Created by yongtakpc on 2016. 7. 7..

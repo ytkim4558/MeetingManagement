@@ -4,7 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,13 +19,15 @@ import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.externalIntent.Message;
 import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
-import com.nagnek.android.nagneImage.NagneCircleImage;
-import com.nagnek.android.nagneImage.NagneImage;
+import com.nagnek.android.nagneImage.AsyncDrawable;
+import com.nagnek.android.nagneImage.BitmapWorkerOptions;
+import com.nagnek.android.nagneImage.NagneBitmapWorkerTask;
 import com.nagnek.android.sharedString.Storage;
 import com.nagnek.nagneJavaUtil.NagneString;
 
 import java.util.ArrayList;
-import java.util.HashMap;
+
+import static com.nagnek.android.nagneImage.NagneBitmapWorkerTask.cancelPotentialWork;
 
 /**
  * Created by yongtakpc on 2016. 7. 3..
@@ -40,6 +44,8 @@ public class MemberListAdapter extends BaseAdapter {
     private static Member dialog_member;    // dialog 인자값 멤버
     private static boolean isShowDialog = false; // dialog 보이고 있니? 다이얼로그 떠있으면 true, 아니면 false
     private static int dialogListPosition = 0; // dialog 인자의 리스트의 position
+    Bitmap mPlaceHolderBitmap;
+    Resources mResources;
 
     public MemberListAdapter(Activity activity, ArrayList<Member> memberList) {
         this.activity = activity;
@@ -51,6 +57,12 @@ public class MemberListAdapter extends BaseAdapter {
         if(isShowDialog) {
             showWarningDialog(dialogListPosition, dialog_member);
         }
+        mResources = activity.getResources();
+        setLoadingImage(memberImageId);
+    }
+
+    public void setLoadingImage(int resId) {
+        mPlaceHolderBitmap = BitmapFactory.decodeResource(mResources, resId);
     }
 
     @Override
@@ -150,13 +162,15 @@ public class MemberListAdapter extends BaseAdapter {
         if (viewHolder.memberImageView != null) {
             Uri imageUri = memberList.get(position).imageUri;
             if (imageUri != null) {
-                Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, memberImageLength, memberImageLength);
-                viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
-                bitmap = null;
+                //Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, memberImageLength, memberImageLength);
+                //viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
+                loadBitmap(image, viewHolder.memberImageView);
+                //bitmap = null;
             } else {
-                Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), memberImageId, memberImageLength, memberImageLength);
-                viewHolder.memberImageView.setImageBitmap(bitmap);
-                bitmap = null;
+                //Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), memberImageId, memberImageLength, memberImageLength);
+                //viewHolder.memberImageView.setImageBitmap(bitmap);
+                loadBitmap(memberImageId, viewHolder.memberImageView);
+                //bitmap = null;
             }
         }
 
@@ -361,6 +375,27 @@ public class MemberListAdapter extends BaseAdapter {
         GroupInfoActivity.dialog_list_position = index;
         dialog_member = member;
         dialogListPosition = index;
+    }
+
+    public void loadBitmap(int resId, ImageView imageView) {
+        BitmapWorkerOptions bitmapWorkerOptions = new BitmapWorkerOptions.Builder(activity).resource(resId).build();
+        loadBitmapThroughThread(bitmapWorkerOptions, imageView);
+    }
+
+    public void loadBitmap(Uri imageUri, ImageView imageView) {
+        BitmapWorkerOptions bitmapWorkerOptions = new BitmapWorkerOptions.Builder(activity).resource(imageUri).build();
+        loadBitmapThroughThread(bitmapWorkerOptions, imageView);
+    }
+
+
+    public void loadBitmapThroughThread(BitmapWorkerOptions bitmapWorkerOptions, ImageView imageView) {
+        if (cancelPotentialWork(bitmapWorkerOptions, imageView)) {
+            final NagneBitmapWorkerTask task = new NagneBitmapWorkerTask(activity.getApplicationContext(), imageView, memberImageLength, memberImageLength);
+            final AsyncDrawable asyncDrawable =
+                    new AsyncDrawable(activity.getResources(), mPlaceHolderBitmap, task);
+            imageView.setImageDrawable(asyncDrawable);
+            task.execute(bitmapWorkerOptions);
+        }
     }
 }
 
