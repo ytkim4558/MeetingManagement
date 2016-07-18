@@ -16,14 +16,14 @@ import static com.nagnek.android.nagneImage.NagneImage.decodeSampledBitmapFromUr
 /**
  * Created by yongtakpc on 2016. 7. 16..
  */
-public class NagneBitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, Bitmap> {
+public class BitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
     public BitmapWorkerOptions data = null;
     private float reqWidth = 0;
     private float reqHeight = 0;
     private Context context;
 
-    public NagneBitmapWorkerTask(Context context, ImageView imageView, final float reqWidth, final float reqHeight) {
+    public BitmapWorkerTask(Context context, ImageView imageView, final float reqWidth, final float reqHeight) {
         // Use a WeakReference to ensure the ImageView can be garbage collected
         imageViewReference = new WeakReference<ImageView>(imageView);
 
@@ -60,9 +60,9 @@ public class NagneBitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, 
 
         if (imageViewReference != null && bitmap != null) {
             final ImageView imageView = imageViewReference.get();
-            final NagneBitmapWorkerTask nagneBitmapWorkerTask = getBitmapWorkerTask(imageView);
+            final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
-            if (this == nagneBitmapWorkerTask && imageView != null) {
+            if (this == bitmapWorkerTask && imageView != null) {
                 imageView.setImageBitmap(bitmap);
             }
         }
@@ -71,14 +71,14 @@ public class NagneBitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, 
     }
 
     public static boolean cancelPotentialWork(BitmapWorkerOptions newData, ImageView imageView) {
-        final NagneBitmapWorkerTask nagneBitmapWorkerTask = getBitmapWorkerTask(imageView);
+        final BitmapWorkerTask bitmapWorkerTask = getBitmapWorkerTask(imageView);
 
-        if (nagneBitmapWorkerTask != null) {
-            final BitmapWorkerOptions prevData = nagneBitmapWorkerTask.data;
+        if (bitmapWorkerTask != null) {
+            final BitmapWorkerOptions prevData = bitmapWorkerTask.data;
             // If bitmapData is not yet set or it differs from the new data
             if (prevData == null || prevData != newData) {
                 // Cancel previous task
-                nagneBitmapWorkerTask.cancel(true);
+                bitmapWorkerTask.cancel(true);
             } else {
                 // The same work is already in progress
                 return false;
@@ -88,7 +88,7 @@ public class NagneBitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, 
         return true;
     }
 
-    private static NagneBitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
+    private static BitmapWorkerTask getBitmapWorkerTask(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
             if (drawable instanceof AsyncDrawable) {

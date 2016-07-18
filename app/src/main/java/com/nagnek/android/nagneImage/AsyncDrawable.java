@@ -10,16 +10,16 @@ import java.lang.ref.WeakReference;
  * Created by yongtakpc on 2016. 7. 17..
  */
 public class AsyncDrawable extends BitmapDrawable{
-    private final WeakReference<NagneBitmapWorkerTask> bitmapWorkeTaskReference;
+    private final WeakReference<BitmapWorkerTask> bitmapWorkeTaskReference;
 
     public AsyncDrawable(Resources res, Bitmap bitmap,
-                         NagneBitmapWorkerTask nagneBitmapWorkerTask) {
+                         BitmapWorkerTask bitmapWorkerTask) {
         super(res, bitmap);
         bitmapWorkeTaskReference =
-                new WeakReference<NagneBitmapWorkerTask>(nagneBitmapWorkerTask);
+                new WeakReference<BitmapWorkerTask>(bitmapWorkerTask);
     }
 
-    public NagneBitmapWorkerTask getBitmapWorkerDrawableTask() {
+    public BitmapWorkerTask getBitmapWorkerDrawableTask() {
         return bitmapWorkeTaskReference.get();
     }
 }

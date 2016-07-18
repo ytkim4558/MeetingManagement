@@ -21,13 +21,13 @@ import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.AsyncDrawable;
 import com.nagnek.android.nagneImage.BitmapWorkerOptions;
-import com.nagnek.android.nagneImage.NagneBitmapWorkerTask;
+import com.nagnek.android.nagneImage.BitmapWorkerTask;
 import com.nagnek.android.sharedString.Storage;
 import com.nagnek.nagneJavaUtil.NagneString;
 
 import java.util.ArrayList;
 
-import static com.nagnek.android.nagneImage.NagneBitmapWorkerTask.cancelPotentialWork;
+import static com.nagnek.android.nagneImage.BitmapWorkerTask.cancelPotentialWork;
 
 /**
  * Created by yongtakpc on 2016. 7. 3..
@@ -164,7 +164,7 @@ public class MemberListAdapter extends BaseAdapter {
             if (imageUri != null) {
                 //Bitmap bitmap = NagneImage.decodeSampledBitmapFromUri(activity, imageUri, memberImageLength, memberImageLength);
                 //viewHolder.memberImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(bitmap));
-                loadBitmap(image, viewHolder.memberImageView);
+                loadBitmap(imageUri, viewHolder.memberImageView);
                 //bitmap = null;
             } else {
                 //Bitmap bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getResources(), memberImageId, memberImageLength, memberImageLength);
@@ -390,7 +390,7 @@ public class MemberListAdapter extends BaseAdapter {
 
     public void loadBitmapThroughThread(BitmapWorkerOptions bitmapWorkerOptions, ImageView imageView) {
         if (cancelPotentialWork(bitmapWorkerOptions, imageView)) {
-            final NagneBitmapWorkerTask task = new NagneBitmapWorkerTask(activity.getApplicationContext(), imageView, memberImageLength, memberImageLength);
+            final BitmapWorkerTask task = new BitmapWorkerTask(activity.getApplicationContext(), imageView, memberImageLength, memberImageLength);
             final AsyncDrawable asyncDrawable =
                     new AsyncDrawable(activity.getResources(), mPlaceHolderBitmap, task);
             imageView.setImageDrawable(asyncDrawable);
