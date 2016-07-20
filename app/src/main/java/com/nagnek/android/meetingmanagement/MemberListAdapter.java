@@ -387,6 +387,7 @@ public class MemberListAdapter extends BaseAdapter {
         loadBitmapThroughThread(bitmapWorkerOptions, imageView);
     }
 
+    // 비트맵 로딩을 BitmapWorkerTask스레드를 통해 비트맵 로딩함.
     public void loadBitmapThroughThread(BitmapWorkerOptions bitmapWorkerOptions, ImageView imageView) {
         if (cancelPotentialWork(bitmapWorkerOptions, imageView)) {
             final BitmapWorkerTask task = new BitmapWorkerTask(activity.getApplicationContext(), imageView, memberImageLength, memberImageLength);
