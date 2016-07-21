@@ -48,8 +48,8 @@ public class GroupListAdapter extends BaseAdapter {
     Resources mResources;
 
     class PhotoTask {
-        private final WeakReference<ImageView> imageViewWeakReference;
-        private final Bitmap bitmap;
+        private WeakReference<ImageView> imageViewWeakReference;
+        private Bitmap bitmap;
         PhotoTask(ImageView imageView, Bitmap bitmap) {
             imageViewWeakReference  = new WeakReference<ImageView>(imageView);
             this.bitmap = bitmap;
@@ -99,25 +99,15 @@ public class GroupListAdapter extends BaseAdapter {
             switch(msg.what) {
                 case MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW: {
                     PhotoTask photoTask = (PhotoTask)msg.obj;
-                    Dlog.i("position : " + position);
                     if(isCancel != true) {
                         ImageView imageView = photoTask.imageViewWeakReference.get();
                         Bitmap bitmap = photoTask.bitmap;
                         if (imageView != null && bitmap != null) {
                             final ImageLoadingHandler imageLoadingHandler = getImageLoadingHandler(imageView);
                             if(this == imageLoadingHandler && imageView != null) {
-                                Dlog.i("세팅 "+ position);
                                 imageView.setImageBitmap(bitmap);
                                 bitmap = null;
-                            } else {
-                                Dlog.i("다름 " + imageLoadingHandler);
                             }
-                        }
-                        else if(imageView == null) {
-                            Dlog.i("imageView null");
-                        }
-                        else if(bitmap == null) {
-                            Dlog.i("bitmap null");
                         }
                         bitmap = null;
                     }
@@ -450,15 +440,19 @@ public class GroupListAdapter extends BaseAdapter {
             message.arg1 = bitmapLoadingOptionTask.position;
             // 메시지가 실행될 때 참조하는 Object형 데이터 설정
             message.obj = photoTask;
-
+            if(imageLoadingHandler.isCancel != true) {
                 // 핸들러를 통해 메시지를 메시지 큐로 보낸다.
                 // ------------------------------------------------------------------
-                if(imageViewWeakReference != null && bitmap != null) {
+                if (imageViewWeakReference != null && bitmap != null) {
                     imageLoadingHandler.sendMessage(message);
                 } else {
                     Dlog.i("안보냄 " + bitmapLoadingOptionTask.position);
                 }
                 // ------------------------------------------------------------------
+            } else {
+                photoTask.bitmap = null;
+            }
+            Dlog.i("t position : " + bitmapLoadingOptionTask.position);
         }
     }
     public void loadBitmapByHandlerViaThread(BitmapLoadingOptionTask bitmapLoadingOptionTask, ImageView imageView) {
@@ -479,9 +473,9 @@ public class GroupListAdapter extends BaseAdapter {
             // If bitmapData is not yet set or it differs from the new data
             if (prevListPosition == -1 || prevListPosition != newListPosition) {
                 // Cancel previous task
-                //prevImageLoadingHandler.isCancel = true;
+                prevImageLoadingHandler.isCancel = true;
                 Dlog.i("cancel try " + prevImageLoadingHandler.position);
-                //prevImageLoadingHandler.removeCallbacksAndMessages(null);
+                prevImageLoadingHandler.removeCallbacksAndMessages(null);
                 //mHandler.removeMessages(MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW);
             } else {
                 // The same work is already in progress
