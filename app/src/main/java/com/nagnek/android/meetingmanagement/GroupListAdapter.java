@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,17 +69,18 @@ public class GroupListAdapter extends BaseAdapter {
     }
 
     static class AsyncImage extends BitmapDrawable {
-        private final WeakReference<BitmapLoadingOptionTask> bitmapLoadingOptionTaskWeakReference;
+        private final WeakReference<ImageLoadingHandler> imageLoadingHandlerWeakReference;
 
         public AsyncImage(Resources res, Bitmap bitmap,
-                             BitmapLoadingOptionTask bitmapLoadingOptionTask) {
+                             ImageLoadingHandler imageLoadingHandler) {
             super(res, bitmap);
-            bitmapLoadingOptionTaskWeakReference =
-                    new WeakReference<BitmapLoadingOptionTask>(bitmapLoadingOptionTask);
+            imageLoadingHandlerWeakReference =
+                    new WeakReference<ImageLoadingHandler>(imageLoadingHandler);
+            Dlog.i("saved :");
         }
 
-        public BitmapLoadingOptionTask getBitmapLoadingOptionTask() {
-            return bitmapLoadingOptionTaskWeakReference.get();
+        public ImageLoadingHandler getImageLoadingHandler() {
+            return imageLoadingHandlerWeakReference.get();
         }
 
 
@@ -89,26 +88,33 @@ public class GroupListAdapter extends BaseAdapter {
 
     static final private int MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW = 1;
 
-    // 메시지 큐에 메시지를 추가하기 위한 핸들러를 생성한다.
-    // ====================================================================================
-    Handler mHandler = new Handler() {
+    class ImageLoadingHandler extends Handler {
+        public int position;
+        public boolean isCancel;
         // 메시지 큐는 핸들러에 존재하는 handleMessage 함수를 호출해준다.
         // ====================================================================================
+        @Override
         public void handleMessage(Message msg) {
             switch(msg.what) {
                 case MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW: {
                     PhotoTask photoTask = (PhotoTask)msg.obj;
-                    ImageView imageView = photoTask.imageViewWeakReference.get();
-                    Bitmap bitmap = photoTask.bitmapWeakReference.get();
-                    if(imageView != null && bitmap != null) {
-                        imageView.setImageBitmap(bitmap);
+                    if(isCancel != true) {
+                        ImageView imageView = photoTask.imageViewWeakReference.get();
+                        Bitmap bitmap = photoTask.bitmapWeakReference.get();
+                        if (imageView != null && bitmap != null) {
+                            final ImageLoadingHandler imageLoadingHandler = getImageLoadingHandler(imageView);
+                            if(this == imageLoadingHandler && imageView != null) {
+                                imageView.setImageBitmap(bitmap);
+                            }
+                        }
+                        bitmap = null;
                     }
-                    bitmap = null;
                     break;
                 }
             }
         }
-    };
+    }
+    //ImageLoadingHandler mImageLoadingHandler = null;
 
     GroupListAdapter(Activity activity, ArrayList<Group> groupList) {
         this.activity = activity;
@@ -125,7 +131,7 @@ public class GroupListAdapter extends BaseAdapter {
     }
 
     public void setLoadingImage(int resId) {
-        mPlaceHolderBitmap = BitmapFactory.decodeResource(mResources, resId);
+        mPlaceHolderBitmap = NagneImage.decodeSampledBitmapFromResource(mResources, resId, groupImageLength, groupImageLength);
     }
 
     @Override
@@ -384,53 +390,75 @@ public class GroupListAdapter extends BaseAdapter {
         }
     }
 
-    public void loadBitmapByHandlerViaThread(final BitmapLoadingOptionTask bitmapLoadingOptionTask, final ImageView imageView) {
-        if (cancelPrevWork(bitmapLoadingOptionTask.position, imageView)) {
-            Thread loadingImageThread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    Bitmap bitmap = null;
-                    if (bitmapLoadingOptionTask.imageUri != null) {
-                        bitmap = NagneCircleImage.getCircleBitmap(activity.getApplicationContext(), bitmapLoadingOptionTask.imageUri, groupImageLength, groupImageLength);
-                    } else {
-                        bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getApplication().getResources(), groupImageId, groupImageLength, groupImageLength);
-                    }
-                    PhotoTask photoTask = new PhotoTask(imageView, bitmap);
-                    //메시지 큐에 담을 메시지를 하나 생성한다
-                    // ------------------------------------------------------------------
-                    Message message = Message.obtain(mHandler);
-                    // ------------------------------------------------------------------
+    private class DecodeImageRunnable implements Runnable {
+        private BitmapLoadingOptionTask bitmapLoadingOptionTask;
+        private WeakReference<ImageView> imageViewWeakReference;
+        private ImageLoadingHandler imageLoadingHandler;
+        DecodeImageRunnable(BitmapLoadingOptionTask bitmapLoadingOptionTask, ImageView imageView) {
+            this.bitmapLoadingOptionTask = bitmapLoadingOptionTask;
+            imageViewWeakReference = new WeakReference<ImageView>(imageView);
+            imageLoadingHandler = new ImageLoadingHandler();
+            imageLoadingHandler.position = bitmapLoadingOptionTask.position;
+            AsyncImage asyncImage = new AsyncImage(activity.getResources(), mPlaceHolderBitmap, imageLoadingHandler);
+            imageView.setImageDrawable(asyncImage);
+        }
+        public void run() {
+            Bitmap bitmap = null;
+            if (bitmapLoadingOptionTask.imageUri != null) {
+                bitmap = NagneCircleImage.getCircleBitmap(activity.getApplicationContext(), bitmapLoadingOptionTask.imageUri, groupImageLength, groupImageLength);
+            } else {
+                bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getApplication().getResources(), groupImageId, groupImageLength, groupImageLength);
+            }
+            PhotoTask photoTask = new PhotoTask(imageViewWeakReference.get(), bitmap);
 
-                    // 핸들러의 handleMessage로 전달할 값들을 설정한다.
-                    // ------------------------------------------------------------------
-                    // 무엇을 실행하는 메시지인지 구분하기 위해 구분자 설정
-                    message.what = MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW;
-                    // 메시지가 실행될 때 참조하는 int형 데이터 설정
-                    message.arg1 = bitmapLoadingOptionTask.position;
-                    // 메시지가 실행될 때 참조하는 Object형 데이터 설정
-                    message.obj = photoTask;
+            // 메시지 큐에 메시지를 추가하기 위한 핸들러를 생성한다.
+            // ====================================================================================
+            //메시지 큐에 담을 메시지를 하나 생성한다
+            // ------------------------------------------------------------------
+            Message message = Message.obtain(imageLoadingHandler);
+            // ------------------------------------------------------------------
 
-                    if(bitmapLoadingOptionTask.isCancel != true) {
-                        // 핸들러를 통해 메시지를 메시지 큐로 보낸다.
-                        // ------------------------------------------------------------------
-                        mHandler.sendMessage(message);
-                        // ------------------------------------------------------------------
-                    }
+            // 핸들러의 handleMessage로 전달할 값들을 설정한다.
+            // ------------------------------------------------------------------
+            // 무엇을 실행하는 메시지인지 구분하기 위해 구분자 설정
+            message.what = MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW;
+            // 메시지가 실행될 때 참조하는 int형 데이터 설정
+            message.arg1 = bitmapLoadingOptionTask.position;
+            // 메시지가 실행될 때 참조하는 Object형 데이터 설정
+            message.obj = photoTask;
+
+            if(imageLoadingHandler.isCancel != true) {
+                // 핸들러를 통해 메시지를 메시지 큐로 보낸다.
+                // ------------------------------------------------------------------
+                if(imageViewWeakReference != null && bitmap != null) {
+                    imageLoadingHandler.sendMessage(message);
                 }
-            });
+                // ------------------------------------------------------------------
+            } else {
+                Dlog.i(message.arg1 + "위치가 cancel됨 ");
+            }
+        }
+    }
+    public void loadBitmapByHandlerViaThread(BitmapLoadingOptionTask bitmapLoadingOptionTask, ImageView imageView) {
+        if (cancelPrevWork(bitmapLoadingOptionTask.position, imageView)) {
+            //mImageLoadingHandler = new ImageLoadingHandler();
+
+            Thread loadingImageThread = new Thread(new DecodeImageRunnable(bitmapLoadingOptionTask, imageView));
+
             loadingImageThread.start();
         }
     }
 
     boolean cancelPrevWork(int newListPosition, ImageView imageView) {
-        final BitmapLoadingOptionTask prevBitmapLoadingOptionTask = getBitmapLoadingOptionTask(imageView);
+        final ImageLoadingHandler prevImageLoadingHandler = getImageLoadingHandler(imageView);
 
-        if (prevBitmapLoadingOptionTask != null) {
-            final int prevListPosition = prevBitmapLoadingOptionTask.position;
+        if (prevImageLoadingHandler != null) {
+            final int prevListPosition = prevImageLoadingHandler.position;
             // If bitmapData is not yet set or it differs from the new data
             if (prevListPosition == -1 || prevListPosition != newListPosition) {
                 // Cancel previous task
-                prevBitmapLoadingOptionTask.isCancel = true;
+                prevImageLoadingHandler.isCancel = true;
+                Dlog.i("cancel try " + prevImageLoadingHandler.position);
                 //mHandler.removeMessages(MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW);
             } else {
                 // The same work is already in progress
@@ -441,12 +469,12 @@ public class GroupListAdapter extends BaseAdapter {
         return true;
     }
 
-    public BitmapLoadingOptionTask getBitmapLoadingOptionTask(ImageView imageView) {
+    public ImageLoadingHandler getImageLoadingHandler(ImageView imageView) {
         if(imageView != null) {
             final Drawable drawable = imageView.getDrawable();
             if(drawable instanceof AsyncImage) {
                 final AsyncImage asyncImage = (AsyncImage) drawable;
-                asyncImage.getBitmapLoadingOptionTask();
+                return asyncImage.getImageLoadingHandler();
             }
         }
         return null;
