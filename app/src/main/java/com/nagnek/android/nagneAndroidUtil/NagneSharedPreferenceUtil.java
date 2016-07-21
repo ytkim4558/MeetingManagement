@@ -125,6 +125,12 @@ public class NagneSharedPreferenceUtil {
         return putStringInPreferences(activity, fileName, key, valueList);
     }
 
+
+    public static boolean setValue(Activity activity, String fileName, String key, int value) {
+        // Save in Shared Preferences
+        return setValue(activity, fileName, key,  String.valueOf(value));
+    }
+
     public static boolean setValue(Activity activity, String fileName, String key, String value) {
         // Save in Shared Preferences
         return putStringInPreferences(activity, fileName, key, value);

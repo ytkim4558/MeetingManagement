@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         groupNumber = 0;
         if (groupNumberString == null) {
             groupNumber = 0;
+            NagneSharedPreferenceUtil.setValue(this, Storage.SAVE_MEMBER_INFO_FILE, Storage.GROUP_NUMBER, 0);
         } else {
             groupNumber = Integer.parseInt(groupNumberString);
         }
@@ -85,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 String[] resultGroupInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, i);
                 Group group;
                 if (resultGroupInfo != null) {
-                    if (resultGroupInfo.length == 2) {
+                    if (resultGroupInfo.length == 3) {
                         Uri imageUri = null;
                         if (resultGroupInfo[0].equals("null")) {
                             imageUri = null;
