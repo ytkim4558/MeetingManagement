@@ -48,6 +48,7 @@ public class MemberListAdapter extends BaseAdapter {
     Bitmap mPlaceHolderBitmap;
     Resources mResources;
 
+
     public MemberListAdapter(Activity activity, ArrayList<Member> memberList) {
         this.activity = activity;
         this.memberList = memberList;

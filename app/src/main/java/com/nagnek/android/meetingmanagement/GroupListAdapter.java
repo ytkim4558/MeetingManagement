@@ -5,7 +5,12 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.HandlerThread;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +28,7 @@ import com.nagnek.android.nagneImage.NagneCircleImage;
 import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import static com.nagnek.android.nagneImage.BitmapWorkerTask.cancelPotentialWork;
@@ -42,6 +48,67 @@ public class GroupListAdapter extends BaseAdapter {
     LayoutInflater layoutInflater = null;
     Bitmap mPlaceHolderBitmap;
     Resources mResources;
+
+    class PhotoTask {
+        private final WeakReference<ImageView> imageViewWeakReference;
+        private final WeakReference<Bitmap> bitmapWeakReference;
+        PhotoTask(ImageView imageView, Bitmap bitmap) {
+            imageViewWeakReference  = new WeakReference<ImageView>(imageView);
+            bitmapWeakReference = new WeakReference<Bitmap>(bitmap);
+        }
+    }
+
+    class BitmapLoadingOptionTask {
+        int position = -1;
+        Uri imageUri;
+        int imageId;
+        boolean isCancel;
+        BitmapLoadingOptionTask(Uri imageUri, int imageId, int position) {
+            this.imageId = imageId;
+            this.imageUri = imageUri;
+            this.position = position;
+        }
+    }
+
+    static class AsyncImage extends BitmapDrawable {
+        private final WeakReference<BitmapLoadingOptionTask> bitmapLoadingOptionTaskWeakReference;
+
+        public AsyncImage(Resources res, Bitmap bitmap,
+                             BitmapLoadingOptionTask bitmapLoadingOptionTask) {
+            super(res, bitmap);
+            bitmapLoadingOptionTaskWeakReference =
+                    new WeakReference<BitmapLoadingOptionTask>(bitmapLoadingOptionTask);
+        }
+
+        public BitmapLoadingOptionTask getBitmapLoadingOptionTask() {
+            return bitmapLoadingOptionTaskWeakReference.get();
+        }
+
+
+    }
+
+    static final private int MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW = 1;
+
+    // 메시지 큐에 메시지를 추가하기 위한 핸들러를 생성한다.
+    // ====================================================================================
+    Handler mHandler = new Handler() {
+        // 메시지 큐는 핸들러에 존재하는 handleMessage 함수를 호출해준다.
+        // ====================================================================================
+        public void handleMessage(Message msg) {
+            switch(msg.what) {
+                case MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW: {
+                    PhotoTask photoTask = (PhotoTask)msg.obj;
+                    ImageView imageView = photoTask.imageViewWeakReference.get();
+                    Bitmap bitmap = photoTask.bitmapWeakReference.get();
+                    if(imageView != null && bitmap != null) {
+                        imageView.setImageBitmap(bitmap);
+                    }
+                    bitmap = null;
+                    break;
+                }
+            }
+        }
+    };
 
     GroupListAdapter(Activity activity, ArrayList<Group> groupList) {
         this.activity = activity;
@@ -135,14 +202,10 @@ public class GroupListAdapter extends BaseAdapter {
         // ====================================================================================
         viewHolder.groupIdTextView.setText(String.valueOf(position + 1));
         viewHolder.groupNameTextView.setText(groupList.get(position).name);
-        if (viewHolder.groupImageView != null) {
-            Uri imageUri = groupList.get(position).imageUri;
-            if (imageUri != null) {
-                loadCircleBitmap(imageUri, viewHolder.groupImageView);
-            } else {
-                loadBitmap(groupImageId, viewHolder.groupImageView);
-            }
-        }
+
+        BitmapLoadingOptionTask bitmapLoadingOptionTask = new BitmapLoadingOptionTask(groupList.get(position).imageUri, groupImageId, position);
+
+        loadBitmapByHandlerViaThread(bitmapLoadingOptionTask, viewHolder.groupImageView);
 
         return itemLayout;
     }
@@ -319,5 +382,73 @@ public class GroupListAdapter extends BaseAdapter {
             imageView.setImageDrawable(asyncDrawable);
             task.execute(bitmapWorkerOptions);
         }
+    }
+
+    public void loadBitmapByHandlerViaThread(final BitmapLoadingOptionTask bitmapLoadingOptionTask, final ImageView imageView) {
+        if (cancelPrevWork(bitmapLoadingOptionTask.position, imageView)) {
+            Thread loadingImageThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    Bitmap bitmap = null;
+                    if (bitmapLoadingOptionTask.imageUri != null) {
+                        bitmap = NagneCircleImage.getCircleBitmap(activity.getApplicationContext(), bitmapLoadingOptionTask.imageUri, groupImageLength, groupImageLength);
+                    } else {
+                        bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getApplication().getResources(), groupImageId, groupImageLength, groupImageLength);
+                    }
+                    PhotoTask photoTask = new PhotoTask(imageView, bitmap);
+                    //메시지 큐에 담을 메시지를 하나 생성한다
+                    // ------------------------------------------------------------------
+                    Message message = Message.obtain(mHandler);
+                    // ------------------------------------------------------------------
+
+                    // 핸들러의 handleMessage로 전달할 값들을 설정한다.
+                    // ------------------------------------------------------------------
+                    // 무엇을 실행하는 메시지인지 구분하기 위해 구분자 설정
+                    message.what = MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW;
+                    // 메시지가 실행될 때 참조하는 int형 데이터 설정
+                    message.arg1 = bitmapLoadingOptionTask.position;
+                    // 메시지가 실행될 때 참조하는 Object형 데이터 설정
+                    message.obj = photoTask;
+
+                    if(bitmapLoadingOptionTask.isCancel != true) {
+                        // 핸들러를 통해 메시지를 메시지 큐로 보낸다.
+                        // ------------------------------------------------------------------
+                        mHandler.sendMessage(message);
+                        // ------------------------------------------------------------------
+                    }
+                }
+            });
+            loadingImageThread.start();
+        }
+    }
+
+    boolean cancelPrevWork(int newListPosition, ImageView imageView) {
+        final BitmapLoadingOptionTask prevBitmapLoadingOptionTask = getBitmapLoadingOptionTask(imageView);
+
+        if (prevBitmapLoadingOptionTask != null) {
+            final int prevListPosition = prevBitmapLoadingOptionTask.position;
+            // If bitmapData is not yet set or it differs from the new data
+            if (prevListPosition == -1 || prevListPosition != newListPosition) {
+                // Cancel previous task
+                prevBitmapLoadingOptionTask.isCancel = true;
+                //mHandler.removeMessages(MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW);
+            } else {
+                // The same work is already in progress
+                return false;
+            }
+        }
+        // No task associated with the ImageView, or an existing task was cancelled
+        return true;
+    }
+
+    public BitmapLoadingOptionTask getBitmapLoadingOptionTask(ImageView imageView) {
+        if(imageView != null) {
+            final Drawable drawable = imageView.getDrawable();
+            if(drawable instanceof AsyncImage) {
+                final AsyncImage asyncImage = (AsyncImage) drawable;
+                asyncImage.getBitmapLoadingOptionTask();
+            }
+        }
+        return null;
     }
 }

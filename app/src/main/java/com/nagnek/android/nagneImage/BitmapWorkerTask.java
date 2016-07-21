@@ -19,7 +19,7 @@ import static com.nagnek.android.nagneImage.NagneImage.decodeSampledBitmapFromUr
  */
 public class BitmapWorkerTask extends AsyncTask<BitmapWorkerOptions, Void, Bitmap> {
     private final WeakReference<ImageView> imageViewReference;
-    public BitmapWorkerOptions data = null;
+    private BitmapWorkerOptions data = null;
     private float reqWidth = 0;
     private float reqHeight = 0;
     private Context context;
