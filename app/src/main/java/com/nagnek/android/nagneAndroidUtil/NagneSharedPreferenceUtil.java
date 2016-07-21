@@ -33,7 +33,7 @@ public class NagneSharedPreferenceUtil {
         NagneSharedPreferenceUtil.removeKey(activity, fileName, keyString);
 
         for (Field field : fields) {
-            if(field.getName().contentEquals("CREATOR")) {
+            if(field.getName().contentEquals("CREATOR")  || field.getName().contentEquals("$change")) {
                 continue;
             }
             Object fieldValue = NagneReflect.getFieldValue(object, field.getName());
@@ -60,7 +60,7 @@ public class NagneSharedPreferenceUtil {
         NagneSharedPreferenceUtil.removeKey(activity, fileName, key);
 
         for (Field field : fields) {
-            if(field.getName().contentEquals("CREATOR")) {
+            if(field.getName().contentEquals("CREATOR") || field.getName().contentEquals("$change")) {
                 continue;
             }
             Object fieldValue = NagneReflect.getFieldValue(object, field.getName());

@@ -83,7 +83,7 @@ public class GroupInfoActivity extends AppCompatActivity {
             for (int i = 0; i < memberNumber; ++i) {
                 String[] resultMemberInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, group_position + "|" + i);
                 if (resultMemberInfo != null) {
-                    if (resultMemberInfo.length == 4) {
+                    if (resultMemberInfo.length == 3) {
                         Member member = new Member();
                         if (resultMemberInfo[0].equals("null")) {
                             member.imageUri = null;

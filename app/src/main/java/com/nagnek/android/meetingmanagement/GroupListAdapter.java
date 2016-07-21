@@ -48,6 +48,7 @@ public class GroupListAdapter extends BaseAdapter {
     Bitmap mPlaceHolderBitmap;
     Resources mResources;
 
+    // 메모리 캐시
     private LruCache<String, Bitmap> mMemoryCache;
 
     class PhotoTask {

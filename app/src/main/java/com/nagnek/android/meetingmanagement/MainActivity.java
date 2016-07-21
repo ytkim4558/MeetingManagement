@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 String[] resultGroupInfo = NagneSharedPreferenceUtil.getValueList(this, Storage.SAVE_MEMBER_INFO_FILE, i);
                 Group group;
                 if (resultGroupInfo != null) {
-                    if (resultGroupInfo.length == 3) {
+                    if (resultGroupInfo.length == 2) {
                         Uri imageUri = null;
                         if (resultGroupInfo[0].equals("null")) {
                             imageUri = null;
