@@ -8,9 +8,14 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 
+import com.nagnek.android.debugLog.Dlog;
+
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -178,6 +183,12 @@ public class NagneImage {
         // inJustDecodeBounds 속성을 true로 하면 이미지를 메모리에 올리지 않고 크기만 얻어올 수 있다.
         final BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
+        File file = new File(imagePath);
+        if(file.exists() == false) {
+            Dlog.e("Uri does not exist!!");
+            return null;
+        }
+
         BitmapFactory.decodeFile(imagePath, options);
 
         // Calculate inSampleSize
@@ -185,6 +196,78 @@ public class NagneImage {
 
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
-        return BitmapFactory.decodeFile(imagePath, options);
+
+        int degree = GetExifOrientation(imagePath);
+
+        return GetRotatedBitmap(BitmapFactory.decodeFile(imagePath, options), degree);
+    }
+
+    // 이미지를 특정 각도로 회전한다.
+    public synchronized static Bitmap GetRotatedBitmap(Bitmap bitmap, int degrees)
+    {
+        if ( degrees != 0 && bitmap != null )
+        {
+            Matrix m = new Matrix();
+            m.setRotate(degrees, (float) bitmap.getWidth() / 2, (float) bitmap.getHeight() / 2 );
+            try
+            {
+                Bitmap b2 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), m, true);
+                if (bitmap != b2)
+                {
+                    bitmap.recycle();
+                    bitmap = b2;
+                }
+            }
+            catch (OutOfMemoryError ex)
+            {
+                // We have no memory to rotate. Return the original bitmap.
+            }
+        }
+
+        return bitmap;
+    }
+
+    // 이미지의 Orientation 정보를 얻는 함수입니다.
+    public synchronized static int GetExifOrientation(String filepath)
+    {
+        int degree = 0;
+        ExifInterface exif = null;
+
+        try
+        {
+            exif = new ExifInterface(filepath);
+        }
+        catch (IOException e)
+        {
+            Dlog.e("cannot read exif");
+            e.printStackTrace();
+        }
+
+        if (exif != null)
+        {
+            int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, -1);
+
+            if (orientation != -1)
+            {
+                // We only recognize a subset of orientation tag values.
+                switch(orientation)
+                {
+                    case ExifInterface.ORIENTATION_ROTATE_90:
+                        degree = 90;
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_180:
+                        degree = 180;
+                        break;
+
+                    case ExifInterface.ORIENTATION_ROTATE_270:
+                        degree = 270;
+                        break;
+                }
+
+            }
+        }
+
+        return degree;
     }
 }

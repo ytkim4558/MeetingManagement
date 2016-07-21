@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Message;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,6 +47,8 @@ public class GroupListAdapter extends BaseAdapter {
     LayoutInflater layoutInflater = null;
     Bitmap mPlaceHolderBitmap;
     Resources mResources;
+
+    private LruCache<String, Bitmap> mMemoryCache;
 
     class PhotoTask {
         private WeakReference<ImageView> imageViewWeakReference;
@@ -130,6 +133,23 @@ public class GroupListAdapter extends BaseAdapter {
         mResources = activity.getResources();
         setLoadingImage(groupImageId);
         Dlog.i("GroupListAdapter()");
+
+        // Get max available VM memory, exceeding this amount will throw an
+        // OutOfMemory exception. Stored in kilobytes as LruCache takes an
+        // int in its constructor.
+        final int maxMemory = (int) (Runtime.getRuntime().maxMemory() / 1024);
+
+        // Use 1/8th of the available memory for this memory cache.
+        final int cacheSize = maxMemory / 8;
+
+        mMemoryCache = new LruCache<String, Bitmap>(cacheSize) {
+            @Override
+            protected int sizeOf(String key, Bitmap bitmap) {
+                // The cache size will be measured in kilobytes rather than
+                // number of items.
+                return bitmap.getByteCount() / 1024;
+            }
+        };
     }
 
     public void setLoadingImage(int resId) {
@@ -417,6 +437,7 @@ public class GroupListAdapter extends BaseAdapter {
             }
             if (bitmapLoadingOptionTask.imageUri != null) {
                 bitmap = NagneCircleImage.getCircleBitmap(activity.getApplicationContext(), bitmapLoadingOptionTask.imageUri, groupImageLength, groupImageLength);
+                addBitmapToMemoryCache(String.valueOf(bitmapLoadingOptionTask.imageUri), bitmap);
             } else {
                 bitmap = NagneImage.decodeSampledBitmapFromResource(activity.getApplication().getResources(), groupImageId, groupImageLength, groupImageLength);
             }
@@ -456,7 +477,12 @@ public class GroupListAdapter extends BaseAdapter {
         }
     }
     public void loadBitmapByHandlerViaThread(BitmapLoadingOptionTask bitmapLoadingOptionTask, ImageView imageView) {
-        if (cancelPrevWork(bitmapLoadingOptionTask.position, imageView)) {
+        final String imageKey = String.valueOf(bitmapLoadingOptionTask.imageUri);
+        final Bitmap bitmap = getBitmapFromMemCache(imageKey);
+        if(bitmap != null) {
+            imageView.setImageBitmap(bitmap);
+        }
+        else if (cancelPrevWork(bitmapLoadingOptionTask.position, imageView)) {
             //mImageLoadingHandler = new ImageLoadingHandler();
 
             Thread loadingImageThread = new Thread(new DecodeImageRunnable(bitmapLoadingOptionTask, imageView));
@@ -496,5 +522,15 @@ public class GroupListAdapter extends BaseAdapter {
             }
         }
         return null;
+    }
+
+    public void addBitmapToMemoryCache(String key, Bitmap bitmap) {
+        if (getBitmapFromMemCache(key) == null) {
+            mMemoryCache.put(key, bitmap);
+        }
+    }
+
+    public Bitmap getBitmapFromMemCache(String key) {
+        return mMemoryCache.get(key);
     }
 }
