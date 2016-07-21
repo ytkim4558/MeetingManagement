@@ -311,7 +311,7 @@ public class GroupListAdapter extends BaseAdapter {
             String memberNumberString = NagneSharedPreferenceUtil.getValue(activity, Storage.SAVE_MEMBER_INFO_FILE, i + "|" + Storage.MEMBER_NUMBER);
             if(memberNumberString != null) {
                 for (int j = 0; j < Integer.valueOf(memberNumberString); ++j) {
-                    NagneSharedPreferenceUtil.removeKey(activity, Storage.SAVE_MEMBER_INFO_FILE, i + j);
+                    NagneSharedPreferenceUtil.removeKey(activity, Storage.SAVE_MEMBER_INFO_FILE, i + "|" + j);
                 }
             }
         }
