@@ -70,7 +70,7 @@ public class NewGroupPopupActivity extends PopupActivity {
         if (requestCode == GroupInfoActivity.REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 groupImageUri = data.getData();
-                groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(NewGroupPopupActivity.this, groupImageUri));
+                groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(NewGroupPopupActivity.this, groupImageUri, groupImageLength, groupImageLength));
             }
         }
     }
