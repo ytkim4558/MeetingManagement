@@ -22,7 +22,7 @@
         <activity android:name=".GroupInfoActivity" />
         <activity
             android:name=".NewGroupPopupActivity"
-            android:theme="@android:style/Theme.Dialog" />
+            android:theme="@android:style/Theme.Holo.Dialog" />
         <activity
             android:name=".EditMemberInfoActivity"
             android:label="@string/title_activity_new_member_name_popup"

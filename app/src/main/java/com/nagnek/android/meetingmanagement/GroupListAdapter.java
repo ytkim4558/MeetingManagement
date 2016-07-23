@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -330,6 +331,7 @@ public class GroupListAdapter extends BaseAdapter {
         ImageView groupImageView;
         ImageView editGroupImageButton;
         ImageView deleteGroupImageButton;
+        CheckBox checkBox;
     }
 
     // 삭제된 아이템 이후 SharedPreference에서 저장된 데이터들을 인덱스 하나씩 당기는 함수.

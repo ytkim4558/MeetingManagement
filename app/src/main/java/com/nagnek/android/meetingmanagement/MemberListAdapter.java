@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nagnek.android.debugLog.Dlog;
-import com.nagnek.android.externalIntent.Message;
+import com.nagnek.android.externalIntent.NagneSMS;
 import com.nagnek.android.externalIntent.Phone;
 import com.nagnek.android.nagneAndroidUtil.NagneSharedPreferenceUtil;
 import com.nagnek.android.nagneImage.AsyncDrawable;
@@ -130,8 +130,8 @@ public class MemberListAdapter extends BaseAdapter {
         viewHolder.messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Message message = new Message();
-                message.sendSMS(activity, memberList.get(position).phone_number, MESSAGE_BODY);
+                NagneSMS nagneSMS = new NagneSMS();
+                nagneSMS.sendSMS(activity, memberList.get(position).phone_number, MESSAGE_BODY);
             }
         });
 
@@ -346,7 +346,7 @@ public class MemberListAdapter extends BaseAdapter {
         builder.setTitle("기존에 같은 전화번호가 있습니다.")
                 .setMessage("그래도 추가하시겠습니까?")
                 .setCancelable(true)    // 뒤로 버튼 클릭시 취소 가능 설정
-                .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                .setPositiveButton("추가", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog_member = null;

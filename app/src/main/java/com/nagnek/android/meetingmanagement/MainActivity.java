@@ -1,6 +1,8 @@
 package com.nagnek.android.meetingmanagement;
 
-import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.DialogFragment;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,7 +27,7 @@ import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NoticeDialogFragment.NoticeDialogListener{
 
     public static final String GROUP_LIST_POSITION = "com.nagnek.android.meetingmanagement.GROUP_LIST_POSITION";
     public static final String GROUP_NAME = "com.nagnek.android.meetingmanagement.GROUP_NAME";
@@ -48,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private GroupListAdapter groupListAdatper = null;
     ImageView groupImageView;
     ImageView addGroupButton;
+    boolean isShowWarningDialog = true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -176,9 +180,14 @@ public class MainActivity extends AppCompatActivity {
      */
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(groupListAdatper != null) {
-            groupListAdatper.clear();
+        switch (item.getItemId()) {
+            case R.id.clearDB:
+                showNoticeDialog();
+                break;
         }
+        /*if(groupListAdatper != null) {
+            groupListAdatper.clear();
+        }*/
         return true;
     }
 
@@ -277,5 +286,81 @@ public class MainActivity extends AppCompatActivity {
             bitmap = null;
         }
         d.setCallback(null);
+    }
+
+    // title : 다이얼로그 창 제목 : 예 ) 데이터가 지워집니다
+    // NagneSMS : 다이얼로그 메시지 : 예 ) 정말로 데이터를 지우시겠습니까?
+    // positiveMessageButtonText : "삭제"등을 사용한다. "ok", "확인"같은 애매한 메시지 말고 확실히 사용자가 인지가능한 메시지를 써야한다.
+    // negativeMessageButtonText : "취소"와 같은 메시지
+    // checkValue : 누른 값 확인하려고 두긴 했는데 사용 방법 아직 정하지 않음.
+    public void showAlertDialog(String title, String message, String positiveMessageButtonText, String negativeMessageButtonText, boolean checkValue) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this.getApplicationContext());
+
+        builder.setTitle(title)
+                .setMessage(message)
+                .setCancelable(true)    // 뒤로 버튼 클릭시 취소 가능 설정
+                .setPositiveButton(positiveMessageButtonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        isShowWarningDialog = false;
+                    }
+                })
+                .setNegativeButton(negativeMessageButtonText, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        // User cancelled the dialog
+                        isShowWarningDialog = false;
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        isShowWarningDialog = true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        // Alert 띄어서 종료시키기
+        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        dialog.setTitle("종료 알림")
+                .setMessage("정말로 종료하시겠습니까")
+                .setPositiveButton("종료", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+/*
+.setNeutralButton("취소", new DialogInterface.OnClickListener() {
+@Override
+public void onClick(DialogInterface dialog, int which) {
+Toast.makeText(MainActivity.this, "취소했습니다.", Toast.LENGTH_SHORT).show();
+}
+})
+*/
+                .setNegativeButton("아니요", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                }).create().show();
+    }
+
+    public void showNoticeDialog() {
+        // Create an instance of the dialog fragment and show it
+        DialogFragment dialog = new NoticeDialogFragment();
+        dialog.show(getFragmentManager(), "NoticeDialogFragment");
+    }
+
+    @Override
+    public void onDialogPositiveClick(DialogFragment dialog) {
+        if(groupListAdatper != null) {
+            groupListAdatper.clear();
+        }
+    }
+
+    @Override
+    public void onDialogNegativeClick(DialogFragment dialog) {
+        dialog.dismiss();
     }
 }

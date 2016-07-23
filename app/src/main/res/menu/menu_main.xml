@@ -4,8 +4,11 @@
     <item
         android:id="@+id/clearDB"
         android:icon="@drawable/delete_shared_preference"
-        android:showAsAction="ifRoom"
+        app:showAsAction="ifRoom"
         android:title="Clear DB">
+    </item>
+    <item android:id="@+id/selection_delete_button_group"
+        android:title="선택 삭제">
     </item>
 
 </menu>
