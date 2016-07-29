@@ -8,8 +8,12 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.transition.Explode;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -61,7 +65,14 @@ public class MemberListActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        // inside your activity (if you did not enable transitions in your theme)
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        // set an enter transition
+        getWindow().setEnterTransition(new Explode());
+        // set an exit transition
+        getWindow().setExitTransition(new Explode());
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_group);
         Toolbar memberToolBar = (Toolbar) findViewById(R.id.member_toolbar);
         setSupportActionBar(memberToolBar);
@@ -158,13 +169,6 @@ public class MemberListActivity extends AppCompatActivity {
         });
 
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
-        ImageView addMemberButton = (ImageView) findViewById(R.id.add_member_button);
-        addMemberButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickContact();
-            }
-        });
 
         groupNameText = (TextView) findViewById(R.id.group_name_text_view);
         groupNameText.setText(groupName);
@@ -345,6 +349,27 @@ public class MemberListActivity extends AppCompatActivity {
         if (number != null) {
             startActivity(new Intent("android.intent.action.CALL", Uri.parse("tel:" + number)));
         }
+    }
+
+    // Menu icons are inflated just as they were with actionbar
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_member_list, menu);
+        return true;
+    }
+
+    /**
+     * OptionMenu 아이템이 선택될 때 호출 된다.
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.add_member:
+                pickContact();
+                break;
+        }
+        return true;
     }
 
     @Override

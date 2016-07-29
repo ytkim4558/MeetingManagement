@@ -242,6 +242,14 @@ public class  GroupListAdapter extends BaseAdapter {
                 activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_GROUP_INFO);
             }
         });
+        viewHolder.editGroupImageButton.setTranslationX(500);
+        viewHolder.editGroupImageButton.animate().translationX(0);
+        viewHolder.deleteGroupImageButton.setTranslationX(700);
+        viewHolder.deleteGroupImageButton.animate().translationX(0);
+        viewHolder.groupImageView.setTranslationX(-300);
+        viewHolder.groupImageView.animate().translationX(0);
+
+
 //        viewHolder.deleteGroupImageButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
