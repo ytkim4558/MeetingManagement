@@ -29,7 +29,7 @@ import com.nagnek.nagneJavaUtil.NagneString;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class GroupInfoActivity extends AppCompatActivity {
+public class MemberListActivity extends AppCompatActivity {
     public static final String MEMBER_LIST_POSITION = "com.nagnek.android.meetingmanagement.MEMBER_LIST_POSITION";
     public static final String MEMBER_INFO = "com.nagenk.android.meetingmanagement.MEMBER_INFO";
     public static final int REQ_CODE_SELECT_MEMBER_LIST_ITEM = 25;
@@ -122,20 +122,20 @@ public class GroupInfoActivity extends AppCompatActivity {
         phoneNumberKeyToMatchGroupPositionAndMemberPosition = new HashMap<String, String>();
         for (int i = 0; i < memberList.size(); ++i) {
             String key = memberList.get(i).phone_number;
-            String value = GroupInfoActivity.group_position + "|" + i;
+            String value = MemberListActivity.group_position + "|" + i;
             if (phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(key)) {
                 String gotValue = phoneNumberKeyToMatchGroupPositionAndMemberPosition.get(key);
                 String[] valueList = NagneString.convertStringToArray(gotValue);
-                phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(memberList.get(i).phone_number, gotValue + "," + GroupInfoActivity.group_position + "|" + i);
+                phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(memberList.get(i).phone_number, gotValue + "," + MemberListActivity.group_position + "|" + i);
             } else {
-                phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(memberList.get(i).phone_number, GroupInfoActivity.group_position + "|" + i);
+                phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(memberList.get(i).phone_number, MemberListActivity.group_position + "|" + i);
             }
         }
 
         memberListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(GroupInfoActivity.this, MemberInfoActivity.class);
+                Intent intent = new Intent(MemberListActivity.this, MemberInfoActivity.class);
                 Member member = memberList.get(position);
                 intent.putExtra(MEMBER_INFO, member);
                 intent.putExtra(MEMBER_LIST_POSITION, position);
@@ -146,7 +146,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         memberListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(GroupInfoActivity.this, ListItemPopupMenuActivity.class);
+                Intent intent = new Intent(MemberListActivity.this, ListItemPopupMenuActivity.class);
                 Member member = memberList.get(position);
                 intent.putExtra(ListItemPopupMenuActivity.WHO_CALL_LIST_ITEM_POPUP_MENU_ACTIVITY, ListItemPopupMenuActivity.POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK);
                 intent.putExtra(POPUP_MENU_CALLED_BY_MENU_LIST_ITEM_LONG_CLICK_KEY, ListItemPopupMenuActivity.POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK);
@@ -180,7 +180,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NagneImage.picImageFromGalleryStartActivityForResult(GroupInfoActivity.this, REQ_CODE_SELECT_IMAGE);
+                NagneImage.picImageFromGalleryStartActivityForResult(MemberListActivity.this, REQ_CODE_SELECT_IMAGE);
             }
         });
 

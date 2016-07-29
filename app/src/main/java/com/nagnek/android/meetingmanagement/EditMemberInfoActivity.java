@@ -53,7 +53,7 @@ public class EditMemberInfoActivity extends Activity {
                 member = receivedIntent.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
                 tempMember = new Member();
                 tempMember.copy(member);
-                position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
+                position = receivedIntent.getIntExtra(MemberListActivity.MEMBER_LIST_POSITION, 0);
             }
         }
         // ====================================================================================
@@ -99,9 +99,9 @@ public class EditMemberInfoActivity extends Activity {
                 member.phone_number = phoneNumber.getText().toString();
 
                 Intent intent = new Intent();
-                //intent.putExtra(GroupInfoActivity.SELECT_MEMBER_LIST_ITEM, member);
+                //intent.putExtra(MemberListActivity.SELECT_MEMBER_LIST_ITEM, member);
                 intent.putExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO, member);
-                intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
+                intent.putExtra(MemberListActivity.MEMBER_LIST_POSITION, position);
                 setResult(RESULT_OK, intent);
                 finish();
             }

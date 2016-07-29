@@ -1,9 +1,18 @@
 package com.nagnek.android.meetingmanagement;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.CycleInterpolator;
+import android.view.animation.TranslateAnimation;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -37,19 +46,56 @@ public class NewGroupPopupActivity extends PopupActivity {
         groupImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NagneImage.picImageFromGalleryStartActivityForResult(NewGroupPopupActivity.this, GroupInfoActivity.REQ_CODE_SELECT_IMAGE);
+                NagneImage.picImageFromGalleryStartActivityForResult(NewGroupPopupActivity.this, MemberListActivity.REQ_CODE_SELECT_IMAGE);
             }
         });
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent();
                 EditText newGroupName = (EditText) findViewById(R.id.group_name);
-                intent.putExtra(NEW_GROUP_NAME, newGroupName.getText().toString());
-                intent.putExtra(NEW_GROUP_IMAGE, groupImageUri);
-                setResult(RESULT_OK, intent);
-                Dlog.i("finish");
-                finish();
+                //그룹 이름이 null이 아니면
+                if(newGroupName.getText().toString().equals("") != true) {
+                    Intent intent = new Intent();
+
+
+                    intent.putExtra(NEW_GROUP_NAME, newGroupName.getText().toString());
+                    intent.putExtra(NEW_GROUP_IMAGE, groupImageUri);
+                    setResult(RESULT_OK, intent);
+                    Dlog.i("finish");
+                    finish();
+                } else {
+                    ObjectAnimator animX = ObjectAnimator.ofFloat(newGroupName, "translationX", 0f, 30f);
+                    ObjectAnimator vibrationX = ObjectAnimator.ofFloat(newGroupName, "translationX", 30f, -30f);
+                    ObjectAnimator returnanimX = ObjectAnimator.ofFloat(newGroupName, "translationX", -30f, 0f);
+                    vibrationX.setInterpolator(new CycleInterpolator(10));
+                    AnimatorSet animSetX = new AnimatorSet();
+                    animSetX.playSequentially(animX, vibrationX, returnanimX);
+                    animSetX.setDuration(300).start();
+                    animSetX.addListener(new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            Toast toast = Toast.makeText(getApplicationContext(), "이름을 입력하세요", Toast.LENGTH_SHORT);
+                            toast.setGravity(Gravity.CENTER, 0, 0);
+                            toast.show();
+                        }
+
+                        @Override
+                        public void onAnimationCancel(Animator animation) {
+
+                        }
+
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {
+
+                        }
+                    });
+
+                }
             }
         });
         cancelButton.setOnClickListener(new View.OnClickListener() {
@@ -67,7 +113,7 @@ public class NewGroupPopupActivity extends PopupActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == GroupInfoActivity.REQ_CODE_SELECT_IMAGE) {
+        if (requestCode == MemberListActivity.REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
                 groupImageUri = data.getData();
                 groupImageView.setImageBitmap(NagneCircleImage.getCircleBitmap(NewGroupPopupActivity.this, groupImageUri, groupImageLength, groupImageLength));

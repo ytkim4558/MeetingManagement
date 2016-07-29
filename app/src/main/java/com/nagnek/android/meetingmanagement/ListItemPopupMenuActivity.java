@@ -47,11 +47,11 @@ public class ListItemPopupMenuActivity extends PopupActivity {
                 switch (whoCallThisPopupMenu) {
                     case POPUP_MENU_CALLED_BY_MEMBER_LIST_VIEW_ITEM_LONG_CLICK: {
                         Intent intent = new Intent(ListItemPopupMenuActivity.this, EditMemberInfoActivity.class);
-                        int position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
+                        int position = receivedIntent.getIntExtra(MemberListActivity.MEMBER_LIST_POSITION, 0);
                         Member member;
-                        member = receivedIntent.getParcelableExtra(GroupInfoActivity.MEMBER_INFO);
+                        member = receivedIntent.getParcelableExtra(MemberListActivity.MEMBER_INFO);
                         intent.putExtra(EDIT_MEMBER_INFO, member);
-                        intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
+                        intent.putExtra(MemberListActivity.MEMBER_LIST_POSITION, position);
                         startActivityForResult(intent, REQ_CODE_EDIT_MEMBER_INFO);
                         member = null;
                     }

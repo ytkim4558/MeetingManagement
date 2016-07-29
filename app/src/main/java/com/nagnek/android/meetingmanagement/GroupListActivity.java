@@ -133,7 +133,7 @@ public class GroupListActivity extends AppCompatActivity implements NoticeDialog
         groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(GroupListActivity.this, GroupInfoActivity.class);
+                Intent intent = new Intent(GroupListActivity.this, MemberListActivity.class);
                 ImageView groupImageView = (ImageView)view.findViewById(R.id.group_image);
                 TextView groupName = (TextView)view.findViewById(R.id.group_name);
                 Pair<View, String> pair = new Pair<>((View)groupImageView, SHARE_IMAGE_VIEW_NAME);
@@ -166,6 +166,14 @@ public class GroupListActivity extends AppCompatActivity implements NoticeDialog
                 intent.putExtra(GROUP_LIST_POSITION, position);
                 startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
                 return true;
+            }
+        });
+        groupImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(groupList.size() > 0) {
+                    groupListView.smoothScrollToPosition(0);
+                }
             }
         });
 
@@ -202,6 +210,7 @@ public class GroupListActivity extends AppCompatActivity implements NoticeDialog
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.clearDB:
+
                 showNoticeDialog();
                 break;
         }

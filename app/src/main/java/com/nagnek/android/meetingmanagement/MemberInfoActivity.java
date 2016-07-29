@@ -34,11 +34,11 @@ public class MemberInfoActivity extends Activity {
         // ====================================================================================
         if (savedInstanceState == null) {
             Intent receivedIntent = getIntent();
-            member = receivedIntent.getParcelableExtra(GroupInfoActivity.MEMBER_INFO);
-            position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
+            member = receivedIntent.getParcelableExtra(MemberListActivity.MEMBER_INFO);
+            position = receivedIntent.getIntExtra(MemberListActivity.MEMBER_LIST_POSITION, 0);
         } else {
             member = savedInstanceState.getParcelable(EditMemberInfoActivity.BACK_UP_MEMBER_KEY);
-            position = savedInstanceState.getInt(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
+            position = savedInstanceState.getInt(MemberListActivity.MEMBER_LIST_POSITION, 0);
             resultIntent = savedInstanceState.getParcelable(BACKUP_INSTANCE);
             isEditMemberInfo = savedInstanceState.getBoolean(BACKUP_IS_EDIT_MEMBER_INFO);
         }
@@ -69,7 +69,7 @@ public class MemberInfoActivity extends Activity {
             public void onClick(View v) {
                 Intent intent = new Intent(MemberInfoActivity.this, EditMemberInfoActivity.class);
                 intent.putExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO, member);
-                intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
+                intent.putExtra(MemberListActivity.MEMBER_LIST_POSITION, position);
                 startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO);
             }
         });
@@ -100,7 +100,7 @@ public class MemberInfoActivity extends Activity {
                 isEditMemberInfo = true;
                 resultIntent = data;
                 member = receivedIntent.getParcelableExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO);
-                position = receivedIntent.getIntExtra(GroupInfoActivity.MEMBER_LIST_POSITION, 0);
+                position = receivedIntent.getIntExtra(MemberListActivity.MEMBER_LIST_POSITION, 0);
                 // ====================================================================================
                 //
                 // 현재 아이템의 내용을 변경할 뷰를 찾는다.

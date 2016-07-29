@@ -160,7 +160,7 @@ public class MemberListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, EditMemberInfoActivity.class);
                 intent.putExtra(ListItemPopupMenuActivity.EDIT_MEMBER_INFO, memberList.get(position));
-                intent.putExtra(GroupInfoActivity.MEMBER_LIST_POSITION, position);
+                intent.putExtra(MemberListActivity.MEMBER_LIST_POSITION, position);
                 activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_MEMBER_INFO);
             }
         });
@@ -194,11 +194,11 @@ public class MemberListAdapter extends BaseAdapter {
     }
 
     public void add(int index, Member member) {
-        if (GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(member.phone_number)) {
+        if (MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(member.phone_number)) {
             showWarningDialog(index, member);
         } else {
             addData(index, member);
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(member.phone_number, GroupInfoActivity.group_position + "|" + index);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(member.phone_number, MemberListActivity.group_position + "|" + index);
         }
     }
 
@@ -211,7 +211,7 @@ public class MemberListAdapter extends BaseAdapter {
 
     // 추가된 아이템 인덱스 이후 SharedPreference에서 저장된 데이터들을 인덱스 하나씩 미는 함수.
     public void syncSharedPreferenceToMemberListAfterAddMemberListItem(int addMemberIndex, Member member) {
-        int currentGroupIndex = GroupInfoActivity.group_position;
+        int currentGroupIndex = MemberListActivity.group_position;
         int currentMemberNumber = this.getCount();
         // ====================================================================================
         // 데이터는 인덱스 0부터 들어가 있다
@@ -236,11 +236,11 @@ public class MemberListAdapter extends BaseAdapter {
         // 전화번호 바뀐 경우 인덱스에서 이전 저장 번호 제거 후 새로운 번호 추가
         // ====================================================================================
         Member m = (Member)getItem(index);
-        if (GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(m.phone_number)) {
+        if (MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(m.phone_number)) {
             String valueList = findAndGenerateNewSpecificDataInArray(m.phone_number, index);
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.remove(m.phone_number);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.remove(m.phone_number);
             if(valueList != null) {
-                GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(m.phone_number, valueList);
+                MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(m.phone_number, valueList);
             }
         }
 
@@ -255,7 +255,7 @@ public class MemberListAdapter extends BaseAdapter {
     }
 
     private String findAndGenerateNewSpecificDataInArray(String key, int index) { // 해시맵에서 key에 해당 되는 value list중 해당 position 을 삭제한 valuelist를 반환한다
-        String gotValue = GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.get(key);
+        String gotValue = MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.get(key);
         String[] valueList = NagneString.convertStringToArray(gotValue);
         int resultStringLength = valueList.length - 1;
 
@@ -263,7 +263,7 @@ public class MemberListAdapter extends BaseAdapter {
         if(resultStringLength > 0) {
 
             for(int i=0, j = 0; i<valueList.length; ++i) {
-                if(valueList[i].equals(GroupInfoActivity.group_position + "|" + index) != true) {
+                if(valueList[i].equals(MemberListActivity.group_position + "|" + index) != true) {
                     tempList = tempList + valueList[i];
                 }
             }
@@ -273,7 +273,7 @@ public class MemberListAdapter extends BaseAdapter {
 
     // 삭제된 아이템 이후 SharedPreference에서 저장된 데이터들을 인덱스 하나씩 당기는 함수.
     public void syncSharedPreferenceToMemberListAfterDeleteListItem(int deleteMemberIndex) {
-        int currentGroupIndex = GroupInfoActivity.group_position;
+        int currentGroupIndex = MemberListActivity.group_position;
         int currentMemberNumber = this.getCount();  //this.getCount()는 아이템을 삭제한 이후의 리스트 개수이다
         // ====================================================================================
         //
@@ -311,7 +311,7 @@ public class MemberListAdapter extends BaseAdapter {
     }
 
     public void deleteAllMemberListDataFromSharedPreference() {
-        int currentGroupIndex = GroupInfoActivity.group_position;
+        int currentGroupIndex = MemberListActivity.group_position;
         String savedMemberNumberString = NagneSharedPreferenceUtil.getValue(activity, Storage.SAVE_MEMBER_INFO_FILE, currentGroupIndex + "|" + Storage.MEMBER_NUMBER);
         int savedMemberNumber = Integer.parseInt(savedMemberNumberString);
         for (int i = 0; i < savedMemberNumber; ++i) {
@@ -324,19 +324,19 @@ public class MemberListAdapter extends BaseAdapter {
         // 1. 해쉬 맵 갱신
         // 전화번호 바뀐 경우 인덱스에서 이전 저장 번호 제거 후 새로운 번호 추가
         // ====================================================================================
-        if (GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(member.phone_number)) {
+        if (MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(member.phone_number)) {
             Member m = (Member) getItem(index);
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.remove(m.phone_number);
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(member.phone_number, GroupInfoActivity.group_position + "|" + index);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.remove(m.phone_number);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(member.phone_number, MemberListActivity.group_position + "|" + index);
         } else {
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(member.phone_number, GroupInfoActivity.group_position + "|" + index);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(member.phone_number, MemberListActivity.group_position + "|" + index);
         }
         // ====================================================================================
         //
         // 2. 데이터 갱신
         // ====================================================================================
         memberList.set(index, member);
-        NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(activity, Storage.SAVE_MEMBER_INFO_FILE, member, GroupInfoActivity.group_position + "|" + index);
+        NagneSharedPreferenceUtil.saveObjectToSharedPreferenceUsingKey(activity, Storage.SAVE_MEMBER_INFO_FILE, member, MemberListActivity.group_position + "|" + index);
         notifyDataSetChanged();
     }
 
@@ -353,11 +353,11 @@ public class MemberListAdapter extends BaseAdapter {
     }
 
     private void appendValue(String key, String value) {
-        if (GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(key)) {
-            String gotValue = GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.get(key);
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(key, gotValue + "," + value);
+        if (MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.containsKey(key)) {
+            String gotValue = MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.get(key);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(key, gotValue + "," + value);
         } else {
-            GroupInfoActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(key, value);
+            MemberListActivity.phoneNumberKeyToMatchGroupPositionAndMemberPosition.put(key, value);
         }
     }
 
@@ -373,7 +373,7 @@ public class MemberListAdapter extends BaseAdapter {
                         dialog_member = null;
                         Dlog.i("멤버 값 추가");
                         // 1. 해쉬값 갱신
-                        appendValue(member.phone_number, GroupInfoActivity.group_position + "|" + index);
+                        appendValue(member.phone_number, MemberListActivity.group_position + "|" + index);
                         // 2. 데이터 갱신
                         addData(index, member);
                         isShowDialog = false;
@@ -389,7 +389,7 @@ public class MemberListAdapter extends BaseAdapter {
         AlertDialog dialog = builder.create();
         dialog.show();
         isShowDialog = true;
-        GroupInfoActivity.dialog_list_position = index;
+        MemberListActivity.dialog_list_position = index;
         dialog_member = member;
         dialogListPosition = index;
     }

@@ -19,7 +19,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".GroupInfoActivity" />
+        <activity android:name=".MemberListActivity" />
         <activity
             android:name=".NewGroupPopupActivity"
             android:theme="@android:style/Theme.Holo.Dialog" />
