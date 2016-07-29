@@ -3,7 +3,6 @@ package com.nagnek.android.meetingmanagement;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 
 import com.nagnek.android.debugLog.Dlog;
@@ -59,10 +58,10 @@ public class ListItemPopupMenuActivity extends PopupActivity {
                     break;
                     case POPUP_MENU_CALLED_BY_GROUP_LIST_VIEW_ITEM_LONG_CLICK: {
                         Intent intent = new Intent(ListItemPopupMenuActivity.this, EditGroupInfoActivity.class);
-                        int position = receivedIntent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
-                        Group groupInfo = receivedIntent.getParcelableExtra(MainActivity.GROUP_INFO);
+                        int position = receivedIntent.getIntExtra(GroupListActivity.GROUP_LIST_POSITION, 0);
+                        Group groupInfo = receivedIntent.getParcelableExtra(GroupListActivity.GROUP_INFO);
                         intent.putExtra(EDIT_GROUP_INFO, groupInfo);
-                        intent.putExtra(MainActivity.GROUP_LIST_POSITION, position);
+                        intent.putExtra(GroupListActivity.GROUP_LIST_POSITION, position);
                         startActivityForResult(intent, REQ_CODE_EDIT_GROUP_INFO);
                     }
                     break;

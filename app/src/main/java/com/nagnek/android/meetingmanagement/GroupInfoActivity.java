@@ -1,6 +1,5 @@
 package com.nagnek.android.meetingmanagement;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -53,7 +52,7 @@ public class GroupInfoActivity extends AppCompatActivity {
     private TextView groupNameText = null;
     public static int group_position = 0;
     public static int dialog_list_position = 0; // 어떤 리스트 인덱스가 팝업 띄웠는지. (생명주기에서 살아남게 하기 위해)
-    static final int MOVE_DURATION = 1000;
+    static final int MOVE_DURATION = 300;
     boolean mAdballonAnimate = false;
 
     private int userImageLength;
@@ -71,9 +70,9 @@ public class GroupInfoActivity extends AppCompatActivity {
         userImageLength = R.dimen.image_view_showable_big_icon_length;
         Intent intent = getIntent();
         if (intent != null) {
-            groupName = intent.getExtras().getString(MainActivity.GROUP_NAME);
-            groupImageUri = intent.getParcelableExtra(MainActivity.GROUP_IMAGE_URI);
-            group_position = intent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
+            groupName = intent.getExtras().getString(GroupListActivity.GROUP_NAME);
+            groupImageUri = intent.getParcelableExtra(GroupListActivity.GROUP_IMAGE_URI);
+            group_position = intent.getIntExtra(GroupListActivity.GROUP_LIST_POSITION, 0);
         }
         memberList = new ArrayList<Member>();
         int memberNumber = 0;
@@ -169,9 +168,10 @@ public class GroupInfoActivity extends AppCompatActivity {
 
         groupNameText = (TextView) findViewById(R.id.group_name_text_view);
         groupNameText.setText(groupName);
+        groupNameText.setTransitionName(GroupListActivity.SHARE_TEXT_VIEW_NAME);
 
         imageView = (ImageView) findViewById(R.id.groupImageView);
-        imageView.setTransitionName(MainActivity.SHARE_VIEW_NAME);
+        imageView.setTransitionName(GroupListActivity.SHARE_IMAGE_VIEW_NAME);
         if (groupImageUri != null) {
             imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri, userImageLength, userImageLength));
         } else {
@@ -350,8 +350,8 @@ public class GroupInfoActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         Intent intent = new Intent();
-        intent.putExtra(MainActivity.GROUP_LIST_POSITION, group_position);
-        intent.putExtra(MainActivity.GROUP_IMAGE_URI, groupImageUri);
+        intent.putExtra(GroupListActivity.GROUP_LIST_POSITION, group_position);
+        intent.putExtra(GroupListActivity.GROUP_IMAGE_URI, groupImageUri);
         setResult(RESULT_OK, intent);
         super.onBackPressed();
     }
@@ -373,7 +373,7 @@ public class GroupInfoActivity extends AppCompatActivity {
                 view.animate().setDuration(MOVE_DURATION).scaleX(0.7f).scaleY(0.7f).withEndAction(new Runnable() {
                     public void run() {
                         // 터진다. (뻥~) 사이즈 0
-                        view.animate().scaleX(0.0f).scaleY(0.0f).withEndAction(new Runnable() {
+                        view.animate().scaleX(0.0f).scaleY(0.0f).rotation(360).withEndAction(new Runnable() {
                             @Override
                             public void run() {
                                 // 터진 애니메이션 끝난 후 삭제 후 삭제 아이템과 관련된 아이템들의 애니메이션이 동작한다.

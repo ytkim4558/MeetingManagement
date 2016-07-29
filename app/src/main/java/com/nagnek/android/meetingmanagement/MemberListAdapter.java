@@ -24,7 +24,6 @@ import com.nagnek.android.nagneImage.AsyncDrawable;
 import com.nagnek.android.nagneImage.BitmapShape;
 import com.nagnek.android.nagneImage.BitmapWorkerOptions;
 import com.nagnek.android.nagneImage.BitmapWorkerTask;
-import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 import com.nagnek.nagneJavaUtil.NagneString;
 
@@ -56,8 +55,8 @@ public class MemberListAdapter extends BaseAdapter {
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(activity);
         memberImageId = R.drawable.user;
-        memberImageLength = MainActivity.showable_small_icon_length;
-        pushIconLength = MainActivity.push_icon_length;
+        memberImageLength = GroupListActivity.showable_small_icon_length;
+        pushIconLength = GroupListActivity.push_icon_length;
         if(isShowDialog) {
             showWarningDialog(dialogListPosition, dialog_member);
         }

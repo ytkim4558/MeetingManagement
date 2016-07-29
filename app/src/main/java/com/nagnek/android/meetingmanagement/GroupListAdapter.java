@@ -132,8 +132,8 @@ public class  GroupListAdapter extends BaseAdapter {
         groupImageId = R.drawable.group;
         editGroupImageId = R.drawable.edit_group;
         deleteGroupImageid = R.drawable.delete_group;
-        groupImageLength = MainActivity.showable_small_icon_length;
-        pushIconLength = MainActivity.push_icon_length;
+        groupImageLength = GroupListActivity.showable_small_icon_length;
+        pushIconLength = GroupListActivity.push_icon_length;
         mResources = activity.getResources();
         setLoadingImage(groupImageId);
         Dlog.i("GroupListAdapter()");
@@ -238,7 +238,7 @@ public class  GroupListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(activity, EditGroupInfoActivity.class);
                 intent.putExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO, groupList.get(position));
-                intent.putExtra(MainActivity.GROUP_LIST_POSITION, position);
+                intent.putExtra(GroupListActivity.GROUP_LIST_POSITION, position);
                 activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_GROUP_INFO);
             }
         });

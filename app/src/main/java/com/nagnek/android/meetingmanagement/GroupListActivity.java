@@ -22,7 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
@@ -33,13 +33,14 @@ import com.nagnek.android.sharedString.Storage;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements NoticeDialogFragment.NoticeDialogListener{
+public class GroupListActivity extends AppCompatActivity implements NoticeDialogFragment.NoticeDialogListener{
 
     public static final String GROUP_LIST_POSITION = "com.nagnek.android.meetingmanagement.GROUP_LIST_POSITION";
     public static final String GROUP_NAME = "com.nagnek.android.meetingmanagement.GROUP_NAME";
     public static final String GROUP_IMAGE_URI = "com.nagnek.android.meetingmanagement.GROUP_IMAGE_URI";
     public static final String GROUP_INFO = "com.nagnek.android.meetingmanagement.GROUP_INFO";
-    public final static String SHARE_VIEW_NAME = "SHARE_VIEW_NAME";
+    public final static String SHARE_IMAGE_VIEW_NAME = "SHARE_IMAGE_VIEW_NAME";
+    public final static String SHARE_TEXT_VIEW_NAME = "SHARE_TEXT_VIEW_NAME";
     public static final int REQ_CODE_SELECT_GROUP_LIST_ITEM = 17;
     public static final String POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY";
     public static float showable_small_icon_length;
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     static final int NEW_GROUP_FALSE = 3;
     private final String GROUP_LIST_KEY = "GROUP_LIST_KEY";
 
-    static final int MOVE_DURATION = 1000;
+    static final int MOVE_DURATION = 300;
     String groupName = null;
     ArrayList<Group> groupList = null;
     private int groupNumber;
@@ -67,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_group_list);
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
@@ -132,16 +133,19 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
         groupListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, GroupInfoActivity.class);
+                Intent intent = new Intent(GroupListActivity.this, GroupInfoActivity.class);
                 ImageView groupImageView = (ImageView)view.findViewById(R.id.group_image);
-                Pair<View, String> pair = new Pair<>((View)groupImageView, SHARE_VIEW_NAME);
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, pair);
+                TextView groupName = (TextView)view.findViewById(R.id.group_name);
+                Pair<View, String> pair = new Pair<>((View)groupImageView, SHARE_IMAGE_VIEW_NAME);
+                Pair<View, String> pair2 = new Pair<>((View)groupName, SHARE_TEXT_VIEW_NAME);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(GroupListActivity.this, pair, pair2);
                 Group group = groupList.get(position);
                 intent.putExtra(GROUP_NAME, group.name);
                 intent.putExtra(GROUP_IMAGE_URI, group.imageUri);
                 intent.putExtra(GROUP_LIST_POSITION, position);
 
-                startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
+
+                startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM, options.toBundle());
             }
         });
 
@@ -155,7 +159,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
         groupListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, ListItemPopupMenuActivity.class);
+                Intent intent = new Intent(GroupListActivity.this, ListItemPopupMenuActivity.class);
                 Group group = groupList.get(position);
                 intent.putExtra(ListItemPopupMenuActivity.WHO_CALL_LIST_ITEM_POPUP_MENU_ACTIVITY, ListItemPopupMenuActivity.POPUP_MENU_CALLED_BY_GROUP_LIST_VIEW_ITEM_LONG_CLICK);
                 intent.putExtra(GROUP_INFO, group);
@@ -171,7 +175,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
         addGroupButton.setOnClickListener(new Button.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent newGroupActivityIntent = new Intent(MainActivity.this, NewGroupPopupActivity.class);
+                Intent newGroupActivityIntent = new Intent(GroupListActivity.this, NewGroupPopupActivity.class);
                 startActivityForResult(newGroupActivityIntent, NEW_GROUP_REQUEST);
             }
         });
@@ -260,12 +264,14 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
                 groupListView.setEnabled(false);
                 // 풍선이 터지기 전까지 축소된다. (원래 크기의 0.7배)
                 int firstVisiblePosition = groupListView.getFirstVisiblePosition();
+
+                // 현재 리스트뷰 아이템(레이아웃) 이 몇번째 position인지 확인한다.
                 int position = groupListView.getPositionForView((LinearLayout) v.getParent());
                 final View view = (View) groupListView.getChildAt(position - firstVisiblePosition);
                 view.animate().setDuration(MOVE_DURATION).scaleX(0.7f).scaleY(0.7f).withEndAction(new Runnable() {
                     public void run() {
                         // 터진다. (뻥~) 사이즈 0
-                        view.animate().scaleX(0.0f).scaleY(0.0f).withEndAction(new Runnable() {
+                        view.animate().scaleX(0.0f).scaleY(0.0f).rotation(360).withEndAction(new Runnable() {
                             @Override
                             public void run() {
                                 // 터진 애니메이션 끝난 후 삭제 후 삭제 아이템과 관련된 아이템들의 애니메이션이 동작한다.
@@ -432,6 +438,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
                 group.name = data.getStringExtra(NewGroupPopupActivity.NEW_GROUP_NAME);
                 group.imageUri = data.getParcelableExtra(NewGroupPopupActivity.NEW_GROUP_IMAGE);
                 groupListAdatper.add(groupListAdatper.getCount(), group);
+                groupListView.smoothScrollToPosition(groupList.size()-1);
             }
         } else if (requestCode == REQ_CODE_SELECT_GROUP_LIST_ITEM) {
             if (resultCode == RESULT_OK) {
@@ -511,7 +518,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     @Override
     public void onBackPressed() {
         // Alert 띄어서 종료시키기
-        AlertDialog.Builder dialog = new AlertDialog.Builder(MainActivity.this);
+        AlertDialog.Builder dialog = new AlertDialog.Builder(GroupListActivity.this);
         dialog.setTitle("종료 알림")
                 .setMessage("정말로 종료하시겠습니까")
                 .setPositiveButton("종료", new DialogInterface.OnClickListener() {
@@ -524,7 +531,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
 .setNeutralButton("취소", new DialogInterface.OnClickListener() {
 @Override
 public void onClick(DialogInterface dialog, int which) {
-Toast.makeText(MainActivity.this, "취소했습니다.", Toast.LENGTH_SHORT).show();
+Toast.makeText(GroupListActivity.this, "취소했습니다.", Toast.LENGTH_SHORT).show();
 }
 })
 */

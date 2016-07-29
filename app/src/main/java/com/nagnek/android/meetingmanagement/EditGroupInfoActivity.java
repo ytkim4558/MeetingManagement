@@ -57,7 +57,7 @@ public class EditGroupInfoActivity extends Activity {
                 group = receivedIntent.getParcelableExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO);
                 tempGroup = new Group();
                 tempGroup.copy(group);
-                position = receivedIntent.getIntExtra(MainActivity.GROUP_LIST_POSITION, 0);
+                position = receivedIntent.getIntExtra(GroupListActivity.GROUP_LIST_POSITION, 0);
             }
         }
         userImageLength = R.dimen.image_view_showable_big_icon_length;
@@ -104,7 +104,7 @@ public class EditGroupInfoActivity extends Activity {
 
                 Intent intent = new Intent();
                 intent.putExtra(ListItemPopupMenuActivity.EDIT_GROUP_INFO, group);
-                intent.putExtra(MainActivity.GROUP_LIST_POSITION, position);
+                intent.putExtra(GroupListActivity.GROUP_LIST_POSITION, position);
                 setResult(RESULT_OK, intent);
                 finish();
             }
