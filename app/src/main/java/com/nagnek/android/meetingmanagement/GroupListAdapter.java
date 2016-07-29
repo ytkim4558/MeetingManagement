@@ -36,7 +36,7 @@ import static com.nagnek.android.nagneImage.BitmapWorkerTask.cancelPotentialWork
 /**
  * Created by yongtakpc on 2016. 7. 7..
  */
-public class GroupListAdapter extends BaseAdapter {
+public class  GroupListAdapter extends BaseAdapter {
     private int groupImageId;   // 그룹 이미지
     private int editGroupImageId; // 그룹 수정 이미지
     private int deleteGroupImageid; // 그룹 삭제 이미지

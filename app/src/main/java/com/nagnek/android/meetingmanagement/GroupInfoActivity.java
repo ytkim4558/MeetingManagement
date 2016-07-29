@@ -165,6 +165,7 @@ public class GroupInfoActivity extends AppCompatActivity {
         groupNameText.setText(groupName);
 
         imageView = (ImageView) findViewById(R.id.groupImageView);
+        imageView.setTransitionName(MainActivity.SHARE_VIEW_NAME);
         if (groupImageUri != null) {
             imageView.setImageBitmap(NagneCircleImage.getCircleBitmap(this, groupImageUri, userImageLength, userImageLength));
         } else {

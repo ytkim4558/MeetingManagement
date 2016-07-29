@@ -1,5 +1,6 @@
 package com.nagnek.android.meetingmanagement;
 
+import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.DialogInterface;
@@ -11,6 +12,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +35,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     public static final String GROUP_NAME = "com.nagnek.android.meetingmanagement.GROUP_NAME";
     public static final String GROUP_IMAGE_URI = "com.nagnek.android.meetingmanagement.GROUP_IMAGE_URI";
     public static final String GROUP_INFO = "com.nagnek.android.meetingmanagement.GROUP_INFO";
+    public final static String SHARE_VIEW_NAME = "SHARE_VIEW_NAME";
     public static final int REQ_CODE_SELECT_GROUP_LIST_ITEM = 17;
     public static final String POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY = "com.nagnek.android.meetingmanagement.POPUP_MENU_CALLED_BY_GROUP_LIST_ITEM_LONG_CLICK_KEY";
     public static float showable_small_icon_length;
@@ -121,10 +124,14 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = new Intent(MainActivity.this, GroupInfoActivity.class);
+                ImageView groupImageView = (ImageView)view.findViewById(R.id.group_image);
+                Pair<View, String> pair = new Pair<>((View)groupImageView, SHARE_VIEW_NAME);
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation(MainActivity.this, pair);
                 Group group = groupList.get(position);
                 intent.putExtra(GROUP_NAME, group.name);
                 intent.putExtra(GROUP_IMAGE_URI, group.imageUri);
                 intent.putExtra(GROUP_LIST_POSITION, position);
+
                 startActivityForResult(intent, REQ_CODE_SELECT_GROUP_LIST_ITEM);
             }
         });
