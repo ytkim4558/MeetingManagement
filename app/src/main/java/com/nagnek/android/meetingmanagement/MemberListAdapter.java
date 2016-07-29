@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.nagnek.android.nagneImage.AsyncDrawable;
 import com.nagnek.android.nagneImage.BitmapShape;
 import com.nagnek.android.nagneImage.BitmapWorkerOptions;
 import com.nagnek.android.nagneImage.BitmapWorkerTask;
+import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 import com.nagnek.nagneJavaUtil.NagneString;
 
@@ -47,9 +49,9 @@ public class MemberListAdapter extends BaseAdapter {
     private static int dialogListPosition = 0; // dialog 인자의 리스트의 position
     Bitmap mPlaceHolderBitmap;
     Resources mResources;
+    Button.OnClickListener mClickListner;
 
-
-    public MemberListAdapter(Activity activity, ArrayList<Member> memberList) {
+    public MemberListAdapter(Activity activity, ArrayList<Member> memberList, Button.OnClickListener listner) {
         this.activity = activity;
         this.memberList = memberList;
         this.layoutInflater = LayoutInflater.from(activity);
@@ -61,6 +63,7 @@ public class MemberListAdapter extends BaseAdapter {
         }
         mResources = activity.getResources();
         setLoadingImage(memberImageId);
+        this.mClickListner = listner;
     }
 
     public void setLoadingImage(int resId) {
@@ -108,8 +111,26 @@ public class MemberListAdapter extends BaseAdapter {
             viewHolder.memberImageView = (ImageView) itemLayout.findViewById(R.id.member_image);
             viewHolder.editMemberImageView = (ImageView) itemLayout.findViewById(R.id.edit_button);
             viewHolder.deleteMemberImageView = (ImageView) itemLayout.findViewById(R.id.delete_button);
+            viewHolder.deleteMemberImageView.setOnClickListener(mClickListner);
             itemLayout.setTag(viewHolder);
             // ------------------------------------------------------------------------------------
+        }  else if(((ViewHolder)itemLayout.getTag()).needInflate) {
+            itemLayout = layoutInflater.inflate(R.layout.member_list_view_item_layout, null);
+            // View Holder를 생성하고 사용할 자식 뷰를 찾아 View Holder에 참조시킨다.
+            // 생성된 View Holder는 아이템에 설정해 두고 다음에 아이템 재사용시 참조한다.
+            // ------------------------------------------------------------------------------------
+            viewHolder = new ViewHolder();
+            viewHolder.memberNameTextView = (TextView) itemLayout.findViewById(R.id.member_name);
+            viewHolder.memberIdTextView = (TextView) itemLayout.findViewById(R.id.member_id);
+            viewHolder.callButton = (ImageView) itemLayout.findViewById(R.id.call_button);
+            viewHolder.messageButton = (ImageView) itemLayout.findViewById(R.id.message_button);
+            viewHolder.phoneNumberTextView = (TextView) itemLayout.findViewById(R.id.phone_number);
+            viewHolder.memberImageView = (ImageView) itemLayout.findViewById(R.id.member_image);
+            viewHolder.editMemberImageView = (ImageView) itemLayout.findViewById(R.id.edit_button);
+            viewHolder.deleteMemberImageView = (ImageView) itemLayout.findViewById(R.id.delete_button);
+            viewHolder.deleteMemberImageView.setOnClickListener(mClickListner);
+            itemLayout.setTag(viewHolder);
+            viewHolder.needInflate = false;
         } else {
             // 재사용 아이템에는 이전에 View Holder 객체를 설정해 두었다.
             // 그러므로 설정된 View Holder 객체를 이용해서 findViewById 함수를
@@ -145,12 +166,12 @@ public class MemberListAdapter extends BaseAdapter {
             }
         });
 
-        viewHolder.deleteMemberImageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delete(position);
-            }
-        });
+//        viewHolder.deleteMemberImageView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                delete(position);
+//            }
+//        });
         // ====================================================================================
 
         // 4. 레이아웃 갱신한다.
@@ -329,6 +350,7 @@ public class MemberListAdapter extends BaseAdapter {
         ImageView memberImageView;
         ImageView editMemberImageView;
         ImageView deleteMemberImageView;
+        boolean needInflate;
     }
 
     private void appendValue(String key, String value) {

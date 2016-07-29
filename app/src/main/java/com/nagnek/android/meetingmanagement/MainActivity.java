@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     static final int NEW_GROUP_FALSE = 3;
     private final String GROUP_LIST_KEY = "GROUP_LIST_KEY";
 
-    static final int MOVE_DURATION = 400;
+    static final int MOVE_DURATION = 1000;
     String groupName = null;
     ArrayList<Group> groupList = null;
     private int groupNumber;

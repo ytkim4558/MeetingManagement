@@ -29,6 +29,8 @@
         android:src="@drawable/add_user" />
 
     <ListView android:id="@+id/member_list_view"
+        android:divider="@null"
+        android:dividerHeight="0dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"></ListView>
 
