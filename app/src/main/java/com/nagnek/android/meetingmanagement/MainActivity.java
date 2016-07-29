@@ -16,10 +16,13 @@ import android.util.Pair;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
@@ -28,6 +31,7 @@ import com.nagnek.android.nagneImage.NagneImage;
 import com.nagnek.android.sharedString.Storage;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements NoticeDialogFragment.NoticeDialogListener{
 
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     static final int NEW_GROUP_GENERATE = 2;
     static final int NEW_GROUP_FALSE = 3;
     private final String GROUP_LIST_KEY = "GROUP_LIST_KEY";
+
+    static final int MOVE_DURATION = 400;
     String groupName = null;
     ArrayList<Group> groupList = null;
     private int groupNumber;
@@ -54,6 +60,9 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
     ImageView groupImageView;
     ImageView addGroupButton;
     boolean isShowWarningDialog = true;
+    boolean mAdballonAnimate = false;
+
+    HashMap<Long, Integer> mItemIdTopMap = new HashMap<Long, Integer>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
         }
 
         // 어댑터를 생성하고 데이터 설정
-        groupListAdatper = new GroupListAdapter(this, groupList);
+        groupListAdatper = new GroupListAdapter(this, groupList, mDeleteButtonClickListener);
 
         // 리스트뷰에 어댑터 설정
         groupListView = (ListView) findViewById(R.id.group_list_view);
@@ -239,6 +248,180 @@ public class MainActivity extends AppCompatActivity implements NoticeDialogFragm
         Dlog.i("onStop()");
         if (Dlog.showToast) Toast.makeText(this, Dlog.s(""), Toast.LENGTH_SHORT).show();
     }
+
+    private Button.OnClickListener mDeleteButtonClickListener = new Button.OnClickListener() {
+
+        @Override
+        public void onClick(final View v) {
+            // 리스트뷰에서 아이템이 삭제되면 풍선 애니메이션이 동작한다.
+            // 삭제되는 뷰는 점점 작아진다.
+            if(mAdballonAnimate != true) {
+                mAdballonAnimate = true;
+                groupListView.setEnabled(false);
+                // 풍선이 터지기 전까지 축소된다. (원래 크기의 0.7배)
+                int firstVisiblePosition = groupListView.getFirstVisiblePosition();
+                int position = groupListView.getPositionForView((LinearLayout) v.getParent());
+                final View view = (View) groupListView.getChildAt(position - firstVisiblePosition);
+                view.animate().setDuration(MOVE_DURATION).scaleX(0.7f).scaleY(0.7f).withEndAction(new Runnable() {
+                    public void run() {
+                        // 터진다. (뻥~) 사이즈 0
+                        view.animate().scaleX(0.0f).scaleY(0.0f).withEndAction(new Runnable() {
+                            @Override
+                            public void run() {
+                                // 터진 애니메이션 끝난 후 삭제 후 삭제 아이템과 관련된 아이템들의 애니메이션이 동작한다.
+                                // Delete the item from the adapter
+                                animateRemoval(groupListView, view);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    };
+
+    /**
+     * 리스트뷰 삭제 애니메이션 진행 후 해당 아이템을 리스트에서 삭제하고
+     * 해당 삭제된 아이템의 주변 아이템들을 움직이는 애니메이션을 실행한다.
+     */
+    private void animateRemoval(final ListView listview, View viewToRemove) {
+        int firstVisiblePosition = listview.getFirstVisiblePosition();
+
+        for (int i = 0; i < listview.getChildCount(); ++i) {
+            View child = listview.getChildAt(i);
+            if (child != viewToRemove) {
+                int position = firstVisiblePosition + i;
+                long itemId = groupListAdatper.getItemId(position);
+                mItemIdTopMap.put(itemId, child.getTop());
+            }
+        }
+        // Delete the item from the adapter
+        int position = listview.getPositionForView(viewToRemove);
+        groupListAdatper.delete(position);
+        View replaceView = listview.getChildAt(position - listview.getFirstVisiblePosition());
+        GroupListAdapter.ViewHolder vh = (GroupListAdapter.ViewHolder)replaceView.getTag();
+        vh.needInflate = true;
+        groupListAdatper.notifyDataSetChanged();
+        final int deletePosition = position;
+        final ViewTreeObserver observer = listview.getViewTreeObserver();
+        observer.addOnPreDrawListener(new ViewTreeObserver.OnPreDrawListener() {
+            public boolean onPreDraw() {
+                observer.removeOnPreDrawListener(this);
+                boolean firstAnimation = true;
+                int firstVisiblePosition = listview.getFirstVisiblePosition();
+                int lastVisiblePosition = listview.getLastVisiblePosition();
+                for (int i = 0; i < listview.getChildCount(); ++i) {    // getChildCount는 현재 화면상에 보이는 아이템의 개수를 보여준다.
+                    final View child = listview.getChildAt(i);
+                    int position = firstVisiblePosition + i;
+                    long itemId = groupListAdatper.getItemId(position);
+                    Integer startTop = mItemIdTopMap.get(itemId);
+                    int top = child.getTop();
+
+                    // startTop 이 null이 아니라는것은 화면상에 이미 보였던 아이템들이라는 것이다.
+                    if(startTop != null) {
+                        if(position < deletePosition) {   // 삭제한 아이템의 위에 있던 아이템들인 경우
+
+                            // 현재 보이는 아이템
+                            if(groupList.size() - 1 == lastVisiblePosition && firstVisiblePosition != 0) {
+                                child.setTranslationY(-1 * child.getHeight());
+                            }
+                            moveUpDownBallonAnimation(child, i);
+                        } else {    // 삭제한 아이템의 아래에 있던 아이템이나 삭제한 아이템의 위치에 생긴 아이템
+                            // 화면창이 리스트뷰의 맨 아래에 있는 경우 아래로 이동하지 않는다.
+                            // 단, 화면창에 리스트뷰의 첫번째 아이템이 보이는 경우(즉 리스트뷰가 충분히 크지 않아 스크롤바가 생기지 않은 경우나
+                            // 스크롤바가 생겨도 리스트뷰의 마지막아이템과 첫번째 아이템이 한화면에 다 보이는 경우 (즉, 마지막 아이템이 일부만 보이는경우))
+                            // 는 예외로 한다.
+                            if(groupList.size() - 1 != lastVisiblePosition || (firstVisiblePosition == 0 && groupList.size() - 1 == lastVisiblePosition)) {
+                                child.setTranslationY(child.getHeight());
+                            }
+                            moveDownUpBallonAnimation(child, i);
+                        }
+                    } else {
+                        // 리스트뷰 아래쪽에 있어서 화면에 보여지지 않았던 아이템
+                        // Animate new views along with the others. The catch is that they did not
+                        // exist in the start state, so we must calculate their starting position
+                        // based on neighboring views.
+                        if(position < deletePosition) {   // 삭제한 아이템의 위에 있던 아이템들인 경우
+                            if(firstVisiblePosition != 0) {
+                                child.setTranslationY(-1 * child.getHeight());
+                            }
+                            moveUpDownBallonAnimation(child, i);
+                        } else {    // 삭제한 아이템의 아래에 있던 아이템이나 삭제한 아이템의 위치에 생긴 아이템
+
+                            // 화면창이 리스트뷰의 맨 아래에 있는 경우 아래로 이동하지 않는다.
+                            // 단, 화면창에 리스트뷰의 첫번째 아이템이 보이는 경우(즉 리스트뷰가 충분히 크지 않아 스크롤바가 생기지 않은 경우나
+                            // 스크롤바가 생겨도 리스트뷰의 마지막아이템과 첫번째 아이템이 한화면에 다 보이는 경우 (즉, 마지막 아이템이 일부만 보이는경우))
+                            // 는 예외로 한다.
+                            if(groupList.size() - 1 != lastVisiblePosition || (firstVisiblePosition == 0 && groupList.size() - 1 == lastVisiblePosition)) {
+                                child.setTranslationY(child.getHeight());
+                            }
+                            moveDownUpBallonAnimation(child, i);
+                        }
+                    }
+                }
+                mItemIdTopMap.clear();
+                return true;
+            }
+        });
+    }
+
+    // 리스트뷰에서 아이템이 삭제되면 풍선 애니메이션이 동작한다.
+    // 아이템이 삭제되면 삭제된 뷰의 위에 있는 아이템들은 절반씩 찌끄러지면서 위로 밀린다. (뷰의 중심은 뷰의 절반만큼 이동되므로 translationY 가 뷰의 절반크기만큼 이동. scale은 절반만큼)
+    // 그후 원래 상태로 복귀된다. (복귀될때 역시 scale의 절반만큼 중심이 이동되므로 translationY는 아래로)
+    private void moveUpDownBallonAnimation(final View child, final int position ) {
+        final float quadViewSize = child.getHeight() / 4;
+        final float delta = -1 * quadViewSize * (2 * (position + 1) - 1);
+
+
+
+        // 아이템이 삭제되면 삭제된 뷰의 위에 있는 아이템들은 절반씩 찌끄러지면서 위로 밀린다. (뷰의 중심은 뷰의 절반만큼 이동되므로 translationY 가 뷰의 절반크기만큼 이동. scale은 절반만큼)
+        child.animate().setDuration(MOVE_DURATION).translationY(delta).scaleY(0.5f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                // 그 후, 원래 상태로 복귀된다. (복귀될때 역시 scale의 절반만큼 중심이 이동되므로 translationY는 아래로)
+                child.animate().setDuration(MOVE_DURATION).translationY(0).scaleY(1).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        groupListView.setEnabled(true);
+//                        StudentAdapter.ViewHolder vh = (StudentAdapter.ViewHolder)child.getTag();
+//                        vh.needInflate = true;
+                        mAdballonAnimate = false;
+                        // mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
+    // 리스트뷰에서 아이템이 삭제되면 풍선 애니메이션이 동작한다.
+    // 아이템이 삭제되면 삭제된 뷰의 아래에 있는 아이템들은 아래로 밀린다.
+    // 그후 원래 위치로 복귀된다.
+    private void moveDownUpBallonAnimation(final View child, final int position ) {
+        // 풍선이
+        final float quadViewSize = child.getHeight() / 4;
+        final float halfViewSize = child.getHeight() / 2;
+        int lastVisiblePosition = groupListView.getLastVisiblePosition();
+        int firstVisiblePosition = groupListView.getFirstVisiblePosition();
+        final float delta = halfViewSize + quadViewSize * (2 * (lastVisiblePosition - firstVisiblePosition - position + 1) - 1);
+
+        // 아이템이 삭제되면 삭제된 뷰의 위에 있는 아이템들은 절반씩 찌끄러지면서 위로 밀린다. (뷰의 중심은 뷰의 절반만큼 이동되므로 translationY 가 뷰의 절반크기만큼 이동. scale은 절반만큼)
+        child.animate().setDuration(MOVE_DURATION).translationY(delta).scaleY(0.5f).withEndAction(new Runnable() {
+            @Override
+            public void run() {
+                // 그 후, 원래 상태로 복귀된다. (복귀될때 역시 scale의 절반만큼 중심이 이동되므로 translationY는 아래로)
+                child.animate().setDuration(MOVE_DURATION).translationY(0).scaleY(1).withEndAction(new Runnable() {
+                    @Override
+                    public void run() {
+                        groupListView.setEnabled(true);
+//                        StudentAdapter.ViewHolder vh = (StudentAdapter.ViewHolder)child.getTag();
+//                        vh.needInflate = true;
+                        mAdballonAnimate = false;
+                        //mAdapter.notifyDataSetChanged();
+                    }
+                });
+            }
+        });
+    }
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

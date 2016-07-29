@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -42,6 +43,7 @@ public class  GroupListAdapter extends BaseAdapter {
     private int deleteGroupImageid; // 그룹 삭제 이미지
     private float groupImageLength;
     private float pushIconLength;
+    Button.OnClickListener mClickListner;
 
     Activity activity = null;
     ArrayList<Group> groupList = null;
@@ -123,7 +125,7 @@ public class  GroupListAdapter extends BaseAdapter {
     }
     //ImageLoadingHandler mImageLoadingHandler = null;
 
-    GroupListAdapter(Activity activity, ArrayList<Group> groupList) {
+    GroupListAdapter(Activity activity, ArrayList<Group> groupList, Button.OnClickListener listner) {
         this.activity = activity;
         this.groupList = groupList;
         this.layoutInflater = LayoutInflater.from(this.activity);
@@ -152,6 +154,7 @@ public class  GroupListAdapter extends BaseAdapter {
                 return bitmap.getByteCount() / 1024;
             }
         };
+        this.mClickListner = listner;
     }
 
     public void setLoadingImage(int resId) {
@@ -199,8 +202,27 @@ public class  GroupListAdapter extends BaseAdapter {
             // 레이아웃 갱신 (position값 상관없는 것)
             viewHolder.editGroupImageButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), editGroupImageId, pushIconLength, pushIconLength));
             viewHolder.deleteGroupImageButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), deleteGroupImageid, pushIconLength, pushIconLength));
+            viewHolder.deleteGroupImageButton.setOnClickListener(mClickListner);
             itemLayout.setTag(viewHolder);
             // ------------------------------------------------------------------------------------
+        } else if(((ViewHolder)itemLayout.getTag()).needInflate) {
+            itemLayout = layoutInflater.inflate(R.layout.group_list_view_item_layout, null);
+            // View Holder를 생성하고 사용할 자식 뷰를 찾아 View Holder에 참조시킨다.
+            // 생성된 View Holder는 아이템에 설정해 두고 다음에 아이템 재사용시 참조한다.
+            // ------------------------------------------------------------------------------------
+            viewHolder = new ViewHolder();
+            viewHolder.groupNameTextView = (TextView) itemLayout.findViewById(R.id.group_name);
+            viewHolder.groupIdTextView = (TextView) itemLayout.findViewById(R.id.group_id);
+            viewHolder.groupImageView = (ImageView) itemLayout.findViewById(R.id.group_image);
+            viewHolder.editGroupImageButton = (ImageView) itemLayout.findViewById(R.id.edit_button);
+            viewHolder.deleteGroupImageButton = (ImageView) itemLayout.findViewById(R.id.delete_button);
+
+            // 레이아웃 갱신 (position값 상관없는 것)
+            viewHolder.editGroupImageButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), editGroupImageId, pushIconLength, pushIconLength));
+            viewHolder.deleteGroupImageButton.setImageBitmap(NagneImage.decodeSampledBitmapFromResource(activity.getResources(), deleteGroupImageid, pushIconLength, pushIconLength));
+            viewHolder.deleteGroupImageButton.setOnClickListener(mClickListner);
+            itemLayout.setTag(viewHolder);
+            viewHolder.needInflate = false;
         } else {
             // 재사용 아이템에는 이전에 View Holder 객체를 설정해 두었다.
             // 그러므로 설정된 View Holder 객체를 이용해서 findViewById 함수를
@@ -220,12 +242,12 @@ public class  GroupListAdapter extends BaseAdapter {
                 activity.startActivityForResult(intent, ListItemPopupMenuActivity.REQ_CODE_EDIT_GROUP_INFO);
             }
         });
-        viewHolder.deleteGroupImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                delete(position);
-            }
-        });
+//        viewHolder.deleteGroupImageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                delete(position);
+//            }
+//        });
         // ====================================================================================
 
         // 4. 레이아웃 갱신한다.
@@ -332,6 +354,7 @@ public class  GroupListAdapter extends BaseAdapter {
         ImageView editGroupImageButton;
         ImageView deleteGroupImageButton;
         CheckBox checkBox;
+        boolean needInflate;
     }
 
     // 삭제된 아이템 이후 SharedPreference에서 저장된 데이터들을 인덱스 하나씩 당기는 함수.
