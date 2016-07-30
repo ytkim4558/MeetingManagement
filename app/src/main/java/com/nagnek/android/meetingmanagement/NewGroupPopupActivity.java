@@ -4,10 +4,12 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
 import android.view.Gravity;
 import android.view.View;
 import android.view.animation.Animation;
@@ -79,6 +81,11 @@ public class NewGroupPopupActivity extends PopupActivity {
 
                         @Override
                         public void onAnimationEnd(Animator animation) {
+                            Vibrator tVibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+                            //long[] vibratePattern = {100, 100 , 300};
+
+                            tVibrator.vibrate(1000);
+                           // tVibrator.vibrate(vibratePattern, -1);
                             Toast toast = Toast.makeText(getApplicationContext(), "이름을 입력하세요", Toast.LENGTH_SHORT);
                             toast.setGravity(Gravity.CENTER, 0, 0);
                             toast.show();

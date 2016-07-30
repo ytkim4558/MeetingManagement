@@ -89,8 +89,6 @@ public class  GroupListAdapter extends BaseAdapter {
         public ImageLoadingHandler getImageLoadingHandler() {
             return imageLoadingHandlerWeakReference.get();
         }
-
-
     }
 
     static final private int MESSAGE_DRAW_CURRENT_IMAGE_TO_CURRENT_IMAGE_VIEW = 1;

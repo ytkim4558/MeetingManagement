@@ -1,5 +1,8 @@
 package com.nagnek.android.meetingmanagement;
 
+import android.animation.Animator;
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,13 +11,16 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.CycleInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nagnek.android.debugLog.Dlog;
 import com.nagnek.android.externalIntent.NagneSMS;
@@ -143,15 +149,77 @@ public class MemberListAdapter extends BaseAdapter {
         viewHolder.callButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Phone phone = new Phone();
-                phone.call(activity, memberList.get(pos).phone_number);
+
+                ObjectAnimator animX = ObjectAnimator.ofFloat(v, "rotation", 0f, 20f);
+                ObjectAnimator vibrationX = ObjectAnimator.ofFloat(v, "rotation", 20f, -20f);
+                ObjectAnimator returnanimX = ObjectAnimator.ofFloat(v, "rotation", -20f, 0f);
+                vibrationX.setInterpolator(new CycleInterpolator(3));
+                AnimatorSet animSetX = new AnimatorSet();
+                animSetX.playSequentially(animX, vibrationX, returnanimX);
+                animSetX.setDuration(300).start();
+                animSetX.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        Phone phone = new Phone();
+                        phone.call(activity, memberList.get(pos).phone_number);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+
+
             }
         });
         viewHolder.messageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NagneSMS nagneSMS = new NagneSMS();
-                nagneSMS.sendSMS(activity, memberList.get(position).phone_number, MESSAGE_BODY);
+
+                ObjectAnimator animX = ObjectAnimator.ofFloat(v, "translationY", 0f, 20f);
+                ObjectAnimator vibrationX = ObjectAnimator.ofFloat(v, "translationY", 20f, -20f);
+                ObjectAnimator returnanimX = ObjectAnimator.ofFloat(v, "translationY", -20f, 0f);
+                vibrationX.setInterpolator(new CycleInterpolator(2));
+                AnimatorSet animSetX = new AnimatorSet();
+                animSetX.playSequentially(animX, vibrationX, returnanimX);
+                animSetX.setDuration(300).start();
+                animSetX.addListener(new Animator.AnimatorListener() {
+                    @Override
+                    public void onAnimationStart(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        NagneSMS nagneSMS = new NagneSMS();
+                        nagneSMS.sendSMS(activity, memberList.get(position).phone_number, MESSAGE_BODY);
+                    }
+
+                    @Override
+                    public void onAnimationCancel(Animator animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animator animation) {
+
+                    }
+                });
+
+
+
             }
         });
 

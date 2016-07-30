@@ -3,6 +3,8 @@ package com.nagnek.android.meetingmanagement;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -215,6 +217,7 @@ public class MemberListActivity extends AppCompatActivity {
                 member.name = cursor.getString(nameIndex);
                 cursor.close();
                 memberListAdapter.add(memberListAdapter.getCount(), member);
+                memberListView.smoothScrollToPosition(memberList.size()-1);
             }
         } else if (requestCode == REQ_CODE_SELECT_IMAGE) {
             if (resultCode == RESULT_OK) {
@@ -367,6 +370,7 @@ public class MemberListActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.add_member:
                 pickContact();
+
                 break;
         }
         return true;
@@ -401,6 +405,9 @@ public class MemberListActivity extends AppCompatActivity {
                         view.animate().scaleX(0.0f).scaleY(0.0f).rotation(360).withEndAction(new Runnable() {
                             @Override
                             public void run() {
+                                Uri ringtoneUri = RingtoneManager.getActualDefaultRingtoneUri(getApplicationContext() ,RingtoneManager.TYPE_NOTIFICATION);
+                                Ringtone ringtone = RingtoneManager.getRingtone(getApplicationContext(), ringtoneUri);
+                                ringtone.play();
                                 // 터진 애니메이션 끝난 후 삭제 후 삭제 아이템과 관련된 아이템들의 애니메이션이 동작한다.
                                 // Delete the item from the adapter
                                 animateRemoval(memberListView, view);
